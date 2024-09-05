@@ -84,7 +84,9 @@ export default {
     },
   },
 
-  mounted() {},
+  mounted() {
+      
+  },
 };
 </script>
 
@@ -130,15 +132,14 @@ export default {
             Servizi
           </button>
           <div class="dropdown-menu row" aria-labelledby="triggerId">
-            <div class="servizi row">
+            <div v-for="(servizio, i) in store.servizi_bnb" class="servizi row">
               <input
-                v-model="inputServizi"
-                class="col-3"
-                value="1"
+                class="servicescheck"
                 type="checkbox"
-                id="servizio1"
+                :id= "i"
+                :value="i"
               />
-              <label class="col-9" for="servizio1">Servizio1</label>
+              <label style="font-size: 12px;" class= "col" :for="i">{{ servizio }}</label>
             </div>
           </div>
         </div>
@@ -203,6 +204,11 @@ header {
 
 .css-flex {
   display: flex;
+}
+
+.servicescheck{
+  width: 15px;
+  margin-left: 1rem;
 }
 
 .buttonSearch {
