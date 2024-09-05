@@ -65,7 +65,7 @@ export default {
             latitude: this.coordinates.lat,
             rooms: this.inputCamere,
             beds: this.inputLetti,
-            services: this.inputServices,
+            services: this.inputServizi,
             radius: this.inputRaggio,
           };
           console.log(this.searchData);
