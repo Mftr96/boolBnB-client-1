@@ -1,42 +1,30 @@
-<script >
+<script>
 import axios from 'axios';
 import store from './data/store.js';
 import { RouterView } from 'vue-router';
 import AppHeader from './components/AppHeader.vue';
 export default {
-  name:"app",
+  name: 'app',
 
-components: {
-  AppHeader,
+  components: {
+    AppHeader,
+  },
 
-},
+  data() {
+    return {
+      store,
+    };
+  },
 
-data() {
+  methods: {},
 
-  return {
-    store,
-
-  }
-
-},
-
-methods: {
-
-},
-
-mounted() {
-
-}
-
-}
-
+  mounted() {},
+};
 </script>
 
 <template>
   <AppHeader></AppHeader>
   <router-view></router-view>
-
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
