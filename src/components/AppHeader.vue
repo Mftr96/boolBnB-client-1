@@ -65,7 +65,7 @@ export default {
             latitude: this.coordinates.lat,
             rooms: this.inputCamere,
             beds: this.inputLetti,
-            services: this.inputServices,
+            services: this.inputServizi,
             radius: this.inputRaggio,
           };
           console.log(this.searchData);
@@ -83,7 +83,7 @@ export default {
     },
   },
 
-  mounted() {},
+  mounted() { },
 };
 </script>
 
@@ -91,79 +91,35 @@ export default {
   <header>
     <nav class="container">
       <div class="css-flex">
-        <input
-          class="form-control"
-          id="indirizzo"
-          list="suggestion"
-          type="text"
-          placeholder="Inserisci indirizzo o città"
-          v-model="inputIndirizzo"
-          @focus="isActive = true"
-          @blur="timeoutShow"
-        />
-        <input
-          step="1"
-          min="1"
-          class="form-control"
-          type="number"
-          placeholder="Numero di stanze"
-          v-model="inputCamere"
-        />
-        <input
-          step="1"
-          min="1"
-          class="form-control"
-          type="number"
-          placeholder="Numero di posti letto"
-          v-model="inputLetti"
-        />
+        <input class="form-control" id="indirizzo" list="suggestion" type="text"
+          placeholder="Inserisci indirizzo o città" v-model="inputIndirizzo" @focus="isActive = true"
+          @blur="timeoutShow" />
+        <input step="1" min="1" class="form-control" type="number" placeholder="Numero di stanze"
+          v-model="inputCamere" />
+        <input step="1" min="1" class="form-control" type="number" placeholder="Numero di posti letto"
+          v-model="inputLetti" />
         <div class="dropdown">
-          <button
-            class="btn btn-secondary dropdown-toggle"
-            type="button"
-            id="triggerId"
-            data-bs-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="triggerId" data-bs-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
             Servizi
           </button>
           <div class="dropdown-menu row" aria-labelledby="triggerId">
             <div v-for="(servizio, i) in store.servizi_bnb" class="servizi row">
-              <input
-                v-model="inputServizi"
-                class="servicescheck"
-                type="checkbox"
-                :id="i"
-                :value="i"
-              />
+              <input v-model="inputServizi" class="servicescheck" type="checkbox" :id="i" :value="i + 1" />
               <label style="font-size: 12px" class="col" :for="i">{{
                 servizio
               }}</label>
             </div>
           </div>
         </div>
-        <input
-          step="1"
-          min="1"
-          class="form-control"
-          type="number"
-          placeholder="Raggio di ricerca in km"
-          v-model="inputRaggio"
-        />
-        <router-link
-          :to="{ name: 'search' }"
-          @click="searchRequest()"
-          class="buttonSearch"
-        >
+        <input step="1" min="1" class="form-control" type="number" placeholder="Raggio di ricerca in km"
+          v-model="inputRaggio" />
+        <router-link :to="{ name: 'search' }" @click="searchRequest()" class="buttonSearch">
           Cerca
         </router-link>
       </div>
       <ul v-show="apiSuggestions.length > 0 && isActive == true">
-        <li
-          @click="writeAddress(singleAddress)"
-          v-for="(singleAddress, i) in apiSuggestions"
-        >
+        <li @click="writeAddress(singleAddress)" v-for="(singleAddress, i) in apiSuggestions">
           {{ singleAddress }}
         </li>
       </ul>
@@ -219,6 +175,7 @@ li:hover {
   background-color: rgb(176, 220, 233);
   cursor: pointer;
 }
+
 .servizi {
   margin-bottom: 0.3rem;
 }

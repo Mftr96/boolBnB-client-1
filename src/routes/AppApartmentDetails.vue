@@ -17,6 +17,10 @@ export default {
       latitude: null,
       longitude: null,
       coordinateMaps: null,
+      rooms: null,
+      beds: null,
+      bathrooms: null,
+      services: null,
     };
   },
 
@@ -55,8 +59,13 @@ export default {
         this.title = this.apartment.title;
         this.latitude = this.apartment.latitude;
         this.longitude = this.apartment.longitude;
+        this.rooms = this.apartment.rooms;
+        this.beds = this.apartment.beds;
+        this.bathrooms = this.apartment.bathrooms;
+        this.services = this.apartment.services;
         this.getImage(this.apartment.image);
         this.updateMapCoordinates();
+        console.log(this.apartment)
       });
   },
 };
@@ -68,21 +77,26 @@ export default {
     <div class="card-body">
       <h5 class="card-title">{{ title }}</h5>
       <p class="card-text">
-        Some quick example text to build on the card title and make up the bulk
-        of the card's content.
+        Stanze:{{ rooms }}
       </p>
+      <p class="card-text">
+        Posti letto:{{ beds }}
+      </p>
+      <p class="card-text">
+        Bagni:{{ bathrooms }}
+      </p>
+      <h5>Servizi:</h5>
+      <ul>
+
+        <li v-for="servizio in services">
+          {{ servizio.name }}
+        </li>
+      </ul>
     </div>
   </div>
 
-  <iframe
-    width="600"
-    height="400"
-    frameborder="0"
-    scrolling="no"
-    marginheight="0"
-    marginwidth="0"
-    :src="coordinateMaps"
-  >
+  <iframe width="600" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
+    :src="coordinateMaps">
   </iframe>
   <!-- <br />
   <small
