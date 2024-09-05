@@ -75,6 +75,9 @@ export default {
             .then((response) => {
               this.store.searchApartment = response.data.results;
               console.log(response);
+            })
+            .catch((error) => {
+              console.log('errore');
             });
         });
     },
