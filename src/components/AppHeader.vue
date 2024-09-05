@@ -15,6 +15,7 @@ export default {
       apiKey: 'RUfkTtEK0CYbHBG3YE2RSEslSRGAWZcu',
       apiSuggestions: [],
       isActive: false,
+      coordinates: [],
     };
   },
 
@@ -52,6 +53,19 @@ export default {
         console.log(response.data.results.data);
         store.searchApartment = response.data.results.data;
       });
+      // axios
+      //   .get(
+      //     `https://api.tomtom.com/search/2/geocode/${this.inputIndirizzo}.json?key=RUfkTtEK0CYbHBG3YE2RSEslSRGAWZcu&countrySet=IT`
+      //   )
+      //   .then((response) => {
+      //     console.log(response.data.results[0].position);
+      //     this.coordinates = response.data.results[0].position;
+      //   });
+      // axios
+      //   .post(urlchecidarannoglialtrigentilmente, this.coordinates)
+      //   .then((response) => {
+      //     store.searchApartment = response.data.results.data;
+      //   });
     },
   },
 
