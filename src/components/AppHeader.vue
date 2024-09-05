@@ -26,7 +26,7 @@ export default {
 
   watch: {
     inputIndirizzo(newInputIndirizzo, oldInputIndirizzo) {
-      if (newInputIndirizzo.length > 5 && this.isActive == true) {
+      if (newInputIndirizzo.length > 3 && this.isActive == true) {
         this.assistenzaIndirizzo(newInputIndirizzo);
       }
     },
@@ -67,16 +67,19 @@ export default {
           this.searchData = {
             longitude: this.coordinates.lon,
             latitude: this.coordinates.lat,
-            rooms: this.inputCamere,
-            beds: this.inputLetti,
-            services: this.inputServices,
-            radius: this.inputRaggio,
+            // rooms: this.inputCamere,
+            // beds: this.inputLetti,
+            // services: this.inputServices,
+            // radius: this.inputRaggio,
           };
           console.log(this.searchData);
         });
-      // axios.post(urlchecidarannoglialtrigentilmente, this.searchData).then((response) => {
-      //   store.searchApartment = response.data.results.data;
-      // });
+      axios
+        .post('http://127.0.0.1:8000/api/search', this.searchData)
+        .then((response) => {
+          this.store.searchApartment = response.data.results;
+          console.log(this.store.searchApartment);
+        });
     },
   },
 
@@ -219,6 +222,7 @@ ul {
   background-color: rgba(217, 217, 217, 0.88);
   padding: 0;
   position: absolute;
+  z-index: 1;
   border-radius: 0 0 10px 10px;
 }
 
