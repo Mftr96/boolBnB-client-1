@@ -11,7 +11,12 @@ export default {
   data() {
     return {
       store,
+      searchData: null,
       inputIndirizzo: '',
+      inputCamere: null,
+      inputLetti: null,
+      inputServizi: [],
+      inputRaggio: null,
       apiKey: 'RUfkTtEK0CYbHBG3YE2RSEslSRGAWZcu',
       apiSuggestions: [],
       isActive: false,
@@ -49,23 +54,29 @@ export default {
       }, 200);
     },
     searchRequest() {
-      axios.get('http://127.0.0.1:8000/api/apartments').then((response) => {
-        console.log(response.data.results.data);
-        store.searchApartment = response.data.results.data;
-      });
-      // axios
-      //   .get(
-      //     `https://api.tomtom.com/search/2/geocode/${this.inputIndirizzo}.json?key=RUfkTtEK0CYbHBG3YE2RSEslSRGAWZcu&countrySet=IT`
-      //   )
-      //   .then((response) => {
-      //     console.log(response.data.results[0].position);
-      //     this.coordinates = response.data.results[0].position;
-      //   });
-      // axios
-      //   .post(urlchecidarannoglialtrigentilmente, this.coordinates)
-      //   .then((response) => {
-      //     store.searchApartment = response.data.results.data;
-      //   });
+      // axios.get('http://127.0.0.1:8000/api/apartments').then((response) => {
+      //   console.log(response.data.results.data);
+      //   store.searchApartment = response.data.results.data;
+      // });
+      axios
+        .get(
+          `https://api.tomtom.com/search/2/geocode/${this.inputIndirizzo}.json?key=RUfkTtEK0CYbHBG3YE2RSEslSRGAWZcu&countrySet=IT`
+        )
+        .then((response) => {
+          this.coordinates = response.data.results[0].position;
+          this.searchData = {
+            longitude: this.coordinates.lon,
+            latitude: this.coordinates.lat,
+            rooms: this.inputCamere,
+            beds: this.inputLetti,
+            services: this.inputServices,
+            radius: this.inputRaggio,
+          };
+          console.log(this.searchData);
+        });
+      // axios.post(urlchecidarannoglialtrigentilmente, this.searchData).then((response) => {
+      //   store.searchApartment = response.data.results.data;
+      // });
     },
   },
 
@@ -86,6 +97,54 @@ export default {
           v-model="inputIndirizzo"
           @focus="isActive = true"
           @blur="timeoutShow"
+        />
+        <input
+          step="1"
+          min="1"
+          class="form-control"
+          type="number"
+          placeholder="Numero di stanze"
+          v-model="inputCamere"
+        />
+        <input
+          step="1"
+          min="1"
+          class="form-control"
+          type="number"
+          placeholder="Numero di posti letto"
+          v-model="inputLetti"
+        />
+        <div class="dropdown">
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            id="triggerId"
+            data-bs-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            Servizi
+          </button>
+          <div class="dropdown-menu row" aria-labelledby="triggerId">
+            <div class="servizi row">
+              <input
+                v-model="inputServizi"
+                class="col-3"
+                value="1"
+                type="checkbox"
+                id="servizio1"
+              />
+              <label class="col-9" for="servizio1">Servizio1</label>
+            </div>
+          </div>
+        </div>
+        <input
+          step="1"
+          min="1"
+          class="form-control"
+          type="number"
+          placeholder="Raggio di ricerca in km"
+          v-model="inputRaggio"
         />
         <router-link
           :to="{ name: 'search' }"
@@ -171,5 +230,8 @@ li {
 li:hover {
   background-color: rgb(176, 220, 233);
   cursor: pointer;
+}
+.servizi {
+  margin-bottom: 0.3rem;
 }
 </style>
