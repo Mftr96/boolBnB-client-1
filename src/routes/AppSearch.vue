@@ -28,7 +28,7 @@ export default {
   },
 
   mounted() {
-    console.log(store.searchApartment);
+    // console.log(store.searchApartment);
   },
 };
 </script>

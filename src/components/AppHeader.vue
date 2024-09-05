@@ -54,10 +54,6 @@ export default {
       }, 200);
     },
     searchRequest() {
-      // axios.get('http://127.0.0.1:8000/api/apartments').then((response) => {
-      //   console.log(response.data.results.data);
-      //   store.searchApartment = response.data.results.data;
-      // });
       axios
         .get(
           `https://api.tomtom.com/search/2/geocode/${this.inputIndirizzo}.json?key=RUfkTtEK0CYbHBG3YE2RSEslSRGAWZcu&countrySet=IT`
@@ -67,10 +63,10 @@ export default {
           this.searchData = {
             longitude: this.coordinates.lon,
             latitude: this.coordinates.lat,
-            // rooms: this.inputCamere,
-            // beds: this.inputLetti,
-            // services: this.inputServices,
-            // radius: this.inputRaggio,
+            rooms: this.inputCamere,
+            beds: this.inputLetti,
+            services: this.inputServices,
+            radius: this.inputRaggio,
           };
           console.log(this.searchData);
 
@@ -84,9 +80,7 @@ export default {
     },
   },
 
-  mounted() {
-      
-  },
+  mounted() {},
 };
 </script>
 
@@ -134,12 +128,15 @@ export default {
           <div class="dropdown-menu row" aria-labelledby="triggerId">
             <div v-for="(servizio, i) in store.servizi_bnb" class="servizi row">
               <input
+                v-model="inputServizi"
                 class="servicescheck"
                 type="checkbox"
-                :id= "i"
+                :id="i"
                 :value="i"
               />
-              <label style="font-size: 12px;" class= "col" :for="i">{{ servizio }}</label>
+              <label style="font-size: 12px" class="col" :for="i">{{
+                servizio
+              }}</label>
             </div>
           </div>
         </div>
@@ -169,29 +166,6 @@ export default {
       </ul>
     </nav>
   </header>
-  <!-- <div>
-  <ul id="opzioni"></ul>
-  <input type="number" placeholder="Stanze">
-    <input type="number" placeholder="Posti letto">
-  <div class="dropdown">
-      <button
-        class="btn btn-secondary dropdown-toggle"
-        type="button"
-        id="triggerId"
-        data-bs-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
-      >
-        Servizi
-      </button>
-      <div class="dropdown-menu" aria-labelledby="triggerId">
-        <input type="checkbox" id="servizio1">Servizio 1</input>
-        <input type="checkbox" id="servizio2">Servizio 2</input>
-        <input type="checkbox" id="servizio3">Servizio 3</input>
-        <input type="checkbox" id="servizio4">Servizio 4</input>
-      </div>
-  </div>
-</div> -->
 </template>
 
 <style scoped>
@@ -206,7 +180,7 @@ header {
   display: flex;
 }
 
-.servicescheck{
+.servicescheck {
   width: 15px;
   margin-left: 1rem;
 }
