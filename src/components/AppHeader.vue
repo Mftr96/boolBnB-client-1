@@ -73,12 +73,13 @@ export default {
             // radius: this.inputRaggio,
           };
           console.log(this.searchData);
-        });
-      axios
-        .post('http://127.0.0.1:8000/api/search', this.searchData)
-        .then((response) => {
-          this.store.searchApartment = response.data.results;
-          console.log(this.store.searchApartment);
+
+          axios
+            .post('http://127.0.0.1:8000/api/search', this.searchData)
+            .then((response) => {
+              this.store.searchApartment = response.data.results;
+              console.log(response);
+            });
         });
     },
   },
