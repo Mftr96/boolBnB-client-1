@@ -1,7 +1,7 @@
-import {reactive} from "vue";
+import { reactive } from 'vue';
 
-const store=reactive({
-
-})
+const store = reactive({
+  searchApartment: [],
+});
 
 export default store;

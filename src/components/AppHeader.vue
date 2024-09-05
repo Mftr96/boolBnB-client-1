@@ -47,6 +47,12 @@ export default {
         this.isActive = false;
       }, 200);
     },
+    searchRequest() {
+      axios.get('http://127.0.0.1:8000/api/apartments').then((response) => {
+        console.log(response.data.results.data);
+        store.searchApartment = response.data.results.data;
+      });
+    },
   },
 
   mounted() {},
@@ -67,19 +73,14 @@ export default {
           @focus="isActive = true"
           @blur="timeoutShow"
         />
-        <span class="buttonSearch">Cerca</span>
-      </div>
-      <!-- <datalist
-        id="suggestion"
-        v-show="apiSuggestions.length > 0 && isActive == true"
-      >
-        <option
-          @click="writeAddress(singleAddress)"
-          v-for="(singleAddress, i) in apiSuggestions"
+        <router-link
+          :to="{ name: 'search' }"
+          @click="searchRequest()"
+          class="buttonSearch"
         >
-          {{ singleAddress }}
-        </option>
-      </datalist> -->
+          Cerca
+        </router-link>
+      </div>
       <ul v-show="apiSuggestions.length > 0 && isActive == true">
         <li
           @click="writeAddress(singleAddress)"

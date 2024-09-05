@@ -3,7 +3,7 @@ import store from '../data/store.js';
 import { RouterLink } from 'vue-router';
 
 export default {
-  name: '',
+  name: 'AppMain',
 
   components: {},
 
