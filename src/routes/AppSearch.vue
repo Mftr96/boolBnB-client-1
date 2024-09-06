@@ -1,11 +1,14 @@
 <script>
 import store from '../data/store.js';
 import { RouterLink } from 'vue-router';
+import AppSearchFilters from '../components/AppSearchFilters.vue';
 
 export default {
   name: 'AppSearch',
 
-  components: {},
+  components: {
+    AppSearchFilters,
+  },
 
   data() {
     return {
@@ -34,22 +37,25 @@ export default {
 </script>
 
 <template>
+  <AppSearchFilters />
   <div class="card-container">
-    <div v-for="(apartment, i) in store.searchApartment" class="card" style="width: 18rem">
+    <div
+      v-for="(apartment, i) in store.searchApartment"
+      class="card"
+      style="width: 18rem"
+    >
       <img :src="getImage(apartment.image)" class="card-img-top" alt="..." />
       <div class="card-body">
         <h5 class="card-title">{{ apartment.title }}</h5>
-        <p class="card-text">
-          Stanze:{{ apartment.rooms }}
-        </p>
-        <p class="card-text">
-          Posti letto:{{ apartment.beds }}
-        </p>
-        <p class="card-text">
-          Bagni:{{ apartment.bathrooms }}
-        </p>
+        <p class="card-text">Stanze:{{ apartment.rooms }}</p>
+        <p class="card-text">Posti letto:{{ apartment.beds }}</p>
+        <p class="card-text">Bagni:{{ apartment.bathrooms }}</p>
 
-        <router-link :to="`/search/${apartment.id}`" @click="apartmentDetail(apartment)" class="btn btn-primary">
+        <router-link
+          :to="`/search/${apartment.id}`"
+          @click="apartmentDetail(apartment)"
+          class="btn btn-primary"
+        >
           Dettagli appartamento
         </router-link>
       </div>

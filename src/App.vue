@@ -2,13 +2,10 @@
 import axios from 'axios';
 import store from './data/store.js';
 import { RouterView } from 'vue-router';
-import AppHeader from './components/AppHeader.vue';
 export default {
   name: 'app',
 
-  components: {
-    AppHeader,
-  },
+  components: {},
 
   data() {
     return {
@@ -23,7 +20,6 @@ export default {
 </script>
 
 <template>
-  <AppHeader></AppHeader>
   <router-view></router-view>
 </template>
 

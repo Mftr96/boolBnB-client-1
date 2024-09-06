@@ -2,7 +2,6 @@
 import AppMain from './routes/AppMain.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import AppSearch from './routes/AppSearch.vue';
-import AppApartment from './routes/AppApartment.vue';
 import AppApartmentDetails from './routes/AppApartmentDetails.vue';
 
 const router = createRouter({
@@ -16,7 +15,6 @@ const router = createRouter({
       name: 'apartmentdetails',
       component: AppApartmentDetails,
     },
-    { path: '/search/apartment', name: 'apartment', component: AppApartment },
   ],
 });
 
