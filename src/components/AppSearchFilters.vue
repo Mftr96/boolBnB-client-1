@@ -100,74 +100,70 @@ export default {
 <template>
   <header>
     <nav class="container">
-      <div class="css-flex">
-        <input
-          class="form-control"
-          id="indirizzo"
-          list="suggestion"
-          type="text"
-          placeholder="Inserisci indirizzo o città"
-          v-model="inputIndirizzo"
-          @focus="isActive = true"
-          @blur="timeoutShow"
-        />
-        <input
-          step="1"
-          min="1"
-          class="form-control"
-          type="number"
-          placeholder="Numero di stanze"
-          v-model="inputCamere"
-        />
-        <input
-          step="1"
-          min="1"
-          class="form-control"
-          type="number"
-          placeholder="Numero di posti letto"
-          v-model="inputLetti"
-        />
-        <div class="dropdown">
-          <button
-            class="btn btn-secondary dropdown-toggle"
-            type="button"
-            id="triggerId"
-            data-bs-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            Servizi
-          </button>
-          <div class="dropdown-menu row" aria-labelledby="triggerId">
-            <div v-for="(servizio, i) in store.servizi_bnb" class="servizi row">
-              <input
-                v-model="inputServizi"
-                class="servicescheck"
-                type="checkbox"
-                :id="i"
-                :value="i + 1"
-              />
-              <label style="font-size: 12px" class="col" :for="i">{{
-                servizio
-              }}</label>
-            </div>
+      <div class="search-container">
+        <div class="search-bar">
+          <input
+            class=""
+            id="indirizzo"
+            list="suggestion"
+            type="text"
+            placeholder="Inserisci indirizzo o città"
+            v-model="inputIndirizzo"
+            @focus="isActive = true"
+            @blur="timeoutShow"
+          />
+          <div class="d-flex flex-column justify-content-center">
+            <label for="numero-stanze">Numero di stanze</label>
+            <input
+              id="numero-stanze"
+              step="1"
+              min="1"
+              class=""
+              type="number"
+              v-model="inputCamere"
+              readonly
+            />
           </div>
+          <input
+            step="1"
+            min="1"
+            class=""
+            type="number"
+            placeholder="Numero di posti letto"
+            v-model="inputLetti"
+          />
+          <input
+            step="1"
+            min="1"
+            class=""
+            type="number"
+            placeholder="Raggio di ricerca in km"
+            v-model="inputRaggio"
+          />
+          <router-link
+            :to="{ name: 'search' }"
+            @click="searchRequest()"
+            class="buttonSearch"
+          >
+            Cerca
+          </router-link>
         </div>
-        <input
-          step="1"
-          min="1"
-          class="form-control"
-          type="number"
-          placeholder="Raggio di ricerca in km"
-          v-model="inputRaggio"
-        />
-        <router-link
-          :to="{ name: 'search' }"
-          @click="searchRequest()"
-          class="buttonSearch"
-        >
-          Cerca
-        </router-link>
+      </div>
+      <div class="d-flex gap-3 justify-content-between">
+        <div v-for="(servizio, i) in store.servizi_bnb" class="servizi">
+          <input
+            v-model="inputServizi"
+            class="servicescheck"
+            type="checkbox"
+            :id="i"
+            :value="i + 1"
+            style="display: none"
+          />
+          <label :for="i">
+            <span v-html="servizio.icon"></span>
+            {{ servizio.title }}
+          </label>
+        </div>
       </div>
       <ul v-show="apiSuggestions.length > 0 && isActive == true">
         <li
@@ -185,15 +181,34 @@ export default {
 </template>
 
 <style scoped>
+input {
+  all: unset;
+}
+
 header {
   width: 100%;
-  height: 5rem;
+  height: 10rem;
   display: flex;
   align-items: center;
 }
 
-.css-flex {
+.container {
+  position: relative;
+}
+
+.search-container {
   display: flex;
+  justify-content: center;
+}
+
+.search-bar {
+  display: inline-flex;
+  background-color: white;
+  border-radius: 30px;
+  padding: 1rem;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 0.5rem;
 }
 
 .servicescheck {
@@ -237,13 +252,9 @@ li:hover {
   margin-bottom: 0.3rem;
 }
 
-.container {
-  position: relative;
-}
-
 .paragrafo {
   position: absolute;
-  top: 2.3rem;
+  top: -1.5rem;
   color: red;
 }
 </style>

@@ -3,16 +3,28 @@ import { reactive } from 'vue';
 const store = reactive({
   searchApartment: [],
   servizi_bnb: [
-    'Wi-Fi',
-    'Colazione inclusa',
-    'Aria condizionata',
-    'Parcheggio gratuito',
-    'Piscina',
-    'Palestra',
-    'Servizio in camera',
-    'Reception 24 ore su 24',
-    'TV satellitare',
-    'Minibar',
+    { title: 'Wi-Fi', icon: '<i class="fa-solid fa-wifi"></i>' },
+    {
+      title: 'Colazione inclusa',
+      icon: '<i class="fa-solid fa-utensils"></i>',
+    },
+    {
+      title: 'Aria condizionata',
+      icon: '<i class="fa-solid fa-snowflake"></i>',
+    },
+    { title: 'Parcheggio', icon: '<i class="fa-solid fa-car"></i>' },
+    { title: 'Piscina', icon: '<i class="fa-solid fa-water-ladder"></i>' },
+    { title: 'Palestra', icon: '<i class="fa-solid fa-dumbbell"></i>' },
+    {
+      title: 'Servizio in camera',
+      icon: '<i class="fa-solid fa-concierge-bell"></i>',
+    },
+    {
+      title: 'Reception 24/24',
+      icon: '<i class="fa-solid fa-clock"></i>',
+    },
+    { title: 'TV sat.', icon: '<i class="fa-solid fa-tv"></i>' },
+    { title: 'Minibar', icon: '<i class="fa-solid fa-glass-martini-alt"></i>' },
   ],
 });
 
