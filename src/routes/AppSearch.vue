@@ -57,60 +57,101 @@ export default {
 
 <template>
   <AppSearchFilters />
-  <div class="container d-flex justify-content-between flex-wrap">
-    <div v-for="(apartment, i) in store.searchApartment" class="col-3 p-2">
-      <div class="card">
-        <img :src="getImage(apartment.image)" class="card-img-top" alt="..." />
-        <div class="card-body">
-          <h5 class="card-title">{{ apartment.title }}</h5>
-          <p class="">
-            <i class="fas fa-door-open"></i> {{ apartment.rooms }}
-            {{ getRightWords(stanze, apartment.rooms) }}
-          </p>
-          <p class="">
-            <i class="fas fa-bed"></i> {{ apartment.beds }}
-            {{ getRightWords(letti, apartment.beds) }}
-          </p>
-          <p class="">
-            <i class="fas fa-bath"></i> {{ apartment.bathrooms }}
-            {{ getRightWords(bagni, apartment.bathrooms) }}
-          </p>
+  <div class="container">
+    <div class="row g-3 flex-wrap">
+      <div v-for="(apartment, i) in store.searchApartment" class="col-4">
+        <router-link :to="`/search/${apartment.id}`" class="card">
+          <img
+            :src="getImage(apartment.image)"
+            class="card-img-top"
+            alt="..."
+          />
+          <div class="card-body">
+            <h5 class="card-title">{{ apartment.title }}</h5>
+            <p class="">
+              <i class="fas fa-door-open"></i> {{ apartment.rooms }}
+              {{ getRightWords(stanze, apartment.rooms) }}
+            </p>
+            <p class="">
+              <i class="fas fa-bed"></i> {{ apartment.beds }}
+              {{ getRightWords(letti, apartment.beds) }}
+            </p>
+            <p class="">
+              <i class="fas fa-bath"></i> {{ apartment.bathrooms }}
+              {{ getRightWords(bagni, apartment.bathrooms) }}
+            </p>
 
-          <hr />
+            <hr />
 
-          <h6>Servizi</h6>
-          <div class="servizi row">
-            <div
-              v-for="(servizio, i) in apartment.services.slice(0, 4)"
-              class="col-6"
-            >
-              <div>
-                <span v-html="getServizio(servizio.id).icon"></span>
-                {{ getServizio(servizio.id).title }}
+            <h6>Servizi</h6>
+            <div class="servizi row">
+              <div
+                v-for="(servizio, i) in apartment.services.slice(0, 4)"
+                class="col-6"
+              >
+                <div class="center">
+                  <span v-html="getServizio(servizio.id).icon"></span>
+                  {{ getServizio(servizio.id).title }}
+                </div>
+              </div>
+              <div
+                v-if="apartment.services.length > 5"
+                class="altri-servizi col"
+              >
+                <div>altri {{ apartment.services.length - 4 }} servizi</div>
+              </div>
+              <div
+                v-if="apartment.services.length == 5"
+                class="altri-servizi col"
+              >
+                <div>un altro servizio</div>
               </div>
             </div>
-            <div v-if="apartment.services.length > 4" class="altri-servizi col">
-              <div>... altri servizi</div>
-            </div>
-          </div>
 
-          <!-- <router-link
-            :to="`/search/${apartment.id}`"
-            @click="apartmentDetail(apartment)"
-            class="btn btn-primary"
-          >
+            <!-- <router-link :to="`/search/${apartment.id}`">
             Dettagli appartamento
           </router-link> -->
-        </div>
+          </div>
+        </router-link>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+.container {
+  margin-bottom: 2rem;
+}
+
 .card {
+  position: relative; /* Per posizionare il layer sotto la card */
   border-radius: 20px;
-  height: 484px;
+  height: 565px;
+  border: none;
+  background-color: white; /* Rendi la card trasparente */
+  transition: 0.5s;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  border-radius: 20px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1; /* Metti il layer dietro la card */
+  background: linear-gradient(130deg, #fff6e7, #c9e8f4); /* Gradiente */
+  filter: opacity(0); /* Layer inizialmente nascosto */
+  transition: filter 0.5s ease; /* Transizione sull'opacità del layer */
+}
+
+.card:hover {
+  background-color: transparent;
+}
+
+.card:hover::before {
+  filter: opacity(1); /* Mostra il layer al passaggio del mouse */
 }
 
 .card-img-top {
@@ -148,9 +189,22 @@ h6 {
 .servizi {
   font-size: 14px;
   color: #6a6569;
+  margin: 0 1rem;
 }
 
 .altri-servizi {
   text-align: center;
+}
+
+.center {
+  background-color: #959086;
+  color: white;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 0.3rem;
+}
+
+a {
+  text-decoration: none;
 }
 </style>
