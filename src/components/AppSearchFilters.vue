@@ -17,6 +17,7 @@ export default {
       inputLetti: 1,
       inputServizi: [],
       inputRaggio: 20,
+      rangeStyle: '',
       apiKey: 'RUfkTtEK0CYbHBG3YE2RSEslSRGAWZcu',
       apiSuggestions: [],
       isActive: false,
@@ -36,6 +37,17 @@ export default {
   },
 
   methods: {
+    updateRangeBackground() {
+      const min = 1;
+      const max = 100;
+      const percentage = ((this.inputRaggio - min) / (max - min)) * 100;
+
+      document.documentElement.style.setProperty(
+        '--range-percentage',
+        `${percentage}%`
+      );
+    },
+
     toggleStanze() {
       this.isActiveStanze = !this.isActiveStanze;
     },
@@ -141,7 +153,9 @@ export default {
       }
     },
   },
-  mounted() {},
+  mounted() {
+    this.updateRangeBackground();
+  },
 };
 </script>
 
@@ -217,9 +231,11 @@ export default {
           </div>
           <!-------------------- raggio ricerca --------------------->
           <div class="d-flex flex-column justify-content-center">
-            <label class="label-number" for="raggio">Raggio di ricerca</label>
+            <label class="label-range label-number" for="raggio"
+              >Raggio di ricerca</label
+            >
             <div id="raggio-ricerca" class="number-logic">
-              <button @click="minusButtonRaggio()" class="button-minus">
+              <!-- <button @click="minusButtonRaggio()" class="button-minus">
                 <i class="fa-solid fa-minus"></i>
               </button>
               <input
@@ -233,8 +249,18 @@ export default {
               <span class="span-km">Km</span>
               <button @click="plusButtonRaggio()" class="button-plus">
                 <i class="fa-solid fa-plus"></i>
-              </button>
+              </button> -->
+              <input
+                type="range"
+                id="raggio"
+                min="1"
+                max="100"
+                v-model="inputRaggio"
+                @input="updateRangeBackground"
+                :style="rangeStyle"
+              />
             </div>
+            <div>{{ inputRaggio }} Km</div>
           </div>
           <!-------------------- Tasto ricerca --------------------->
           <router-link
@@ -369,6 +395,10 @@ li:hover {
   font-weight: 500;
 }
 
+.label-range {
+  margin-bottom: 0.2rem;
+}
+
 .animation .number-logic {
   display: unset;
   opacity: 100;
@@ -376,8 +406,7 @@ li:hover {
 }
 
 #numero-stanze,
-#numero-letti,
-#raggio {
+#numero-letti {
   width: 35px;
   margin-left: 15px;
   padding: 5px;
@@ -474,5 +503,72 @@ a i:hover {
 
 hr {
   border: 1px solid #b3a49a;
+}
+
+/* range input style */
+/* range input style */
+#raggio {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+  background: linear-gradient(
+    to right,
+    #a49587 var(--range-percentage),
+    #e0e0e0 var(--range-percentage)
+  );
+}
+
+#raggio:hover {
+  background: linear-gradient(
+    to right,
+    #a49587 var(--range-percentage),
+    #cfcfcf var(--range-percentage)
+  );
+}
+
+/* Track personalizzato */
+#raggio::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(
+    to right,
+    #a49587 var(--range-percentage),
+    #e0e0e0 var(--range-percentage)
+  );
+  border-radius: 3px;
+}
+
+/* Thumb personalizzato */
+#raggio::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: #6a5b4c; /* Colore tortora */
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -3px;
+  border: none;
+}
+
+#raggio::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: #6a5b4c;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+#raggio::-ms-thumb {
+  width: 12px;
+  height: 12px;
+  background: #6a5b4c;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
 }
 </style>
