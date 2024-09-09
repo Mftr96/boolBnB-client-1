@@ -57,7 +57,7 @@ export default {
     },
 
     minusButtonStanze() {
-      if (this.inputCamere > 0) {
+      if (this.inputCamere > 1) {
         this.inputCamere--;
       }
     },
@@ -67,23 +67,12 @@ export default {
     },
 
     minusButtonLetti() {
-      if (this.inputLetti > 0) {
+      if (this.inputLetti > 1) {
         this.inputLetti--;
       }
     },
 
-    plusButtonRaggio() {
-      this.inputRaggio++;
-    },
-
-    minusButtonRaggio() {
-      if (this.inputRaggio > 0) {
-        this.inputRaggio--;
-      }
-    },
-
     assistenzaIndirizzo(indirizzo) {
-      // this.apiSuggestions = [];
       const url_tomtom = `https://api.tomtom.com/search/2/search/${encodeURIComponent(
         indirizzo
       )}.json?key=${
@@ -235,21 +224,6 @@ export default {
               >Raggio di ricerca</label
             >
             <div id="raggio-ricerca" class="number-logic">
-              <!-- <button @click="minusButtonRaggio()" class="button-minus">
-                <i class="fa-solid fa-minus"></i>
-              </button>
-              <input
-                id="raggio"
-                step="1"
-                min="1"
-                type="number"
-                v-model="inputRaggio"
-                readonly
-              />
-              <span class="span-km">Km</span>
-              <button @click="plusButtonRaggio()" class="button-plus">
-                <i class="fa-solid fa-plus"></i>
-              </button> -->
               <input
                 type="range"
                 id="raggio"
@@ -283,7 +257,7 @@ export default {
             :value="i + 1"
             style="display: none"
           />
-          <label class="servizi" :for="i">
+          <label @click="searchRequest()" class="servizi" :for="i">
             <span v-html="servizio.icon"></span>
             {{ servizio.title }}
           </label>
@@ -451,8 +425,8 @@ li:hover {
   transition: 0.3s;
 }
 
-.button-plus i:hover,
-.button-minus i:hover {
+.button-plus:active i,
+.button-minus:active i {
   color: #8b8589;
 }
 
@@ -503,6 +477,7 @@ a i:hover {
 
 hr {
   border: 1px solid #b3a49a;
+  margin-top: 0;
 }
 
 /* range input style */
@@ -512,11 +487,11 @@ hr {
   appearance: none;
   width: 100%;
   height: 6px;
-  border-radius: 3px;
+  border-radius: 5px;
   outline: none;
   background: linear-gradient(
     to right,
-    #a49587 var(--range-percentage),
+    #91c2c5 var(--range-percentage),
     #e0e0e0 var(--range-percentage)
   );
 }
@@ -524,7 +499,7 @@ hr {
 #raggio:hover {
   background: linear-gradient(
     to right,
-    #a49587 var(--range-percentage),
+    #91c2c5 var(--range-percentage),
     #cfcfcf var(--range-percentage)
   );
 }
@@ -535,10 +510,10 @@ hr {
   height: 6px;
   background: linear-gradient(
     to right,
-    #a49587 var(--range-percentage),
+    #91c2c5 var(--range-percentage),
     #e0e0e0 var(--range-percentage)
   );
-  border-radius: 3px;
+  border-radius: 5px;
 }
 
 /* Thumb personalizzato */
@@ -547,7 +522,7 @@ hr {
   appearance: none;
   width: 12px;
   height: 12px;
-  background: #6a5b4c; /* Colore tortora */
+  background: #9f8d7c; /* Colore tortora */
   border-radius: 50%;
   cursor: pointer;
   margin-top: -3px;
@@ -557,7 +532,7 @@ hr {
 #raggio::-moz-range-thumb {
   width: 12px;
   height: 12px;
-  background: #6a5b4c;
+  background: #9f8d7c;
   border-radius: 50%;
   cursor: pointer;
   border: none;
@@ -566,7 +541,7 @@ hr {
 #raggio::-ms-thumb {
   width: 12px;
   height: 12px;
-  background: #6a5b4c;
+  background: #9f8d7c;
   border-radius: 50%;
   cursor: pointer;
   border: none;

@@ -1,3 +1,4 @@
 body {
-  background-color: #d8cfc465;
+  background: linear-gradient(130deg, #fff6e7, #9fd2e5);
+  min-height: 100vh;
 }

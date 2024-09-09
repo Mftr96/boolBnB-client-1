@@ -16,6 +16,7 @@ export default {
       stanze: 'Camere',
       letti: 'Posti letto',
       bagni: 'Bagni',
+      isLoading: false,
     };
   },
 
@@ -49,15 +50,23 @@ export default {
     },
   },
 
-  mounted() {
-    // console.log(store.searchApartment);
+  watch: {
+    'store.searchApartment'() {
+      if (this.store.searchApartment.length > 0) {
+        this.isLoading = true;
+        setTimeout(() => {
+          this.isLoading = false;
+        }, 2000);
+      }
+    },
   },
+  mounted() {},
 };
 </script>
 
 <template>
   <AppSearchFilters />
-  <div class="container">
+  <div class="container" :class="{ 'opacity-zero': isLoading }">
     <div class="row g-3 flex-wrap">
       <div v-for="(apartment, i) in store.searchApartment" class="col-4">
         <router-link :to="`/search/${apartment.id}`" class="card">
@@ -116,6 +125,19 @@ export default {
       </div>
     </div>
   </div>
+  <div
+    v-show="isLoading"
+    class="loading-screen"
+    :class="{ 'loading-show': isLoading }"
+  >
+    <div class="loading-message">Caricamento appartamenti</div>
+    <div class="loader">
+      <div class="circle"></div>
+      <div class="circle"></div>
+      <div class="circle"></div>
+      <div class="circle"></div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -132,31 +154,15 @@ export default {
   transition: 0.5s;
 }
 
-.card::before {
-  content: '';
-  position: absolute;
-  border-radius: 20px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: -1; /* Metti il layer dietro la card */
-  background: linear-gradient(130deg, #fff6e7, #c9e8f4); /* Gradiente */
-  filter: opacity(0); /* Layer inizialmente nascosto */
-  transition: filter 0.5s ease; /* Transizione sull'opacità del layer */
-}
-
-.card:hover {
-  background-color: transparent;
-}
-
-.card:hover::before {
-  filter: opacity(1); /* Mostra il layer al passaggio del mouse */
+.card:hover .card-img-top {
+  box-shadow: 0px 10px 10px 0px;
+  transform: translateY(-10px);
 }
 
 .card-img-top {
   border-radius: 20px;
-  box-shadow: 0px 10px 10px 0px;
+  /* box-shadow: 0px 10px 10px 0px; */
+  transition: 0.5s;
 }
 
 .card-title {
@@ -206,5 +212,84 @@ h6 {
 
 a {
   text-decoration: none;
+}
+
+.loader {
+  margin-top: 10rem;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.circle {
+  position: absolute;
+  width: 0px;
+  height: 0px;
+  border-radius: 100%;
+  background: rgb(25, 172, 221);
+  animation: radar 3s ease-out infinite;
+  box-shadow: 0px 0px 10px rgb(25, 172, 221);
+}
+
+.circle:nth-of-type(1) {
+  animation-delay: 0.2s;
+}
+
+.circle:nth-of-type(2) {
+  animation-delay: 0.6s;
+}
+
+.circle:nth-of-type(3) {
+  animation-delay: 1s;
+}
+
+.circle:nth-of-type(4) {
+  animation-delay: 1.4s;
+}
+
+.circle:nth-of-type(5) {
+  animation-delay: 1.8s;
+}
+
+@keyframes radar {
+  0% {
+  }
+  30% {
+    width: 100px;
+    height: 100px;
+  }
+  100% {
+    width: 100px;
+    height: 100px;
+    opacity: 0;
+  }
+}
+
+.loading-screen {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+}
+
+.loading-show {
+  opacity: 100;
+}
+
+.loading-message {
+  position: fixed;
+  color: rgb(25, 172, 221);
+  width: 400px;
+  font-size: 2rem;
+  top: 30%;
+  left: -40%;
+}
+
+.opacity-zero {
+  opacity: 0;
 }
 </style>
