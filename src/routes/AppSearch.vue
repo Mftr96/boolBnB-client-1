@@ -2,6 +2,7 @@
 import store from '../data/store.js';
 import { RouterLink } from 'vue-router';
 import AppSearchFilters from '../components/AppSearchFilters.vue';
+import axios from 'axios';
 
 export default {
   name: 'AppSearch',
@@ -58,16 +59,32 @@ export default {
       }, 2000);
     },
   },
-  mounted() {},
+  mounted() {
+    if (this.$route.query.latitude && this.$route.query.longitude) {
+      const url = `http://127.0.0.1:8000/api/search?latitude=${this.$route.query.latitude}&longitude=${this.$route.query.longitude}&radius=${this.$route.query.radius}&beds=${this.$route.query.beds}&rooms=${this.$route.query.rooms}&services=${this.$route.query.services}`;
+
+      axios
+        .get(url)
+        .then((response) => {
+          this.store.searchApartment = response.data.results;
+        })
+        .catch((error) => {
+          console.log('errore');
+        });
+    }
+  },
 };
 </script>
 
 <template>
   <AppSearchFilters />
   <div class="container" :class="{ 'opacity-zero': isLoading }">
-    <div class="row g-3 flex-wrap">
-      <div v-for="(apartment, i) in store.searchApartment" class="col-4">
-        <router-link :to="`/search/${apartment.id}`" class="card">
+    <div class="row g-4 flex-wrap">
+      <div
+        v-for="(apartment, i) in store.searchApartment"
+        class="col-12 col-md-6 col-lg-4 col-xl-3"
+      >
+        <router-link :to="`/search/${apartment.id}`" class="card h-100">
           <img
             :src="getImage(apartment.image)"
             class="card-img-top"
@@ -75,30 +92,39 @@ export default {
           />
           <div class="card-body">
             <h5 class="card-title">{{ apartment.title }}</h5>
-            <p class="">
-              <i class="fas fa-door-open"></i> {{ apartment.rooms }}
-              {{ getRightWords(stanze, apartment.rooms) }}
-            </p>
-            <p class="">
-              <i class="fas fa-bed"></i> {{ apartment.beds }}
-              {{ getRightWords(letti, apartment.beds) }}
-            </p>
-            <p class="">
-              <i class="fas fa-bath"></i> {{ apartment.bathrooms }}
-              {{ getRightWords(bagni, apartment.bathrooms) }}
-            </p>
-
+            <div class="row">
+              <div class="col-6 dettagli">
+                <p class="">
+                  <i class="fas fa-door-open"></i> {{ apartment.rooms }}
+                  {{ getRightWords(stanze, apartment.rooms) }}
+                </p>
+                <p class="">
+                  <i class="fas fa-bed"></i> {{ apartment.beds }}
+                  {{ getRightWords(letti, apartment.beds) }}
+                </p>
+                <p class="">
+                  <i class="fas fa-bath"></i> {{ apartment.bathrooms }}
+                  {{ getRightWords(bagni, apartment.bathrooms) }}
+                </p>
+              </div>
+              <div class="col-6 d-flex flex-column align-items-center">
+                <div><i class="fa-solid fa-location-dot location"></i></div>
+                {{ apartment.distance.toFixed(2) }} Km dal centro
+              </div>
+            </div>
             <hr />
 
             <h6>Servizi</h6>
             <div class="servizi row">
               <div
                 v-for="(servizio, i) in apartment.services.slice(0, 4)"
-                class="col-6"
+                class="col-6 servizio"
               >
                 <div class="center">
                   <span v-html="getServizio(servizio.id).icon"></span>
-                  {{ getServizio(servizio.id).title }}
+                  <span class="nome-servizio">{{
+                    getServizio(servizio.id).title
+                  }}</span>
                 </div>
               </div>
               <div
@@ -114,10 +140,6 @@ export default {
                 <div>un altro servizio</div>
               </div>
             </div>
-
-            <!-- <router-link :to="`/search/${apartment.id}`">
-            Dettagli appartamento
-          </router-link> -->
           </div>
         </router-link>
       </div>
@@ -141,30 +163,47 @@ export default {
 <style scoped>
 .container {
   margin-bottom: 2rem;
+  max-width: 1600px;
 }
 
 .card {
-  position: relative; /* Per posizionare il layer sotto la card */
-  border-radius: 20px;
-  height: 565px;
+  position: relative;
+  border-radius: 10px;
   border: none;
-  background-color: white; /* Rendi la card trasparente */
+  background-color: white;
   transition: 0.5s;
+  /* box-shadow: 5px 5px 10px 0px; */
 }
 
-.card:hover .card-img-top {
-  box-shadow: 0px 10px 10px 0px;
-  transform: translateY(-10px);
+.card:hover {
+  /* box-shadow: rgba(255, 172, 28, 0.199) 10px 10px,
+    rgba(255, 172, 28, 0.19) 20px 20px; */
+  box-shadow: rgba(88, 162, 205, 0.199) 10px 10px,
+    rgba(88, 162, 205, 0.19) 20px 20px;
+  transform: translate3d(-10px, -10px, 0);
 }
 
 .card-img-top {
-  border-radius: 20px;
-  /* box-shadow: 0px 10px 10px 0px; */
+  border-radius: 10px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
   transition: 0.5s;
+  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 90%);
+  mask-image: linear-gradient(to bottom, black 70%, transparent 90%);
+}
+
+.card-body {
+  padding-top: 0;
+  margin-top: -1rem;
 }
 
 .card-title {
   text-align: center;
+}
+
+.dettagli {
+  border-right: 1px solid rgb(194, 194, 194);
 }
 
 p {
@@ -178,12 +217,20 @@ p i {
   margin-left: 1rem;
 }
 
-p:nth-child(4) i {
+.fa-bath {
   font-size: 25px;
 }
 
+.location {
+  margin-top: 1rem;
+  font-size: 30px;
+  color: #656164;
+  text-align: center;
+}
+
 hr {
-  margin: 0.5rem 0;
+  margin-bottom: 0.5rem;
+  margin-top: 0;
 }
 
 h6 {
@@ -201,11 +248,31 @@ h6 {
 }
 
 .center {
-  background-color: #959086;
-  color: white;
+  border: 1px solid #6a6569;
+  background-color: #ffffff;
+  color: #959086;
   border-radius: 10px;
-  text-align: center;
   margin-bottom: 0.3rem;
+  display: flex;
+  justify-content: space-around;
+}
+
+@media (max-width: 1620px) {
+  .center .nome-servizio {
+    display: none;
+  }
+  .center {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 767px) {
+  .center .nome-servizio {
+    display: unset;
+  }
+  .center {
+    justify-content: space-around;
+  }
 }
 
 a {

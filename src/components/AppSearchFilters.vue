@@ -73,11 +73,15 @@ export default {
     },
 
     assistenzaIndirizzo(indirizzo) {
-      const url_tomtom = `https://api.tomtom.com/search/2/search/${encodeURIComponent(
+      // const url_tomtom = `https://api.tomtom.com/search/2/search/${encodeURIComponent(
+      //   indirizzo
+      // )}.json?key=${
+      //   this.apiKey
+      // }&typeahead=true&limit=5&countrySet=IT&idxSet=Geo`;
+
+      const url_tomtom = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(
         indirizzo
-      )}.json?key=${
-        this.apiKey
-      }&typeahead=true&limit=5&countrySet=IT&idxSet=Geo`;
+      )}.json?key=${this.apiKey}&typeahead=true&limit=5&countrySet=IT`;
 
       // ricerca axios
 
@@ -109,7 +113,7 @@ export default {
       this.errors = [];
       if (!this.inputIndirizzo) {
         this.visible = true;
-        this.store.searchApartment = [];
+        // this.store.searchApartment = [];
       } else {
         this.visible = false;
         axios
@@ -118,15 +122,20 @@ export default {
           )
           .then((response) => {
             this.coordinates = response.data.results[0].position;
-            // this.searchData = {
-            //   longitude: this.coordinates.lon,
-            //   latitude: this.coordinates.lat,
-            //   rooms: this.inputCamere,
-            //   beds: this.inputLetti,
-            //   services: this.inputServizi,
-            //   radius: this.inputRaggio,
-            // };
             console.log(this.searchData);
+
+            this.$router.push({
+              name: 'search',
+              query: {
+                indirizzo: this.inputIndirizzo,
+                latitude: this.coordinates.lat,
+                longitude: this.coordinates.lon,
+                radius: this.inputRaggio,
+                beds: this.inputLetti,
+                rooms: this.inputCamere,
+                services: this.inputServizi.join(','),
+              },
+            });
 
             const url = `http://127.0.0.1:8000/api/search?latitude=${
               this.coordinates.lat
@@ -148,23 +157,24 @@ export default {
               .catch((error) => {
                 console.log('errore');
               });
-
-            // axios
-            //   .post('http://127.0.0.1:8000/api/search', this.searchData)
-            //   .then((response) => {
-            //     this.store.searchApartment = response.data.results;
-            //     console.log(response);
-            //     this.errors = response.data.errors.rooms;
-            //   })
-            //   .catch((error) => {
-            //     console.log('errore');
-            //   });
           });
+      }
+    },
+    loadData() {
+      this.inputIndirizzo = this.$route.query.indirizzo;
+      this.inputCamere = this.$route.query.rooms ? this.$route.query.rooms : 1;
+      this.inputLetti = this.$route.query.beds ? this.$route.query.beds : 1;
+      this.inputRaggio = this.$route.query.radius
+        ? this.$route.query.radius
+        : 20;
+      if (this.$route.query.services) {
+        this.inputServizi = this.$route.query.services.split(',').map(Number);
       }
     },
   },
   mounted() {
     this.updateRangeBackground();
+    this.loadData();
   },
 };
 </script>
