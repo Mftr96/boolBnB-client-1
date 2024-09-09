@@ -118,18 +118,28 @@ export default {
           )
           .then((response) => {
             this.coordinates = response.data.results[0].position;
-            this.searchData = {
-              longitude: this.coordinates.lon,
-              latitude: this.coordinates.lat,
-              rooms: this.inputCamere,
-              beds: this.inputLetti,
-              services: this.inputServizi,
-              radius: this.inputRaggio,
-            };
+            // this.searchData = {
+            //   longitude: this.coordinates.lon,
+            //   latitude: this.coordinates.lat,
+            //   rooms: this.inputCamere,
+            //   beds: this.inputLetti,
+            //   services: this.inputServizi,
+            //   radius: this.inputRaggio,
+            // };
             console.log(this.searchData);
 
+            const url = `http://127.0.0.1:8000/api/search?latitude=${
+              this.coordinates.lat
+            }&longitude=${this.coordinates.lon}&radius=${
+              this.inputRaggio
+            }&beds=${this.inputLetti}&rooms=${
+              this.inputCamere
+            }&services=${this.inputServizi.join(',')}`;
+
+            console.log(url);
+
             axios
-              .post('http://127.0.0.1:8000/api/search', this.searchData)
+              .get(url)
               .then((response) => {
                 this.store.searchApartment = response.data.results;
                 console.log(response);
@@ -138,6 +148,17 @@ export default {
               .catch((error) => {
                 console.log('errore');
               });
+
+            // axios
+            //   .post('http://127.0.0.1:8000/api/search', this.searchData)
+            //   .then((response) => {
+            //     this.store.searchApartment = response.data.results;
+            //     console.log(response);
+            //     this.errors = response.data.errors.rooms;
+            //   })
+            //   .catch((error) => {
+            //     console.log('errore');
+            //   });
           });
       }
     },

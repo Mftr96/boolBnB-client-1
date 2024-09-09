@@ -52,12 +52,10 @@ export default {
 
   watch: {
     'store.searchApartment'() {
-      if (this.store.searchApartment.length > 0) {
-        this.isLoading = true;
-        setTimeout(() => {
-          this.isLoading = false;
-        }, 2000);
-      }
+      this.isLoading = true;
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 2000);
     },
   },
   mounted() {},
