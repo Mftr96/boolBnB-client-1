@@ -180,7 +180,7 @@ export default {
 </script>
 
 <template>
-  <header>
+  <div class="app-search-filters">
     <nav class="container">
       <div class="search-container">
         <div class="search-bar">
@@ -296,7 +296,7 @@ export default {
       </div>
       <!-- <p v-for="error in errors" class="paragrafo">{{ error }}</p> -->
     </nav>
-  </header>
+  </div>
   <hr />
 </template>
 
@@ -305,7 +305,7 @@ input {
   all: unset;
 }
 
-header {
+.app-search-filters {
   width: 100%;
   min-height: 10rem;
   display: flex;
@@ -448,8 +448,8 @@ li:hover {
 .button-minus:hover,
 .button-plus:hover {
   border-color: #8b8589;
-  transform: translateY(-3px);
-  box-shadow: 0px 2px 3px 0px #464646;
+  /* transform: translateY(-2px);
+  box-shadow: 0px 1px 3px 0px #464646; */
 }
 
 .button-plus i,
@@ -465,7 +465,7 @@ li:hover {
 
 .servizi {
   margin-bottom: 0.3rem;
-  border: 3px solid rgb(255, 255, 255);
+  border: 2px solid rgb(255, 255, 255);
   padding: 0.5rem 0.3rem;
   border-radius: 20px;
   cursor: pointer;
