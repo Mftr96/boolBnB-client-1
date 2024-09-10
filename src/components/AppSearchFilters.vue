@@ -161,15 +161,19 @@ export default {
       }
     },
     loadData() {
-      this.inputIndirizzo = this.$route.query.indirizzo;
-      this.inputCamere = this.$route.query.rooms ? this.$route.query.rooms : 1;
-      this.inputLetti = this.$route.query.beds ? this.$route.query.beds : 1;
-      this.inputRaggio = this.$route.query.radius
-        ? this.$route.query.radius
-        : 20;
-      if (this.$route.query.services) {
-        this.inputServizi = this.$route.query.services.split(',').map(Number);
-      }
+      setTimeout(() => {
+        this.inputIndirizzo = this.$route.query.indirizzo;
+        this.inputCamere = this.$route.query.rooms
+          ? this.$route.query.rooms
+          : 1;
+        this.inputLetti = this.$route.query.beds ? this.$route.query.beds : 1;
+        this.inputRaggio = this.$route.query.radius
+          ? this.$route.query.radius
+          : 20;
+        if (this.$route.query.services) {
+          this.inputServizi = this.$route.query.services.split(',').map(Number);
+        }
+      }, 100);
     },
   },
   mounted() {
