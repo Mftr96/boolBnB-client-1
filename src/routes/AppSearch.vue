@@ -3,12 +3,14 @@ import store from '../data/store.js';
 import { RouterLink } from 'vue-router';
 import AppSearchFilters from '../components/AppSearchFilters.vue';
 import axios from 'axios';
+import AppHeader from '../components/AppHeader.vue';
 
 export default {
   name: 'AppSearch',
 
   components: {
     AppSearchFilters,
+    AppHeader,
   },
 
   data() {
@@ -77,6 +79,7 @@ export default {
 </script>
 
 <template>
+  <AppHeader />
   <AppSearchFilters />
   <div class="container" :class="{ 'opacity-zero': isLoading }">
     <div class="row g-4 flex-wrap">

@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: 'AppSearchFilters',
+  name: 'AppHeader',
 
   data() {
     return {};
