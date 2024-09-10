@@ -56,10 +56,10 @@ export default {
         email: this.emailUtente,
         text: this.messaggioUtente,
         name: this.nomeUtente,
-        apartment_id: this.apartmentId
+        apartment_id: this.$route.params.id
       }
 
-      console.log(data.email + '' + data.text + '' + data.name)
+      console.log(data)
 
       axios.post('http://127.0.0.1:8000/api/messages', data).then((response)=> {
         console.log('tutto riuscito')
