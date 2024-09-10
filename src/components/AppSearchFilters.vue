@@ -448,6 +448,8 @@ li:hover {
 .button-minus:hover,
 .button-plus:hover {
   border-color: #8b8589;
+  transform: translateY(-3px);
+  box-shadow: 0px 2px 3px 0px #464646;
 }
 
 .button-plus i,
@@ -472,11 +474,15 @@ li:hover {
 }
 
 .servizi:hover {
-  border-color: #b3a49a;
+  /* border-color: #b3a49a; */
+  transform: translateY(-3px);
+  box-shadow: 0px 2px 3px 0px #464646;
 }
 
 input[type='checkbox']:checked + .servizi {
   border-color: #8b8589;
+  transform: translateY(-3px);
+  box-shadow: 0px 3px 4px 0px #464646;
 }
 
 .paragrafo {
