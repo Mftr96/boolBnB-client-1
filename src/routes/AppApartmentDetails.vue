@@ -55,7 +55,8 @@ export default {
       const data = {
         email: this.emailUtente,
         text: this.messaggioUtente,
-        name: this.nomeUtente
+        name: this.nomeUtente,
+        apartment_id: this.apartmentId
       }
 
       console.log(data.email + '' + data.text + '' + data.name)
