@@ -72,32 +72,71 @@ export default {
 </script>
 
 <template>
-  <div class="card" style="width: 18rem">
-    <img :src="image" class="card-img-top" alt="..." />
-    <div class="card-body">
-      <h5 class="card-title">{{ title }}</h5>
-      <p class="card-text">
-        Stanze:{{ rooms }}
-      </p>
-      <p class="card-text">
-        Posti letto:{{ beds }}
-      </p>
-      <p class="card-text">
-        Bagni:{{ bathrooms }}
-      </p>
-      <h5>Servizi:</h5>
-      <ul>
-
-        <li v-for="servizio in services">
-          {{ servizio.name }}
-        </li>
-      </ul>
+  <div class="container">
+    <div class="page">
+      <div class="title">
+        <h5> {{ title }} </h5>
+      </div>
+      <div class="share">
+        <a style="margin-left: 0.5rem; margin-right: 0.5rem;" href class="link"> <i
+            class="fa-solid fa-arrow-up-from-bracket"> </i> Condividi</a href="">
+        <a style="margin-left: 0.5rem; margin-right: 0.5rem;" href class="link"> <i class="fa-solid fa-heart"> </i>
+          Aggiungi ai preferiti</a href="">
+      </div>
     </div>
-  </div>
 
-  <iframe width="600" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
-    :src="coordinateMaps">
-  </iframe>
+    <div class="card">
+      <img :src="image" class="card-img-top" alt="..." />
+      <div class="card-body">
+        <p class="card-text">
+          <i class="fa-solid fa-person-shelter"></i> Stanze: {{ rooms }}
+        </p>
+        <p class="card-text">
+          <i class="fa-solid fa-bed"></i> Posti letto: {{ beds }}
+        </p>
+        <p class="card-text">
+          <i class="fa-solid fa-bath"></i> Bagni: {{ bathrooms }}
+        </p>
+      </div>
+    </div>
+    <hr>
+    <h5 style="text-align: center; margin-bottom: 1rem; margin-top: 1rem;"> Servizi presenti</h5>
+    <div class="servizi">
+      <li style="list-style: none; margin-left: 0.5rem; margin-right: 0.5rem;" v-for="servizio in store.servizi_bnb">
+        <span v-html="servizio.icon"></span> {{ servizio.title }}
+      </li>
+    </div>
+    <hr>
+    <div class="map">
+      <h5>Dove troverai la struttura</h5>
+      <iframe style="border-radius: 20px;" width="935" height="624" frameborder="0" scrolling="no" marginheight="0"
+        marginwidth="0" :src="coordinateMaps">
+      </iframe>
+    </div>
+    <hr>
+    <form method="post" action="http://127.0.0.1:8000/api/messages">
+      <div class="contact">
+        <h5 style="text-align: center;">Contatta l'host della camera</h5>
+        <div class="mb-3">
+          <label for="" class="form-label">Email*</label>
+          <input type="email" class="form-control" name="" id="" aria-describedby="emailHelpId"
+            placeholder="inserire mail valida" />
+          <small id="emailHelpId" class="form-text text-muted"></small>
+        </div>
+        <div class="mb-3">
+          <label for="" class="form-label">Nome</label>
+          <input type="text" class="form-control" name="" id="" aria-describedby="helpId" placeholder="inserire nome" />
+        </div>
+        <div class="mb-3">
+          <label for="" class="form-label"></label>
+          <p>Invia un messaggio</p>
+          <textarea class="form-control" name="" id="" rows="3"></textarea>
+        </div>
+        <p>I campi contrassegnati con * sono obbligatori</p>
+        <button type="submit">Invia</button>
+      </div>
+    </form>
+  </div>
   <!-- <br />
   <small
     ><a
@@ -108,4 +147,47 @@ export default {
   > -->
 </template>
 
-<style scoped></style>
+<style scoped>
+* {
+  font-size: 25px;
+}
+
+h5 {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.link {
+  color: black;
+  text-decoration: none;
+}
+
+.link:hover {
+  color: red;
+}
+
+.card {
+  width: 100%;
+}
+
+.card-body {
+  display: flex;
+  justify-content: space-around;
+}
+
+.page,
+.share {
+  display: flex;
+  justify-content: space-between;
+}
+
+.servizi {
+  margin-left: 1rem;
+  display: flex;
+  justify-content: start;
+  flex-wrap: wrap;
+}
+
+.map {
+  text-align: center;
+}
+</style>
