@@ -21,6 +21,10 @@ export default {
       beds: null,
       bathrooms: null,
       services: null,
+
+      emailUtente: null,
+      nomeUtente: null,
+      messaggioUtente: null,
     };
   },
 
@@ -47,6 +51,21 @@ export default {
         console.error('Latitudine o Longitudine non valide');
       }
     },
+    sendMessage() {
+      const data = {
+        email: this.emailUtente,
+        text: this.messaggioUtente,
+        name: this.nomeUtente
+      }
+
+      console.log(data.email + '' + data.text + '' + data.name)
+
+      axios.post('http://127.0.0.1:8000/api/messages', data).then((response)=> {
+        console.log('tutto riuscito')
+      }).catch((error) => {
+      console.log('Errore durante l\'invio del messaggio:', error.response);
+      })
+    }
   },
 
   created() {
@@ -86,7 +105,7 @@ export default {
     </div>
 
     <div class="card">
-      <img :src="image" class="card-img-top" alt="..." />
+      <img :src="image" class="c" alt="..." />
       <div class="card-body">
         <p class="card-text">
           <i class="fa-solid fa-person-shelter"></i> Stanze: {{ rooms }}
@@ -114,37 +133,25 @@ export default {
       </iframe>
     </div>
     <hr>
-    <form method="post" action="http://127.0.0.1:8000/api/messages">
+ 
       <div class="contact">
         <h5 style="text-align: center;">Contatta l'host della camera</h5>
         <div class="mb-3">
           <label for="" class="form-label">Email*</label>
-          <input type="email" class="form-control" name="" id="" aria-describedby="emailHelpId"
+          <input v-model="emailUtente" type="email" class="form-control" name="" id="" aria-describedby="emailHelpId"
             placeholder="inserire mail valida" />
-          <small id="emailHelpId" class="form-text text-muted"></small>
         </div>
         <div class="mb-3">
-          <label for="" class="form-label">Nome</label>
-          <input type="text" class="form-control" name="" id="" aria-describedby="helpId" placeholder="inserire nome" />
+          <input v-model="nomeUtente" type="text" class="form-control" name="" id="" aria-describedby="helpId" placeholder="inserire nome" />
         </div>
         <div class="mb-3">
-          <label for="" class="form-label"></label>
           <p>Invia un messaggio</p>
-          <textarea class="form-control" name="" id="" rows="3"></textarea>
+          <textarea v-model="messaggioUtente" class="form-control" name="" id="" rows="3"></textarea>
         </div>
         <p>I campi contrassegnati con * sono obbligatori</p>
-        <button type="submit">Invia</button>
+        <button @click="sendMessage()">Invia</button>
       </div>
-    </form>
   </div>
-  <!-- <br />
-  <small
-    ><a
-      href="https://www.openstreetmap.org/?mlat=44.495&mlon=11.325#map=14/44.495/11.325"
-      target="_blank"
-      >Vedi mappa più grande</a
-    ></small
-  > -->
 </template>
 
 <style scoped>
