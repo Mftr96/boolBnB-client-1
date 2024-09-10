@@ -66,9 +66,9 @@ export default {
     //Funzioni per il funzionamento interno
     getImage(immagine) {
       if (immagine.startsWith('http')) {
-        this.image = immagine;
+        return immagine;
       } else {
-        this.image = `http://127.0.0.1:8000/storage/${immagine}`;
+        return `http://127.0.0.1:8000/storage/${immagine}`;
       }
     },
     apartmentDetail(appartamento) {
@@ -212,48 +212,30 @@ export default {
     </div>
   </div>
 
-  <div class="card-container" :class="{ 'opacity-zero': isLoading }">
+  <div class="cards-container" :class="{ 'opacity-zero': isLoading }">
     <div class="row g-4 flex-wrap">
-      <div v-for="(apartment, i) in store.homepageContent" class="col-12 col-md-6 col-lg-4 col-xl-3">
+      <div v-for="(apartment, i) in store.homepageContent" class="col-6 col-md-6 col-lg-4 col-xl-3">
         <router-link :to="`/search/${apartment.id}`" class="card h-100">
           <img :src="getImage(apartment.image)" class="card-img-top" alt="..." />
           <div class="card-body">
-            <h5 class="card-title">{{ apartment.title }}</h5>
+            <h5 class="card-title apartmentName">{{ apartment.title }}</h5>
             <div class="row">
               <div class="col-6 dettagli">
-                <p class="">
+                <p class="apartmentDetail">
                   <i class="fas fa-door-open"></i> {{ apartment.rooms }}
                   {{ getRightWords("Camere", apartment.rooms) }}
                 </p>
-                <p class="">
+                <p class="apartmentDetail">
                   <i class="fas fa-bed"></i> {{ apartment.beds }}
                   {{ getRightWords("Posti letto", apartment.beds) }}
                 </p>
-                <p class="">
+                <p class="apartmentDetail">
                   <i class="fas fa-bath"></i> {{ apartment.bathrooms }}
                   {{ getRightWords("bagni", apartment.bathrooms) }}
                 </p>
               </div>
             </div>
-            <hr />
 
-            <h6>Servizi</h6>
-            <div class="servizi row">
-              <div v-for="(servizio, i) in apartment.services.slice(0, 4)" class="col-6 servizio">
-                <div class="center">
-                  <span v-html="getServizio(servizio.id).icon"></span>
-                  <span class="nome-servizio">{{
-                    getServizio(servizio.id).title
-                  }}</span>
-                </div>
-              </div>
-              <div v-if="apartment.services.length > 5" class="altri-servizi col">
-                <div>altri {{ apartment.services.length - 4 }} servizi</div>
-              </div>
-              <div v-if="apartment.services.length == 5" class="altri-servizi col">
-                <div>un altro servizio</div>
-              </div>
-            </div>
           </div>
         </router-link>
       </div>
@@ -310,7 +292,7 @@ HTML {
   height: 5rem;
   background-color: white;
   border-radius: 2.5rem;
-  padding: 0.2rem 1rem;
+  padding: 0.2rem 1rem 0.2rem 2rem;
   justify-content: center;
   text-align: center;
   margin: 1rem auto;
@@ -333,6 +315,10 @@ HTML {
   font-size: 2rem;
   border-radius: 2rem;
   border: 0 white;
+  outline: none;
+}
+#città:focus {
+  border: 1px rgb(175, 175, 175);
 }
 
 a {
@@ -392,6 +378,9 @@ li {
 li:hover {
   background-color: #b3a49a;
   cursor: pointer;
+}
+.apartmentDetail, .apartmentName {
+  color: black;
 }
 
 /* Animazione di caricamento */
