@@ -221,7 +221,7 @@ export default {
     <div class="wrapper">
 
       <div class="apartmentCard" v-for="apartment in store.homepageContent" :key="apartment.id">
-        <router-link :to="`/search/${apartment.id}`" class="text-dark">
+        <router-link :to="`/search/${apartment.title}`" class="text-dark">
           <img :src="apartment.image" width="100" class="cardImg" :alt="apartment.image" />
           <div class="cardText">
             <span class="apartmentTitle apartmentDetail">{{ apartment.title }}</span>
