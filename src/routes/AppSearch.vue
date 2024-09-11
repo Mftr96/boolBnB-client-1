@@ -87,7 +87,7 @@ export default {
         v-for="(apartment, i) in store.searchApartment"
         class="col-12 col-md-6 col-lg-4 col-xl-3"
       >
-        <router-link :to="`/search/${apartment.id}`" class="card h-100">
+        <router-link :to="`/search/${apartment.title}`" class="card h-100">
           <img
             :src="getImage(apartment.image)"
             class="card-img-top"
