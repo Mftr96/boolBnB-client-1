@@ -194,7 +194,7 @@ export default {
         <div class="search-bar">
           <!-------------------- indirizzo --------------------->
           <div class="suggerimenti-indirizzo">
-            <input class="" id="indirizzo" list="suggestion" type="text" placeholder="Inserisci città"
+            <input class="" id="indirizzo" list="suggestion" type="text" placeholder="Inserisci una città"
               v-model="inputIndirizzo" @focus="isActive = true" @blur="timeoutShow" autocomplete="off" />
             <ul v-show="apiSuggestions.length > 0 && isActive == true">
               <li @click="writeAddress(singleAddress, $event)" v-for="(singleAddress, i) in apiSuggestions">
@@ -259,7 +259,9 @@ header {
 
 .search-bar {
   display: inline-flex;
-  height: 64.38px;
+  height: 5rem;
+  width: 25vw;
+  min-width: 16rem;
   background-color: white;
   border-radius: 30px;
   padding: 0.2rem 0rem 0.2rem 1rem;
@@ -283,6 +285,7 @@ header {
   text-overflow: ellipsis;
   font-weight: 500;
   width: 150px;
+  font-size: 1.5rem;
 }
 
 .suggerimenti-indirizzo {
