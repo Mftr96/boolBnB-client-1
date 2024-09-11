@@ -260,8 +260,8 @@ header {
 .search-bar {
   display: inline-flex;
   height: 5rem;
-  width: 25vw;
-  min-width: 16rem;
+  width: 28vw;
+  min-width: 18rem;
   background-color: white;
   border-radius: 30px;
   padding: 0.2rem 0rem 0.2rem 1rem;
@@ -285,7 +285,7 @@ header {
   text-overflow: ellipsis;
   font-weight: 500;
   width: 150px;
-  font-size: 1.5rem;
+  font-size: 1rem;
 }
 
 .suggerimenti-indirizzo {
