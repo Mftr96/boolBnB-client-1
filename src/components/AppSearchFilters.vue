@@ -173,7 +173,7 @@ export default {
         if (this.$route.query.services) {
           this.inputServizi = this.$route.query.services.split(',').map(Number);
         }
-      }, 100);
+      }, 200);
     },
   },
   mounted() {
