@@ -2,11 +2,14 @@
 import axios from 'axios';
 import store from '../data/store.js';
 import { RouterLink } from 'vue-router';
+import AppHeader from '../components/AppHeader.vue';
 
 export default {
   name: 'AppSearchFilters',
 
-  components: {},
+  components: {
+    AppHeader,
+  },
 
   data() {
     return {
@@ -25,6 +28,8 @@ export default {
       visible: false,
       errors: null,
       isActiveStanze: false,
+      showFilter: false,
+      showFilterTablet: false,
     };
   },
 
@@ -37,6 +42,24 @@ export default {
   },
 
   methods: {
+    searchRequestMobile() {
+      this.searchRequest();
+      this.showFilter = !this.showFilter;
+    },
+
+    searchRequestTablet() {
+      this.searchRequest();
+      this.showFilterTablet = !this.showFilterTablet;
+    },
+
+    filterToggle() {
+      this.showFilter = !this.showFilter;
+    },
+
+    filterToggleTablet() {
+      this.showFilterTablet = !this.showFilterTablet;
+    },
+
     updateRangeBackground() {
       const min = 1;
       const max = 100;
@@ -173,7 +196,7 @@ export default {
         if (this.$route.query.services) {
           this.inputServizi = this.$route.query.services.split(',').map(Number);
         }
-      }, 100);
+      }, 200);
     },
   },
   mounted() {
@@ -184,137 +207,352 @@ export default {
 </script>
 
 <template>
-  <div class="app-search-filters">
-    <nav class="container">
-      <div class="search-container">
-        <div class="search-bar">
-          <!-------------------- indirizzo --------------------->
-          <div class="suggerimenti-indirizzo">
-            <input
-              class=""
-              id="indirizzo"
-              list="suggestion"
-              type="text"
-              placeholder="Inserisci città"
-              v-model="inputIndirizzo"
-              @focus="isActive = true"
-              @blur="timeoutShow"
-              autocomplete="off"
-            />
-            <ul v-show="apiSuggestions.length > 0 && isActive == true">
-              <li
-                @click="writeAddress(singleAddress, $event)"
-                v-for="(singleAddress, i) in apiSuggestions"
-              >
-                <i class="fa-solid fa-location-dot"></i>
-                <span>{{ singleAddress }}</span>
-              </li>
-            </ul>
-            <p v-show="visible" class="paragrafo">L'indirizzo è obbligatorio</p>
-          </div>
-          <!-------------------- stanze --------------------->
-          <div class="d-flex flex-column justify-content-center">
-            <label class="label-number" for="numero-stanze">Stanze</label>
-            <div class="number-logic">
-              <button @click="minusButtonStanze()" class="button-minus">
-                <i class="fa-solid fa-minus"></i>
-              </button>
-              <input
-                id="numero-stanze"
-                step="1"
-                min="1"
-                type="number"
-                v-model="inputCamere"
-                readonly
-              />
-              <button @click="plusButtonStanze()" class="button-plus">
-                <i class="fa-solid fa-plus"></i>
-              </button>
-            </div>
-          </div>
+  <div class="filter-side" :class="{ 'filter-show': showFilterTablet }">
+    <div class="text-center mb-2">Servizi:</div>
 
-          <!-------------------- posti letto --------------------->
-          <div class="d-flex flex-column justify-content-center">
-            <label class="label-number" for="numero-letti">Posti letto</label>
-            <div class="number-logic">
-              <button @click="minusButtonLetti()" class="button-minus">
-                <i class="fa-solid fa-minus"></i>
-              </button>
-              <input
-                id="numero-letti"
-                step="1"
-                min="1"
-                type="number"
-                v-model="inputLetti"
-                readonly
-              />
-              <button @click="plusButtonLetti()" class="button-plus">
-                <i class="fa-solid fa-plus"></i>
-              </button>
-            </div>
-          </div>
-          <!-------------------- raggio ricerca --------------------->
-          <div class="d-flex flex-column justify-content-center">
-            <label class="label-range label-number" for="raggio"
-              >Raggio di ricerca</label
-            >
-            <div id="raggio-ricerca" class="number-logic">
-              <input
-                type="range"
-                id="raggio"
-                min="1"
-                max="100"
-                v-model="inputRaggio"
-                @input="updateRangeBackground"
-                :style="rangeStyle"
-              />
-            </div>
-            <div>{{ inputRaggio }} Km</div>
-          </div>
-          <!-------------------- Tasto ricerca --------------------->
-          <router-link
-            :to="{ name: 'search' }"
-            @click="searchRequest()"
-            class="buttonSearch"
-          >
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </router-link>
-        </div>
+    <!-------------------- Elenco servizi --------------------->
+    <div class="d-flex flex-wrap gap-2 justify-content-start pb-2">
+      <div v-for="(servizio, i) in store.servizi_bnb" class="servizi-mobile">
+        <input
+          v-model="inputServizi"
+          class=""
+          type="checkbox"
+          :id="i"
+          :value="i + 1"
+          style="display: none"
+        />
+        <label class="servizi" :for="i">
+          <span v-html="servizio.icon"></span>
+          {{ servizio.title }}
+        </label>
       </div>
-      <!-------------------- Elenco servizi --------------------->
-      <div class="d-flex gap-2 justify-content-between">
-        <div v-for="(servizio, i) in store.servizi_bnb">
-          <input
-            v-model="inputServizi"
-            class=""
-            type="checkbox"
-            :id="i"
-            :value="i + 1"
-            style="display: none"
-          />
-          <label @click="searchRequest()" class="servizi" :for="i">
-            <span v-html="servizio.icon"></span>
-            {{ servizio.title }}
-          </label>
-        </div>
-      </div>
-      <!-- <p v-for="error in errors" class="paragrafo">{{ error }}</p> -->
-    </nav>
+    </div>
+
+    <hr />
+    <!-------------- Bottone di ricerca ----------------->
+    <div class="d-flex justify-content-center mt-3">
+      <router-link
+        :to="{ name: 'search' }"
+        @click="searchRequestTablet()"
+        class="buttonSearchMobile"
+      >
+        Applica filtri
+      </router-link>
+    </div>
   </div>
-  <hr />
+
+  <div class="filter-side" :class="{ 'filter-show': showFilter }">
+    <!-------------------- stanze --------------------->
+    <div class="mobile d-flex flex-column justify-content-center">
+      <div class="d-flex justify-content-between align-items-center">
+        <label class="label-number" for="numero-stanze">Stanze</label>
+        <div class="d-flex">
+          <button @click="minusButtonStanze()" class="button-minus">
+            <i class="fa-solid fa-minus"></i>
+          </button>
+          <input
+            id="numero-stanze"
+            step="1"
+            min="1"
+            type="number"
+            v-model="inputCamere"
+            readonly
+          />
+          <button @click="plusButtonStanze()" class="button-plus">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-------------------- posti letto --------------------->
+    <div class="mobile d-flex flex-column pb-2">
+      <div class="d-flex justify-content-between align-items-center">
+        <label class="label-number" for="numero-letti">Posti letto</label>
+        <div class="d-flex">
+          <button @click="minusButtonLetti()" class="button-minus">
+            <i class="fa-solid fa-minus"></i>
+          </button>
+          <input
+            id="numero-letti"
+            step="1"
+            min="1"
+            type="number"
+            v-model="inputLetti"
+            readonly
+          />
+          <button @click="plusButtonLetti()" class="button-plus">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <hr />
+    <!-------------------- raggio ricerca --------------------->
+    <div
+      class="mobile d-flex flex-column justify-content-center align-items-center"
+    >
+      <label class="label-range label-number" for="raggio"
+        >Raggio di ricerca</label
+      >
+      <div id="raggio-ricerca" class="number-logic">
+        <input
+          type="range"
+          id="raggio"
+          min="1"
+          max="100"
+          v-model="inputRaggio"
+          @input="updateRangeBackground"
+          :style="rangeStyle"
+        />
+      </div>
+      <div>{{ inputRaggio }} Km</div>
+    </div>
+
+    <hr />
+
+    <div class="text-center mb-2">Servizi:</div>
+
+    <!-------------------- Elenco servizi --------------------->
+    <div class="d-flex flex-wrap gap-2 justify-content-start pb-2">
+      <div v-for="(servizio, i) in store.servizi_bnb" class="servizi-mobile">
+        <input
+          v-model="inputServizi"
+          class=""
+          type="checkbox"
+          :id="i"
+          :value="i + 1"
+          style="display: none"
+        />
+        <label class="servizi" :for="i">
+          <span v-html="servizio.icon"></span>
+          {{ servizio.title }}
+        </label>
+      </div>
+    </div>
+
+    <hr />
+    <!-------------- Bottone di ricerca ----------------->
+    <div class="d-flex justify-content-center mt-3">
+      <router-link
+        :to="{ name: 'search' }"
+        @click="searchRequestMobile()"
+        class="buttonSearchMobile"
+      >
+        Applica filtri
+      </router-link>
+    </div>
+  </div>
+
+  <div class="fixed">
+    <AppHeader />
+    <div class="app-search-filters">
+      <nav class="container">
+        <div class="search-container">
+          <div class="search-bar">
+            <!-------------------- indirizzo --------------------->
+            <div class="suggerimenti-indirizzo">
+              <input
+                class=""
+                id="indirizzo"
+                list="suggestion"
+                type="text"
+                placeholder="Inserisci città"
+                v-model="inputIndirizzo"
+                @focus="isActive = true"
+                @blur="timeoutShow"
+                @keyup.enter="searchRequest"
+                autocomplete="off"
+              />
+              <ul v-show="apiSuggestions.length > 0 && isActive == true">
+                <li
+                  @click="writeAddress(singleAddress, $event)"
+                  v-for="(singleAddress, i) in apiSuggestions"
+                >
+                  <i class="fa-solid fa-location-dot"></i>
+                  <span>{{ singleAddress }}</span>
+                </li>
+              </ul>
+              <p v-show="visible" class="paragrafo">
+                L'indirizzo è obbligatorio
+              </p>
+            </div>
+            <!-------------------- stanze --------------------->
+            <div class="desktop-show d-flex flex-column justify-content-center">
+              <label class="label-number" for="numero-stanze">Stanze</label>
+              <div class="number-logic">
+                <button @click="minusButtonStanze()" class="button-minus">
+                  <i class="fa-solid fa-minus"></i>
+                </button>
+                <input
+                  id="numero-stanze"
+                  step="1"
+                  min="1"
+                  type="number"
+                  v-model="inputCamere"
+                  readonly
+                />
+                <button @click="plusButtonStanze()" class="button-plus">
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-------------------- posti letto --------------------->
+            <div class="desktop-show d-flex flex-column justify-content-center">
+              <label class="label-number" for="numero-letti">Posti letto</label>
+              <div class="number-logic">
+                <button @click="minusButtonLetti()" class="button-minus">
+                  <i class="fa-solid fa-minus"></i>
+                </button>
+                <input
+                  id="numero-letti"
+                  step="1"
+                  min="1"
+                  type="number"
+                  v-model="inputLetti"
+                  readonly
+                />
+                <button @click="plusButtonLetti()" class="button-plus">
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+              </div>
+            </div>
+            <!-------------------- raggio ricerca --------------------->
+            <div class="desktop-show d-flex flex-column justify-content-center">
+              <label class="label-range label-number" for="raggio"
+                >Raggio di ricerca</label
+              >
+              <div id="raggio-ricerca" class="number-logic">
+                <input
+                  type="range"
+                  id="raggio"
+                  min="1"
+                  max="100"
+                  v-model="inputRaggio"
+                  @input="updateRangeBackground"
+                  :style="rangeStyle"
+                />
+              </div>
+              <div>{{ inputRaggio }} Km</div>
+            </div>
+            <!-------------------- Tasto ricerca --------------------->
+            <router-link
+              :to="{ name: 'search' }"
+              @click="searchRequest()"
+              class="buttonSearch"
+            >
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </router-link>
+          </div>
+          <!------------------ Bottoni filtri ---------------------->
+          <div @click="filterToggle()" class="filters">
+            <i class="fa-regular fa-pen-to-square"></i> Filtri
+          </div>
+          <div @click="filterToggleTablet()" class="filters-tablet">Filtri</div>
+        </div>
+        <!-------------------- Elenco servizi --------------------->
+        <div class="elenco-servizi d-flex gap-2 justify-content-between">
+          <div v-for="(servizio, i) in store.servizi_bnb">
+            <input
+              v-model="inputServizi"
+              class=""
+              type="checkbox"
+              :id="i"
+              :value="i + 1"
+              style="display: none"
+            />
+            <label @click="searchRequest()" class="servizi" :for="i">
+              <span v-html="servizio.icon"></span>
+              {{ servizio.title }}
+            </label>
+          </div>
+        </div>
+        <!-- <p v-for="error in errors" class="paragrafo">{{ error }}</p> -->
+      </nav>
+    </div>
+    <hr />
+  </div>
 </template>
 
 <style scoped>
+.filters {
+  border: 3px solid #ffffff;
+  color: #8b8589;
+  width: 5rem;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.4rem;
+  height: 3rem;
+  margin-left: 1rem;
+  margin-bottom: 0.4rem;
+  display: none;
+  background-color: white;
+  text-align: center;
+}
+
+.filters-tablet {
+  border: 3px solid #ffffff;
+  color: #8b8589;
+  width: 5rem;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.4rem;
+  height: 3rem;
+  margin-left: 1rem;
+  margin-bottom: 0.4rem;
+  display: none;
+  background-color: white;
+  text-align: center;
+}
+
+.filter-side {
+  padding-top: calc(45px + 209.18px);
+  width: 100%;
+  min-height: 100vh;
+  position: absolute;
+  background-color: #e8ded7;
+  z-index: 1;
+  transform: translateX(-100%);
+  transition: 1s;
+  border-radius: 0 0 10px 10px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  position: fixed;
+}
+
 input {
   all: unset;
 }
 
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.fixed {
+  width: 100%;
+  position: fixed;
+  background: linear-gradient(130deg, #fff6e7, #cde4eb);
+  z-index: 1;
+}
+
 .app-search-filters {
   width: 100%;
-  min-height: 10rem;
+  /* min-height: 10rem; */
   display: flex;
   align-items: center;
-  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 .container {
@@ -324,6 +562,7 @@ input {
 .search-container {
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .search-bar {
@@ -344,6 +583,17 @@ input {
   padding: 0 0.5rem 0 1rem;
   display: flex;
   align-items: center;
+  cursor: pointer;
+}
+
+.buttonSearchMobile {
+  background-color: #9f8d7c;
+  border-radius: 30px;
+  margin: 0.4px 0;
+  padding: 0 0.5rem 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
 }
 
@@ -417,7 +667,7 @@ li:hover {
 #numero-stanze,
 #numero-letti {
   width: 35px;
-  margin-left: 15px;
+  margin-left: 5px;
   padding: 5px;
 }
 
@@ -452,8 +702,6 @@ li:hover {
 .button-minus:hover,
 .button-plus:hover {
   border-color: #8b8589;
-  /* transform: translateY(-2px);
-  box-shadow: 0px 1px 3px 0px #464646; */
 }
 
 .button-plus i,
@@ -519,9 +767,10 @@ a i:hover {
 hr {
   border: 1px solid #b3a49a;
   margin-top: 0;
+  margin-bottom: 0;
+  width: 100%;
 }
 
-/* range input style */
 /* range input style */
 #raggio {
   -webkit-appearance: none;
@@ -586,5 +835,68 @@ hr {
   border-radius: 50%;
   cursor: pointer;
   border: none;
+}
+
+.filter-show {
+  transform: translateX(0);
+  font-size: 1.5rem;
+}
+
+@-moz-document url-prefix() {
+  .button-plus,
+  .button-minus {
+    border: 2px solid #d8cfc4;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    transition: 0.5s;
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+  }
+}
+@media screen and (max-width: 995px) {
+  .filters-tablet {
+    display: unset;
+  }
+  .elenco-servizi {
+    display: none !important;
+  }
+  .filter-side {
+    padding-top: calc(53px + 88.38px);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .filter-show {
+    font-size: 1.5rem;
+  }
+
+  .filters-tablet {
+    display: none;
+  }
+
+  .elenco-servizi,
+  .desktop-show {
+    display: none !important;
+  }
+  .filters {
+    display: unset;
+  }
+  .button-minus,
+  .button-plus {
+    position: unset;
+    height: 60px;
+    width: 60px;
+  }
+  .servizi-mobile {
+    font-size: 1rem;
+  }
+
+  .app-search-filters {
+    padding-bottom: 0;
+  }
 }
 </style>

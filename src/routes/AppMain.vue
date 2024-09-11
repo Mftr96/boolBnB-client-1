@@ -39,40 +39,6 @@ export default {
   },
 
   methods: {
-    updateRangeBackground() {
-      const min = 1;
-      const max = 100;
-      const percentage = ((this.inputRaggio - min) / (max - min)) * 100;
-
-      document.documentElement.style.setProperty(
-        '--range-percentage',
-        `${percentage}%`
-      );
-    },
-
-    toggleStanze() {
-      this.isActiveStanze = !this.isActiveStanze;
-    },
-
-    plusButtonStanze() {
-      this.inputCamere++;
-    },
-
-    minusButtonStanze() {
-      if (this.inputCamere > 1) {
-        this.inputCamere--;
-      }
-    },
-
-    plusButtonLetti() {
-      this.inputLetti++;
-    },
-
-    minusButtonLetti() {
-      if (this.inputLetti > 1) {
-        this.inputLetti--;
-      }
-    },
 
     assistenzaIndirizzo(indirizzo) {
       // const url_tomtom = `https://api.tomtom.com/search/2/search/${encodeURIComponent(
@@ -110,6 +76,12 @@ export default {
       setTimeout(() => {
         this.isActive = false;
       }, 150);
+    },
+
+    getLastWord(wordsString) {
+      var arrayParole = wordsString.split(" ");
+      return (arrayParole[arrayParole.length - 1]);
+      // return arrayParole[arrayParole.length - 1];
     },
 
     searchRequest() {
@@ -204,7 +176,7 @@ mounted() {
         <div class="search-bar">
           <!-------------------- Input città --------------------->
           <div class="suggerimenti-indirizzo">
-            <input class="" id="indirizzo" list="suggestion" type="text" placeholder="Inserisci città"
+            <input class="" id="indirizzo" list="suggestion" type="text" placeholder="Inserisci una città"
               v-model="inputIndirizzo" @focus="isActive = true" @blur="timeoutShow" autocomplete="off" />
             <ul v-show="apiSuggestions.length > 0 && isActive == true">
               <li @click="writeAddress(singleAddress, $event)" v-for="(singleAddress, i) in apiSuggestions">
@@ -212,11 +184,11 @@ mounted() {
                 <span>{{ singleAddress }}</span>
               </li>
             </ul>
-            <p v-show="visible" class="paragrafo">L'indirizzo è obbligatorio</p>
+            <p v-show="visible" class="paragrafo">Inserisci una città</p>
           </div>
           <!-------------------- Tasto ricerca --------------------->
           <router-link :to="{ name: 'search' }" @click="searchRequest()" class="buttonSearch">
-            <i class="fa-solid fa-magnifying-glass"></i>
+            <i id="searchIcon" class="fa-solid fa-magnifying-glass"></i>
           </router-link>
         </div>
       </div>
@@ -224,15 +196,29 @@ mounted() {
     </div>
   </header>
   <hr />
-  <div class="apartmentsContainer">
+  <div class="apartmentsContainer" :class="{ 'opacity-zero': isLoading }">
 
-    <div class="wrapper">
+    <div class="apartmentsWrapper">
 
       <div class="apartmentCard" v-for="apartment in store.homepageContent" :key="apartment.id">
-        <router-link :to="`/search/${apartment.id}`" class="text-dark">
+        <router-link :to="`/search/${apartment.title}`" class="text-dark">
           <img :src="apartment.image" width="100" class="cardImg" :alt="apartment.image" />
           <div class="cardText">
-            <span class="apartmentTitle apartmentDetail">{{ apartment.title }}</span>
+            <div class="detailContainer">
+              <span class="apartmentTitle apartmentDetail">{{ apartment.title }}</span>
+            </div>
+            <div class="detailContainer">
+              <i class="fa-solid fa-map-location-dot"></i>
+              <span class="apartmentDetail">{{ getLastWord(apartment.address_full) }}</span>
+            </div>
+            <div class="detailContainer">
+              <i class="fas fa-door-open"></i>
+              <span class="apartmentDetail">{{ apartment.rooms }}</span>
+            </div>
+            <div class="detailContainer">
+              <i class="fa-solid fa-shower"></i>
+              <span class="apartmentDetail">{{ apartment.bathrooms }}</span>
+            </div>
           </div>
 
         </router-link>
@@ -267,32 +253,38 @@ header {
 
 .search-bar {
   display: inline-flex;
-  height: 64.38px;
+  height: 5rem;
+  
+  min-width: 18rem;
   background-color: white;
   border-radius: 30px;
-  padding: 0.2rem 0rem 0.2rem 1rem;
-  justify-content: center;
+  padding: 0.2rem 1rem 0.2rem 1rem;
+  justify-content: space-between;
+  align-items: center;
   text-align: center;
   margin-bottom: 0.5rem;
 }
-
+#indirizzo {
+  margin-right: 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+  line-height: 70px;
+  min-width: 12rem;
+  width: 28vw;
+  flex-grow: 0;
+  font-size: 1.3rem;
+  border-radius: 1rem;
+}
 .buttonSearch {
-  background-color: rgb(255, 255, 255);
-  border-radius: 30px;
-  margin: 0.4px 0;
-  padding: 0 0.5rem 0 1rem;
+  background-color: rgb(0, 0, 0);
+  border-radius: 25px;
+  height: 50px;
+  width: 50px;
   display: flex;
   align-items: center;
   cursor: pointer;
 }
-
-#indirizzo {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-weight: 500;
-  width: 150px;
-}
-
 .suggerimenti-indirizzo {
   display: flex;
   position: relative;
@@ -339,47 +331,92 @@ li:hover {
 
 /***** Stile cards *****/
 .apartmentsContainer {
-  margin: 2vw;
+  margin: 2vw auto;
+  width: 90vw;
 }
-.wrapper {
+
+.apartmentsWrapper {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-around;
   flex-wrap: wrap;
   gap: 2vw;
+  width: 100%;
+  padding: 0;
+  margin: 0;
 }
+
 .apartmentCard {
-  width: 40rem;
-  height: 30rem;
+  width: 33rem;
+  height: 25rem;
   border: 1px solid #8b8589;
   box-shadow: 0.7vw 0.7vw 1vw #8b8589;
   position: relative;
   border-radius: 2rem;
   overflow: hidden;
+  transition: 0.4s;
 }
+
+.apartmentCard:hover {
+  transform: translate3d(-5px, -5px, 0);
+  border: 1px solid #000000;
+}
+
 .cardImg {
   width: 120%;
   object-fit: contain;
   border-radius: 2rem;
 }
+
 .cardText {
   position: absolute;
-  bottom: 5%;
-  left: 5%;
+  top: 10px;
+  left: 10px;
+  color: white;
+  display: flex;
+  justify-content: space-around;
+  flex-grow: 0;
 }
+
+.detailContainer {
+  height: 50px;
+  padding: 0 0.3rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border-radius: 25px;
+  margin: 0 1rem 1rem 0;
+}
+
 .apartmentDetail {
   padding: 0.5rem;
-  color: white;
   opacity: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
   border-radius: 1rem;
   font-size: 1.5;
   font-weight: 600;
 }
+
 .dettagli {
   display: flex;
 }
 
+a {
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+}
 
+a i {
+  margin-right: -0.8rem;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  transition: 0.5s;
+}
+
+/* Altri stili */
 .number-logic {
   position: relative;
   display: flex;
@@ -401,84 +438,16 @@ li:hover {
   opacity: 100;
   transition: 1s;
 }
-
-a {
-  text-decoration: none;
-  color: rgb(255, 255, 255);
-}
-
-a i {
+#searchIcon {
+  color: #ffffff;
   background-color: #d8cfc4;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  transition: 0.5s;
+}
+#searchIcon:hover {
+  background-color: #b3a49a;
 }
 
-hr {
-  border: 1px solid #b3a49a;
-  margin-top: 0;
-}
-#raggio {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 6px;
-  border-radius: 5px;
-  outline: none;
-  background: linear-gradient(to right,
-      #91c2c5 var(--range-percentage),
-      #e0e0e0 var(--range-percentage));
-}
-
-#raggio:hover {
-  background: linear-gradient(to right,
-      #91c2c5 var(--range-percentage),
-      #cfcfcf var(--range-percentage));
-}
-
-/* Track personalizzato */
-#raggio::-webkit-slider-runnable-track {
-  width: 100%;
-  height: 6px;
-  background: linear-gradient(to right,
-      #91c2c5 var(--range-percentage),
-      #e0e0e0 var(--range-percentage));
-  border-radius: 5px;
-}
-
-/* Thumb personalizzato */
-#raggio::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 12px;
-  height: 12px;
-  background: #9f8d7c;
-  /* Colore tortora */
-  border-radius: 50%;
-  cursor: pointer;
-  margin-top: -3px;
-  border: none;
-}
-
-#raggio::-moz-range-thumb {
-  width: 12px;
-  height: 12px;
-  background: #9f8d7c;
-  border-radius: 50%;
-  cursor: pointer;
-  border: none;
-}
-
-#raggio::-ms-thumb {
-  width: 12px;
-  height: 12px;
-  background: #9f8d7c;
-  border-radius: 50%;
-  cursor: pointer;
-  border: none;
+/* Stili per caricamento */
+.opacity-zero {
+  opacity: 0;
 }
 </style>
