@@ -50,6 +50,7 @@ a {
   font: inherit; /* Eredita il font dall'elemento padre */
   cursor: pointer; /* Mantiene il puntatore a mano */
   outline: none;
+  font-weight: 600;
 }
 
 .space {

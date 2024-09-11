@@ -345,133 +345,145 @@ export default {
   </div>
 
   <div class="fixed">
-    <AppHeader />
-    <div class="app-search-filters">
-      <nav class="container">
-        <div class="search-container">
-          <div class="search-bar">
-            <!-------------------- indirizzo --------------------->
-            <div class="suggerimenti-indirizzo">
-              <input
-                class=""
-                id="indirizzo"
-                list="suggestion"
-                type="text"
-                placeholder="Inserisci città"
-                v-model="inputIndirizzo"
-                @focus="isActive = true"
-                @blur="timeoutShow"
-                @keyup.enter="searchRequest"
-                autocomplete="off"
-              />
-              <ul v-show="apiSuggestions.length > 0 && isActive == true">
-                <li
-                  @click="writeAddress(singleAddress, $event)"
-                  v-for="(singleAddress, i) in apiSuggestions"
-                >
-                  <i class="fa-solid fa-location-dot"></i>
-                  <span>{{ singleAddress }}</span>
-                </li>
-              </ul>
-              <p v-show="visible" class="paragrafo">
-                L'indirizzo è obbligatorio
-              </p>
-            </div>
-            <!-------------------- stanze --------------------->
-            <div class="desktop-show d-flex flex-column justify-content-center">
-              <label class="label-number" for="numero-stanze">Stanze</label>
-              <div class="number-logic">
-                <button @click="minusButtonStanze()" class="button-minus">
-                  <i class="fa-solid fa-minus"></i>
-                </button>
+    <div class="sugar">
+      <AppHeader />
+      <div class="app-search-filters">
+        <nav class="container">
+          <div class="search-container">
+            <div class="search-bar">
+              <!-------------------- indirizzo --------------------->
+              <div class="suggerimenti-indirizzo">
                 <input
-                  id="numero-stanze"
-                  step="1"
-                  min="1"
-                  type="number"
-                  v-model="inputCamere"
-                  readonly
+                  class=""
+                  id="indirizzo"
+                  list="suggestion"
+                  type="text"
+                  placeholder="Inserisci città"
+                  v-model="inputIndirizzo"
+                  @focus="isActive = true"
+                  @blur="timeoutShow"
+                  @keyup.enter="searchRequest"
+                  autocomplete="off"
                 />
-                <button @click="plusButtonStanze()" class="button-plus">
-                  <i class="fa-solid fa-plus"></i>
-                </button>
+                <ul v-show="apiSuggestions.length > 0 && isActive == true">
+                  <li
+                    @click="writeAddress(singleAddress, $event)"
+                    v-for="(singleAddress, i) in apiSuggestions"
+                  >
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>{{ singleAddress }}</span>
+                  </li>
+                </ul>
+                <p v-show="visible" class="paragrafo">
+                  L'indirizzo è obbligatorio
+                </p>
               </div>
-            </div>
-
-            <!-------------------- posti letto --------------------->
-            <div class="desktop-show d-flex flex-column justify-content-center">
-              <label class="label-number" for="numero-letti">Posti letto</label>
-              <div class="number-logic">
-                <button @click="minusButtonLetti()" class="button-minus">
-                  <i class="fa-solid fa-minus"></i>
-                </button>
-                <input
-                  id="numero-letti"
-                  step="1"
-                  min="1"
-                  type="number"
-                  v-model="inputLetti"
-                  readonly
-                />
-                <button @click="plusButtonLetti()" class="button-plus">
-                  <i class="fa-solid fa-plus"></i>
-                </button>
-              </div>
-            </div>
-            <!-------------------- raggio ricerca --------------------->
-            <div class="desktop-show d-flex flex-column justify-content-center">
-              <label class="label-range label-number" for="raggio"
-                >Raggio di ricerca</label
+              <!-------------------- stanze --------------------->
+              <div
+                class="desktop-show d-flex flex-column justify-content-center"
               >
-              <div id="raggio-ricerca" class="number-logic">
-                <input
-                  type="range"
-                  id="raggio"
-                  min="1"
-                  max="100"
-                  v-model="inputRaggio"
-                  @input="updateRangeBackground"
-                  :style="rangeStyle"
-                />
+                <label class="label-number" for="numero-stanze">Stanze</label>
+                <div class="number-logic">
+                  <button @click="minusButtonStanze()" class="button-minus">
+                    <i class="fa-solid fa-minus"></i>
+                  </button>
+                  <input
+                    id="numero-stanze"
+                    step="1"
+                    min="1"
+                    type="number"
+                    v-model="inputCamere"
+                    readonly
+                  />
+                  <button @click="plusButtonStanze()" class="button-plus">
+                    <i class="fa-solid fa-plus"></i>
+                  </button>
+                </div>
               </div>
-              <div>{{ inputRaggio }} Km</div>
+
+              <!-------------------- posti letto --------------------->
+              <div
+                class="desktop-show d-flex flex-column justify-content-center"
+              >
+                <label class="label-number" for="numero-letti"
+                  >Posti letto</label
+                >
+                <div class="number-logic">
+                  <button @click="minusButtonLetti()" class="button-minus">
+                    <i class="fa-solid fa-minus"></i>
+                  </button>
+                  <input
+                    id="numero-letti"
+                    step="1"
+                    min="1"
+                    type="number"
+                    v-model="inputLetti"
+                    readonly
+                  />
+                  <button @click="plusButtonLetti()" class="button-plus">
+                    <i class="fa-solid fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+              <!-------------------- raggio ricerca --------------------->
+              <div
+                class="desktop-show d-flex flex-column justify-content-center"
+              >
+                <label class="label-range label-number" for="raggio"
+                  >Raggio di ricerca</label
+                >
+                <div id="raggio-ricerca" class="number-logic">
+                  <input
+                    type="range"
+                    id="raggio"
+                    min="1"
+                    max="100"
+                    v-model="inputRaggio"
+                    @input="updateRangeBackground"
+                    :style="rangeStyle"
+                  />
+                </div>
+                <div>{{ inputRaggio }} Km</div>
+              </div>
+              <!-------------------- Tasto ricerca --------------------->
+              <router-link
+                :to="{ name: 'search' }"
+                @click="searchRequest()"
+                class="buttonSearch"
+              >
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </router-link>
             </div>
-            <!-------------------- Tasto ricerca --------------------->
-            <router-link
-              :to="{ name: 'search' }"
-              @click="searchRequest()"
-              class="buttonSearch"
-            >
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </router-link>
+            <!------------------ Bottoni filtri ---------------------->
+            <div @click="filterToggle()" class="filters">
+              <i class="fa-regular fa-pen-to-square"></i> Filtri
+            </div>
+            <div @click="filterToggleTablet()" class="filters-tablet">
+              Filtri
+            </div>
           </div>
-          <!------------------ Bottoni filtri ---------------------->
-          <div @click="filterToggle()" class="filters">
-            <i class="fa-regular fa-pen-to-square"></i> Filtri
+          <!-------------------- Elenco servizi --------------------->
+          <div class="elenco-servizi d-flex gap-2 justify-content-between">
+            <div v-for="(servizio, i) in store.servizi_bnb">
+              <input
+                v-model="inputServizi"
+                class=""
+                type="checkbox"
+                :id="i"
+                :value="i + 1"
+                style="display: none"
+              />
+              <label @click="searchRequest()" class="servizi" :for="i">
+                <span v-html="servizio.icon"></span>
+                {{ servizio.title }}
+              </label>
+            </div>
           </div>
-          <div @click="filterToggleTablet()" class="filters-tablet">Filtri</div>
-        </div>
-        <!-------------------- Elenco servizi --------------------->
-        <div class="elenco-servizi d-flex gap-2 justify-content-between">
-          <div v-for="(servizio, i) in store.servizi_bnb">
-            <input
-              v-model="inputServizi"
-              class=""
-              type="checkbox"
-              :id="i"
-              :value="i + 1"
-              style="display: none"
-            />
-            <label @click="searchRequest()" class="servizi" :for="i">
-              <span v-html="servizio.icon"></span>
-              {{ servizio.title }}
-            </label>
-          </div>
-        </div>
-        <!-- <p v-for="error in errors" class="paragrafo">{{ error }}</p> -->
-      </nav>
+          <!-- <p v-for="error in errors" class="paragrafo">{{ error }}</p> -->
+        </nav>
+      </div>
+      <hr />
     </div>
-    <hr />
   </div>
 </template>
 
@@ -543,8 +555,13 @@ input[type='number']::-webkit-outer-spin-button {
 .fixed {
   width: 100%;
   position: fixed;
-  background: linear-gradient(130deg, #fff6e7, #cde4eb);
+  /* background-image: url(/background-cork.jpg); */
   z-index: 1;
+}
+
+.sugar {
+  /* background-color: rgba(231, 206, 185, 0.662); */
+  background: linear-gradient(130deg, #c3b49ba4, #94a7ae98);
 }
 
 .app-search-filters {

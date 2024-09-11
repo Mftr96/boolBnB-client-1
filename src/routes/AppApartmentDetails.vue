@@ -132,112 +132,133 @@ export default {
   <div class="fixed">
     <AppHeader />
   </div>
-  <div class="container apartment-detail">
-    <div class="row">
-      <div class="col-lg-6 mb-4">
-        <img :src="image" class="img-fluid rounded shadow" alt="Appartamento" />
-      </div>
+  <div class="apartment-detail">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 mb-4 relative">
+          <img class="absolute" width="80px" src="/pin.png" alt="" />
 
-      <div class="col-lg-6 h-100">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h1 class="card-title display-5">{{ title }}</h1>
-            <p class="card-text text-muted">
-              <i class="fa-solid fa-location-dot"></i> {{ address }}
-            </p>
-            <ul class="list-unstyled mb-4">
-              <li>
-                <i class="fa-solid fa-person-shelter"></i> Stanze: {{ rooms }}
-              </li>
-              <li><i class="fa-solid fa-bed"></i> Posti letto: {{ beds }}</li>
-              <li><i class="fa-solid fa-bath"></i> Bagni: {{ bathrooms }}</li>
-              <li>
-                <i class="fa-solid fa-ruler-combined"></i> Dimensione (Mq):
-                {{ dimension }}
-              </li>
-            </ul>
+          <img
+            :src="image"
+            class="img-fluid rounded piegata"
+            alt="Appartamento"
+          />
+        </div>
+        <div class="col-lg-6 h-100">
+          <div class="card h-100 shadow-sm relative">
+            <img class="absolute left" width="80px" src="/pin2.png" alt="" />
+            <div class="card-body piegata-destra">
+              <h1 class="card-title display-5">{{ title }}</h1>
+              <p class="card-text text-muted">
+                <i class="fa-solid fa-location-dot"></i> {{ address }}
+              </p>
+              <ul class="list-unstyled mb-4">
+                <li>
+                  <i class="fa-solid fa-person-shelter"></i> Stanze: {{ rooms }}
+                </li>
+                <li><i class="fa-solid fa-bed"></i> Posti letto: {{ beds }}</li>
+                <li><i class="fa-solid fa-bath"></i> Bagni: {{ bathrooms }}</li>
+                <li>
+                  <i class="fa-solid fa-ruler-combined"></i> Dimensione (Mq):
+                  {{ dimension }}
+                </li>
+              </ul>
 
-            <h5 class="mt-4">Servizi presenti</h5>
-            <div class="d-flex flex-wrap">
-              <span
-                v-for="servizio in store.servizi_bnb"
-                class="badge bg-light text-dark m-1 d-flex align-items-center"
-              >
-                <span v-html="servizio.icon" class="ms-2"> </span>
-                {{ servizio.title }}
-              </span>
+              <h5 class="mt-4">Servizi presenti</h5>
+              <div class="d-flex flex-wrap">
+                <span
+                  v-for="servizio in store.servizi_bnb"
+                  class="badge bg-light text-dark m-1 d-flex align-items-center"
+                >
+                  <span v-html="servizio.icon" class="ms-2"> </span>
+                  {{ servizio.title }}
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      <div class="relative mt-5">
+        <div class="row mt-1">
+          <div class="col-lg-8 mb-4 relative">
+            <img
+              class="absolute pin-mappa"
+              width="80px"
+              src="/pin2.png"
+              alt=""
+            />
+            <div class="ratio ratio-16x9 piegata maps">
+              <h4 class="mt-3 title-map">Dove troverai la struttura</h4>
+              <iframe
+                :src="coordinateMaps"
+                class=""
+                style="border: none"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
 
-    <h4 class="mt-3">Dove troverai la struttura</h4>
-    <div class="row mt-1">
-      <div class="col-lg-8 mb-4">
-        <div class="ratio ratio-16x9">
-          <iframe
-            :src="coordinateMaps"
-            class="rounded shadow"
-            style="border: none"
-            allowfullscreen
-          ></iframe>
-        </div>
-      </div>
-
-      <div class="col-lg-4">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title text-center mb-4">Contatta l'host</h5>
-            <form>
-              <div class="mb-3 error">
-                <div class="error-text">{{ errorEmail }}</div>
-                <label for="emailUtente" class="form-label">Email*</label>
-                <input
-                  v-model="emailUtente"
-                  type="email"
-                  class="form-control"
-                  id="emailUtente"
-                  placeholder="Inserisci email valida"
-                  required
-                />
+          <div class="col-lg-4 relative">
+            <img
+              class="absolute contatti"
+              width="80px"
+              src="/pin2.png"
+              alt=""
+            />
+            <div class="card piegata">
+              <div class="card-body rounded-2">
+                <h5 class="card-title text-center mb-4">Contatta l'host</h5>
+                <form>
+                  <div class="mb-3 error">
+                    <div class="error-text">{{ errorEmail }}</div>
+                    <label for="emailUtente" class="form-label">Email*</label>
+                    <input
+                      v-model="emailUtente"
+                      type="email"
+                      class="form-control"
+                      id="emailUtente"
+                      placeholder="Inserisci email valida"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="nomeUtente" class="form-label">Nome</label>
+                    <input
+                      v-model="nomeUtente"
+                      type="text"
+                      class="form-control"
+                      id="nomeUtente"
+                      placeholder="Inserisci il tuo nome"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3 error">
+                    <div class="error-text">{{ errorText }}</div>
+                    <label for="messaggioUtente" class="form-label"
+                      >Messaggio*</label
+                    >
+                    <textarea
+                      v-model="messaggioUtente"
+                      class="form-control"
+                      id="messaggioUtente"
+                      rows="4"
+                      placeholder="Scrivi il tuo messaggio"
+                      required
+                    ></textarea>
+                  </div>
+                  <p class="text-muted small">
+                    I campi contrassegnati con * sono obbligatori
+                  </p>
+                  <button
+                    type="button"
+                    @click="sendMessage"
+                    class="btn btn-colore w-100"
+                  >
+                    Invia
+                  </button>
+                </form>
               </div>
-              <div class="mb-3">
-                <label for="nomeUtente" class="form-label">Nome</label>
-                <input
-                  v-model="nomeUtente"
-                  type="text"
-                  class="form-control"
-                  id="nomeUtente"
-                  placeholder="Inserisci il tuo nome"
-                  required
-                />
-              </div>
-              <div class="mb-3 error">
-                <div class="error-text">{{ errorText }}</div>
-                <label for="messaggioUtente" class="form-label"
-                  >Messaggio*</label
-                >
-                <textarea
-                  v-model="messaggioUtente"
-                  class="form-control"
-                  id="messaggioUtente"
-                  rows="4"
-                  placeholder="Scrivi il tuo messaggio"
-                  required
-                ></textarea>
-              </div>
-              <p class="text-muted small">
-                I campi contrassegnati con * sono obbligatori
-              </p>
-              <button
-                type="button"
-                @click="sendMessage"
-                class="btn btn-primary w-100"
-              >
-                Invia
-              </button>
-            </form>
+            </div>
           </div>
         </div>
       </div>
@@ -247,16 +268,31 @@ export default {
 
 <style scoped>
 .fixed {
-  background: linear-gradient(130deg, #fff6e7, #d1e6ed);
+  /* background: linear-gradient(130deg, #fff6e7, #d1e6ed); */
+  background-color: rgba(255, 255, 255, 0.605);
   height: 4rem;
   position: fixed;
-  z-index: 1;
+  z-index: 2;
   width: 100%;
   border-bottom: 2px solid #a09d9fc2;
 }
 
 .apartment-detail {
-  padding-top: 5rem;
+  padding-top: 8rem;
+  /* background-image: url(/background-cork.jpg); */
+  z-index: 1;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.card {
+  background-color: transparent;
+  border: none;
+}
+
+.card-body {
+  background-color: white;
 }
 
 .card-title {
@@ -280,5 +316,69 @@ export default {
   left: 30%;
   font-size: 1rem;
   line-height: 1rem;
+}
+
+.relative {
+  position: relative;
+  perspective: 500px;
+}
+
+.absolute {
+  position: absolute;
+  left: 60%;
+  top: -5%;
+  z-index: 1;
+}
+
+.piegata {
+  transform: rotate(-5deg);
+  box-shadow: 10px 10px 10px 5px;
+  border-radius: 10px;
+}
+
+.piegata-destra {
+  transform: rotate(3deg);
+  box-shadow: 10px 10px 10px 5px;
+  border-radius: 10px;
+}
+
+.contatti {
+  top: -8%;
+  left: 70%;
+}
+
+.pin-mappa {
+  top: -12%;
+  left: 30%;
+}
+
+.left {
+  left: 20%;
+  top: -14%;
+}
+
+.maps {
+  transform: rotate(3deg);
+}
+
+.title-map {
+  background-color: rgb(215, 199, 184);
+  border: 1px solid rgb(159, 145, 133);
+  display: inline-block;
+  padding: 0.3rem 1rem;
+  position: absolute;
+  z-index: 3;
+  left: 10%;
+  border-radius: 10px;
+  width: 20rem;
+  height: 3rem;
+}
+
+.btn-colore {
+  background-color: rgb(209, 189, 173);
+}
+
+.btn-colore:hover {
+  background-color: rgb(159, 145, 133);
 }
 </style>
