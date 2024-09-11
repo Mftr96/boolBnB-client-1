@@ -209,6 +209,9 @@ export default {
 
 p {
   margin-bottom: 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 p i {
@@ -354,5 +357,17 @@ a {
 
 .opacity-zero {
   opacity: 0;
+}
+
+@media screen and (max-width: 995px) {
+  .container {
+    padding-top: 10rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding-top: 9rem;
+  }
 }
 </style>

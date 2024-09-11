@@ -2,11 +2,14 @@
 import store from '../data/store.js';
 import axios from 'axios';
 import { RouterLink } from 'vue-router';
+import AppHeader from '../components/AppHeader.vue';
 
 export default {
   name: 'AppApartmentDetail',
 
-  components: {},
+  components: {
+    AppHeader,
+  },
 
   data() {
     return {
@@ -23,6 +26,9 @@ export default {
       services: null,
       address: null,
       dimension: null,
+      apartment_id: null,
+      errorEmail: null,
+      errorText: null,
 
       emailUtente: null,
       nomeUtente: null,
@@ -53,24 +59,47 @@ export default {
         console.error('Latitudine o Longitudine non valide');
       }
     },
+    isValidEmail(email) {
+      // Regular expression for validating email
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      // Test if the input matches the pattern
+      return emailPattern.test(email);
+    },
     sendMessage() {
-      const data = {
-        email: this.emailUtente,
-        text: this.messaggioUtente,
-        name: this.nomeUtente,
-        apartment_id: this.$route.params.id,
-      };
+      if (!this.emailUtente || !this.isValidEmail(this.emailUtente)) {
+        this.errorEmail = 'inserire una mail valida';
+        if (!this.messaggioUtente) {
+          this.errorText = 'inserire un messaggio prima di inviare';
+        }
+      } else if (!this.messaggioUtente) {
+        this.errorEmail = '';
+        this.errorText = 'inserire un messaggio prima di inviare';
+      } else {
+        this.errorEmail = '';
+        this.errorText = '';
 
-      console.log(data);
+        const data = {
+          email: this.emailUtente,
+          text: this.messaggioUtente,
+          name: this.nomeUtente,
+          apartment_id: this.apartment_id,
+        };
 
-      axios
-        .post('http://127.0.0.1:8000/api/messages', data)
-        .then((response) => {
-          console.log('tutto riuscito');
-        })
-        .catch((error) => {
-          console.log("Errore durante l'invio del messaggio:", error.response);
-        });
+        console.log(data);
+
+        axios
+          .post('http://127.0.0.1:8000/api/messages', data)
+          .then((response) => {
+            console.log('tutto riuscito');
+          })
+          .catch((error) => {
+            console.log(
+              "Errore durante l'invio del messaggio:",
+              error.response
+            );
+          });
+      }
     },
   },
 
@@ -81,6 +110,7 @@ export default {
       .then((response) => {
         console.log(response.data.project);
         this.apartment = response.data.project;
+        this.apartment_id = this.apartment.id;
         this.title = this.apartment.title;
         this.latitude = this.apartment.latitude;
         this.longitude = this.apartment.longitude;
@@ -99,7 +129,10 @@ export default {
 </script>
 
 <template>
-  <div class="container py-5">
+  <div class="fixed">
+    <AppHeader />
+  </div>
+  <div class="container apartment-detail">
     <div class="row">
       <div class="col-lg-6 mb-4">
         <img :src="image" class="img-fluid rounded shadow" alt="Appartamento" />
@@ -157,7 +190,8 @@ export default {
           <div class="card-body">
             <h5 class="card-title text-center mb-4">Contatta l'host</h5>
             <form>
-              <div class="mb-3">
+              <div class="mb-3 error">
+                <div class="error-text">{{ errorEmail }}</div>
                 <label for="emailUtente" class="form-label">Email*</label>
                 <input
                   v-model="emailUtente"
@@ -179,7 +213,8 @@ export default {
                   required
                 />
               </div>
-              <div class="mb-3">
+              <div class="mb-3 error">
+                <div class="error-text">{{ errorText }}</div>
                 <label for="messaggioUtente" class="form-label"
                   >Messaggio*</label
                 >
@@ -211,6 +246,19 @@ export default {
 </template>
 
 <style scoped>
+.fixed {
+  background: linear-gradient(130deg, #fff6e7, #d1e6ed);
+  height: 4rem;
+  position: fixed;
+  z-index: 1;
+  width: 100%;
+  border-bottom: 2px solid #a09d9fc2;
+}
+
+.apartment-detail {
+  padding-top: 5rem;
+}
+
 .card-title {
   color: #333;
 }
@@ -220,5 +268,17 @@ export default {
 .ratio iframe {
   width: 100%;
   height: 100%;
+}
+
+.error {
+  position: relative;
+}
+
+.error-text {
+  color: red;
+  position: absolute;
+  left: 30%;
+  font-size: 1rem;
+  line-height: 1rem;
 }
 </style>
