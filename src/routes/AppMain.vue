@@ -26,6 +26,7 @@ export default {
       errors: null,
       isActiveStanze: false,
       newInputIndirizzo: "",
+      validCity: false,
     };
   },
 
@@ -102,6 +103,7 @@ export default {
       event.stopPropagation();
       this.inputIndirizzo = actualAddress;
       this.isActive = false;
+      this.validCity = true;
     },
 
     timeoutShow() {
@@ -111,88 +113,96 @@ export default {
     },
 
     searchRequest() {
-      this.errors = [];
-      if (!this.inputIndirizzo) {
-        this.visible = true;
-        // this.store.searchApartment = [];
-      } else {
-        this.visible = false;
-        axios
-          .get(
-            `https://api.tomtom.com/search/2/geocode/${this.inputIndirizzo}.json?key=RUfkTtEK0CYbHBG3YE2RSEslSRGAWZcu&countrySet=IT`
-          )
-          .then((response) => {
-            this.coordinates = response.data.results[0].position;
-            console.log(this.searchData);
+    console.log(this.validCity);
+    this.errors = [];
+    if (this.validCity) {
+      // Eseguito se l'input è valido
+      // if (!this.inputIndirizzo) {
+      //   this.visible = true;
+      //   // this.store.searchApartment = [];
+      // } else {
+      //   this.visible = false;
+      //   axios
+      //     .get(
+      //       `https://api.tomtom.com/search/2/geocode/${this.inputIndirizzo}.json?key=RUfkTtEK0CYbHBG3YE2RSEslSRGAWZcu&countrySet=IT`
+      //     )
+      //     .then((response) => {
+      //       this.coordinates = response.data.results[0].position;
+      //       console.log(this.searchData);
+  
+      //       this.$router.push({
+      //         name: 'search',
+      //         query: {
+      //           indirizzo: this.inputIndirizzo,
+      //           latitude: this.coordinates.lat,
+      //           longitude: this.coordinates.lon,
+      //           radius: this.inputRaggio,
+      //           beds: this.inputLetti,
+      //           rooms: this.inputCamere,
+      //           services: this.inputServizi.join(','),
+      //         },
+      //       });
+  
+      //       const url = `http://127.0.0.1:8000/api/search?latitude=${this.coordinates.lat
+      //         }&longitude=${this.coordinates.lon}&radius=${this.inputRaggio
+      //         }&beds=${this.inputLetti}&rooms=${this.inputCamere
+      //         }&services=${this.inputServizi.join(',')}`;
+  
+      //       console.log(url);
+  
+      //       axios
+      //         .get(url)
+      //         .then((response) => {
+      //           this.store.searchApartment = response.data.results;
+      //           console.log(response);
+      //           this.errors = response.data.errors.rooms;
+      //         })
+      //         .catch((error) => {
+      //           console.log('errore');
+      //         });
+      //     });
+      // }
 
-            this.$router.push({
-              name: 'search',
-              query: {
-                indirizzo: this.inputIndirizzo,
-                latitude: this.coordinates.lat,
-                longitude: this.coordinates.lon,
-                radius: this.inputRaggio,
-                beds: this.inputLetti,
-                rooms: this.inputCamere,
-                services: this.inputServizi.join(','),
-              },
-            });
-
-            const url = `http://127.0.0.1:8000/api/search?latitude=${this.coordinates.lat
-              }&longitude=${this.coordinates.lon}&radius=${this.inputRaggio
-              }&beds=${this.inputLetti}&rooms=${this.inputCamere
-              }&services=${this.inputServizi.join(',')}`;
-
-            console.log(url);
-
-            axios
-              .get(url)
-              .then((response) => {
-                this.store.searchApartment = response.data.results;
-                console.log(response);
-                this.errors = response.data.errors.rooms;
-              })
-              .catch((error) => {
-                console.log('errore');
-              });
-          });
-      }
-    },
-    loadData() {
-      this.inputIndirizzo = this.$route.query.indirizzo;
-      this.inputCamere = this.$route.query.rooms ? this.$route.query.rooms : 1;
-      this.inputLetti = this.$route.query.beds ? this.$route.query.beds : 1;
-      this.inputRaggio = this.$route.query.radius
-        ? this.$route.query.radius
-        : 20;
-      if (this.$route.query.services) {
-        this.inputServizi = this.$route.query.services.split(',').map(Number);
-      }
-    },
+    }
+    else {
+      //Eseguito se l'input non è valido
+      document.getElementById("errNoCittà").setAttribute("style", "display: block;")
+    }
   },
-  mounted() {
-    this.updateRangeBackground();
-    this.loadData();
-    const url = `http://127.0.0.1:8000/api/apartments`;
-    axios
-      .get(url)
-      .then((response) => {
-        this.store.homepageContent = response.data.results.data;
-        console.log(this.store.homepageContent);
-      })
-      .catch((error) => {
-        console.log('errore in caricamento index');
-      });
+  loadData() {
+    this.inputIndirizzo = this.$route.query.indirizzo;
+    this.inputCamere = this.$route.query.rooms ? this.$route.query.rooms : 1;
+    this.inputLetti = this.$route.query.beds ? this.$route.query.beds : 1;
+    this.inputRaggio = this.$route.query.radius
+      ? this.$route.query.radius
+      : 20;
+    if (this.$route.query.services) {
+      this.inputServizi = this.$route.query.services.split(',').map(Number);
+    }
   },
+},
+mounted() {
+  this.loadData();
+  const url = `http://127.0.0.1:8000/api/apartments`;
+  axios
+    .get(url)
+    .then((response) => {
+      this.store.homepageContent = response.data.results.data;
+      console.log(this.store.homepageContent);
+    })
+    .catch((error) => {
+      console.log('errore in caricamento index');
+    });
+},
 };
 </script>
 
 <template>
   <header>
-    <nav class="container">
+    <div class="container">
       <div class="search-container">
         <div class="search-bar">
-          <!-------------------- indirizzo --------------------->
+          <!-------------------- Input città --------------------->
           <div class="suggerimenti-indirizzo">
             <input class="" id="indirizzo" list="suggestion" type="text" placeholder="Inserisci città"
               v-model="inputIndirizzo" @focus="isActive = true" @blur="timeoutShow" autocomplete="off" />
@@ -210,10 +220,8 @@ export default {
           </router-link>
         </div>
       </div>
-
-
-      <!-- <p v-for="error in errors" class="paragrafo">{{ error }}</p> -->
-    </nav>
+      <p id="errNoCittà">Seleziona una città trà i suggerimenti di ricerca.</p>
+    </div>
   </header>
   <hr />
   <div class="apartmentsContainer">
@@ -294,7 +302,13 @@ header {
   font-size: 40px;
   padding: 0.5rem;
 }
-
+#errNoCittà {
+  display: none;
+  /* position: fixed; */
+  color: red;
+  border: 1px solid red;
+  border-radius: 0.5rem;
+}
 ul {
   background-color: #d8cfc4;
   padding: 0;
