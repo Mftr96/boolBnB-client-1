@@ -25,6 +25,7 @@ export default {
       visible: false,
       errors: null,
       isActiveStanze: false,
+      newInputIndirizzo: "",
     };
   },
 
@@ -81,7 +82,7 @@ export default {
 
       const url_tomtom = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(
         indirizzo
-      )}.json?key=${this.apiKey}&typeahead=true&limit=5&countrySet=IT`;
+      )}.json?key=${this.apiKey}&typeahead=true&limit=5&countrySet=IT&entityTypeSet=Municipality`;
 
       // ricerca axios
 
@@ -137,13 +138,10 @@ export default {
               },
             });
 
-            const url = `http://127.0.0.1:8000/api/search?latitude=${
-              this.coordinates.lat
-            }&longitude=${this.coordinates.lon}&radius=${
-              this.inputRaggio
-            }&beds=${this.inputLetti}&rooms=${
-              this.inputCamere
-            }&services=${this.inputServizi.join(',')}`;
+            const url = `http://127.0.0.1:8000/api/search?latitude=${this.coordinates.lat
+              }&longitude=${this.coordinates.lon}&radius=${this.inputRaggio
+              }&beds=${this.inputLetti}&rooms=${this.inputCamere
+              }&services=${this.inputServizi.join(',')}`;
 
             console.log(url);
 
@@ -196,22 +194,10 @@ export default {
         <div class="search-bar">
           <!-------------------- indirizzo --------------------->
           <div class="suggerimenti-indirizzo">
-            <input
-              class=""
-              id="indirizzo"
-              list="suggestion"
-              type="text"
-              placeholder="Inserisci città"
-              v-model="inputIndirizzo"
-              @focus="isActive = true"
-              @blur="timeoutShow"
-              autocomplete="off"
-            />
+            <input class="" id="indirizzo" list="suggestion" type="text" placeholder="Inserisci città"
+              v-model="inputIndirizzo" @focus="isActive = true" @blur="timeoutShow" autocomplete="off" />
             <ul v-show="apiSuggestions.length > 0 && isActive == true">
-              <li
-                @click="writeAddress(singleAddress, $event)"
-                v-for="(singleAddress, i) in apiSuggestions"
-              >
+              <li @click="writeAddress(singleAddress, $event)" v-for="(singleAddress, i) in apiSuggestions">
                 <i class="fa-solid fa-location-dot"></i>
                 <span>{{ singleAddress }}</span>
               </li>
@@ -219,48 +205,33 @@ export default {
             <p v-show="visible" class="paragrafo">L'indirizzo è obbligatorio</p>
           </div>
           <!-------------------- Tasto ricerca --------------------->
-          <router-link
-            :to="{ name: 'search' }"
-            @click="searchRequest()"
-            class="buttonSearch"
-          >
+          <router-link :to="{ name: 'search' }" @click="searchRequest()" class="buttonSearch">
             <i class="fa-solid fa-magnifying-glass"></i>
           </router-link>
         </div>
       </div>
-      
-       
+
+
       <!-- <p v-for="error in errors" class="paragrafo">{{ error }}</p> -->
     </nav>
   </header>
-  <hr/>
-  <div class="container">
-    <div class="card" v-for="apartment in store.homepageContent" :key="apartment.id">
-      <router-link :to="`/search/${apartment.id}`" class="card h-100 text-dark">
-    <img :src="apartment.image" width="100" class="card-img-top" :alt="apartment.image" />
-    <div class="card-body">
-      <h5 class="card-title">{{ apartment.title }}</h5>
-      <div class="row">
-        <div class="col-6 dettagli">
-          <p class="">
-            <i class="fas fa-door-open"></i> 
-            {{ apartment.rooms }}
-          </p>
-          <p class="">
-            <i class="fas fa-bed"></i> 
-            {{  apartment.beds}}
-          </p>
-          <p class="">
-            <i class="fas fa-bath"></i> 
-            {{  apartment.bathrooms }}
-          </p>
-        </div>
+  <hr />
+  <div class="apartmentsContainer">
+
+    <div class="wrapper">
+
+      <div class="apartmentCard" v-for="apartment in store.homepageContent" :key="apartment.id">
+        <router-link :to="`/search/${apartment.id}`" class="text-dark">
+          <img :src="apartment.image" width="100" class="cardImg" :alt="apartment.image" />
+          <div class="cardText">
+            <span class="apartmentTitle apartmentDetail">{{ apartment.title }}</span>
+          </div>
+
+        </router-link>
       </div>
-      <hr />
-    </div>
-  </router-link>
 
     </div>
+
   </div>
 </template>
 
@@ -352,6 +323,49 @@ li:hover {
   cursor: pointer;
 }
 
+/***** Stile cards *****/
+.apartmentsContainer {
+  margin: 2vw;
+}
+.wrapper {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  gap: 2vw;
+}
+.apartmentCard {
+  width: 40rem;
+  height: 30rem;
+  border: 1px solid #8b8589;
+  box-shadow: 0.7vw 0.7vw 1vw #8b8589;
+  position: relative;
+  border-radius: 2rem;
+  overflow: hidden;
+}
+.cardImg {
+  width: 120%;
+  object-fit: contain;
+  border-radius: 2rem;
+}
+.cardText {
+  position: absolute;
+  bottom: 5%;
+  left: 5%;
+}
+.apartmentDetail {
+  padding: 0.5rem;
+  color: white;
+  opacity: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 1rem;
+  font-size: 1.5;
+  font-weight: 600;
+}
+.dettagli {
+  display: flex;
+}
+
+
 .number-logic {
   position: relative;
   display: flex;
@@ -374,82 +388,6 @@ li:hover {
   transition: 1s;
 }
 
-#numero-stanze,
-#numero-letti {
-  width: 35px;
-  margin-left: 15px;
-  padding: 5px;
-}
-
-.span-km {
-  transform: translateX(-20px);
-}
-
-.button-plus,
-.button-minus {
-  border: 2px solid #d8cfc4;
-  background-color: white;
-  border-radius: 50%;
-  position: absolute;
-  transition: 0.5s;
-}
-
-#raggio-ricerca .button-plus {
-  right: 25px;
-}
-#raggio-ricerca .button-minus {
-  left: 25px;
-}
-
-.button-plus {
-  right: 35px;
-}
-
-.button-minus {
-  left: 35px;
-}
-
-.button-minus:hover,
-.button-plus:hover {
-  border-color: #8b8589;
-}
-
-.button-plus i,
-.button-minus i {
-  color: #d8cfc4;
-  transition: 0.3s;
-}
-
-.button-plus:active i,
-.button-minus:active i {
-  color: #8b8589;
-}
-
-.servizi {
-  margin-bottom: 0.3rem;
-  border: 3px solid rgb(255, 255, 255);
-  padding: 0.5rem 0.3rem;
-  border-radius: 20px;
-  cursor: pointer;
-  background-color: white;
-  transition: 0.4s;
-}
-
-.servizi:hover {
-  border-color: #b3a49a;
-}
-
-input[type='checkbox']:checked + .servizi {
-  border-color: #8b8589;
-}
-
-.paragrafo {
-  position: absolute;
-  top: 0rem;
-  color: red;
-  white-space: nowrap;
-}
-
 a {
   text-decoration: none;
   color: rgb(255, 255, 255);
@@ -466,17 +404,10 @@ a i {
   transition: 0.5s;
 }
 
-a i:hover {
-  background-color: #b3a49a;
-}
-
 hr {
   border: 1px solid #b3a49a;
   margin-top: 0;
 }
-
-/* range input style */
-/* range input style */
 #raggio {
   -webkit-appearance: none;
   appearance: none;
@@ -484,30 +415,24 @@ hr {
   height: 6px;
   border-radius: 5px;
   outline: none;
-  background: linear-gradient(
-    to right,
-    #91c2c5 var(--range-percentage),
-    #e0e0e0 var(--range-percentage)
-  );
+  background: linear-gradient(to right,
+      #91c2c5 var(--range-percentage),
+      #e0e0e0 var(--range-percentage));
 }
 
 #raggio:hover {
-  background: linear-gradient(
-    to right,
-    #91c2c5 var(--range-percentage),
-    #cfcfcf var(--range-percentage)
-  );
+  background: linear-gradient(to right,
+      #91c2c5 var(--range-percentage),
+      #cfcfcf var(--range-percentage));
 }
 
 /* Track personalizzato */
 #raggio::-webkit-slider-runnable-track {
   width: 100%;
   height: 6px;
-  background: linear-gradient(
-    to right,
-    #91c2c5 var(--range-percentage),
-    #e0e0e0 var(--range-percentage)
-  );
+  background: linear-gradient(to right,
+      #91c2c5 var(--range-percentage),
+      #e0e0e0 var(--range-percentage));
   border-radius: 5px;
 }
 
@@ -517,7 +442,8 @@ hr {
   appearance: none;
   width: 12px;
   height: 12px;
-  background: #9f8d7c; /* Colore tortora */
+  background: #9f8d7c;
+  /* Colore tortora */
   border-radius: 50%;
   cursor: pointer;
   margin-top: -3px;
