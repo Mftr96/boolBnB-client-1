@@ -146,7 +146,7 @@ export default {
         </div>
         <div class="col-lg-6 h-100">
           <div class="card h-100 shadow-sm relative">
-            <img class="absolute left" width="80px" src="/pin2.png" alt="" />
+            <img class="absolute left" width="80px" src="/pin5.png" alt="" />
             <div class="card-body piegata-destra">
               <h1 class="card-title display-5">{{ title }}</h1>
               <p class="card-text text-muted">
@@ -184,7 +184,7 @@ export default {
             <img
               class="absolute pin-mappa"
               width="80px"
-              src="/pin2.png"
+              src="/pin3.png"
               alt=""
             />
             <div class="ratio ratio-16x9 piegata maps">
@@ -202,7 +202,7 @@ export default {
             <img
               class="absolute contatti"
               width="80px"
-              src="/pin2.png"
+              src="/pin4.png"
               alt=""
             />
             <div class="card piegata">
@@ -267,9 +267,13 @@ export default {
 </template>
 
 <style scoped>
+.container {
+  max-width: 1600px;
+}
+
 .fixed {
   /* background: linear-gradient(130deg, #fff6e7, #d1e6ed); */
-  background-color: rgba(255, 255, 255, 0.605);
+  background: linear-gradient(130deg, #c3b49ba4, #94a7ae98);
   height: 4rem;
   position: fixed;
   z-index: 2;
@@ -279,7 +283,7 @@ export default {
 
 .apartment-detail {
   padding-top: 8rem;
-  /* background-image: url(/background-cork.jpg); */
+  background: linear-gradient(to bottom right, #d8cfc4, #f9f9f9 50%, #a0d8ef);
   z-index: 1;
   width: 100%;
   min-height: 100vh;
@@ -362,7 +366,7 @@ export default {
 }
 
 .title-map {
-  background-color: rgb(215, 199, 184);
+  background-color: rgb(255, 255, 255);
   border: 1px solid rgb(159, 145, 133);
   display: inline-block;
   padding: 0.3rem 1rem;

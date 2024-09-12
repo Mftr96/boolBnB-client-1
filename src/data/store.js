@@ -2,6 +2,7 @@ import { reactive } from 'vue';
 
 const store = reactive({
   loadingScreen: false,
+  noApartment: true,
   searchApartment: [],
   servizi_bnb: [
     { title: 'Wi-Fi', icon: '<i class="fa-solid fa-wifi"></i>' },

@@ -138,6 +138,7 @@ export default {
         this.visible = true;
         // this.store.searchApartment = [];
       } else {
+        this.store.noApartment = false;
         this.visible = false;
         axios
           .get(
@@ -566,7 +567,7 @@ input[type='number']::-webkit-outer-spin-button {
 
 .app-search-filters {
   width: 100%;
-  /* min-height: 10rem; */
+  padding-top: 0.5rem;
   display: flex;
   align-items: center;
   padding-bottom: 1rem;
@@ -883,6 +884,9 @@ hr {
   }
   .filter-side {
     padding-top: calc(53px + 88.38px);
+  }
+  .filter-show {
+    font-size: 1rem;
   }
 }
 

@@ -25,7 +25,7 @@ export default {
       visible: false,
       errors: null,
       isActiveStanze: false,
-      newInputIndirizzo: "",
+      newInputIndirizzo: '',
     };
   },
 
@@ -38,7 +38,6 @@ export default {
   },
 
   methods: {
-
     assistenzaIndirizzo(indirizzo) {
       // const url_tomtom = `https://api.tomtom.com/search/2/search/${encodeURIComponent(
       //   indirizzo
@@ -48,7 +47,9 @@ export default {
 
       const url_tomtom = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(
         indirizzo
-      )}.json?key=${this.apiKey}&typeahead=true&limit=5&countrySet=IT&entityTypeSet=Municipality`;
+      )}.json?key=${
+        this.apiKey
+      }&typeahead=true&limit=5&countrySet=IT&entityTypeSet=Municipality`;
 
       // ricerca axios
 
@@ -77,84 +78,88 @@ export default {
     },
 
     getLastWord(wordsString) {
-      var arrayParole = wordsString.split(" ");
-      return (arrayParole[arrayParole.length - 1]);
+      var arrayParole = wordsString.split(' ');
+      return arrayParole[arrayParole.length - 1];
       // return arrayParole[arrayParole.length - 1];
     },
 
     searchRequest() {
-    this.errors = [];
-    if (!this.inputIndirizzo) {
-      this.visible = true;
-      // this.store.searchApartment = [];
-    } else {
-      this.visible = false;
-      axios
-        .get(
-          `https://api.tomtom.com/search/2/geocode/${this.inputIndirizzo}.json?key=RUfkTtEK0CYbHBG3YE2RSEslSRGAWZcu&countrySet=IT`
-        )
-        .then((response) => {
-          this.coordinates = response.data.results[0].position;
-          console.log(this.searchData);
+      this.errors = [];
+      if (!this.inputIndirizzo) {
+        this.visible = true;
+        // this.store.searchApartment = [];
+      } else {
+        this.store.noApartment = false;
+        this.visible = false;
+        axios
+          .get(
+            `https://api.tomtom.com/search/2/geocode/${this.inputIndirizzo}.json?key=RUfkTtEK0CYbHBG3YE2RSEslSRGAWZcu&countrySet=IT`
+          )
+          .then((response) => {
+            this.coordinates = response.data.results[0].position;
+            console.log(this.searchData);
 
-          this.$router.push({
-            name: 'search',
-            query: {
-              indirizzo: this.inputIndirizzo,
-              latitude: this.coordinates.lat,
-              longitude: this.coordinates.lon,
-              radius: this.inputRaggio,
-              beds: this.inputLetti,
-              rooms: this.inputCamere,
-              services: this.inputServizi.join(','),
-            },
-          });
+            this.$router.push({
+              name: 'search',
+              query: {
+                indirizzo: this.inputIndirizzo,
+                latitude: this.coordinates.lat,
+                longitude: this.coordinates.lon,
+                radius: this.inputRaggio,
+                beds: this.inputLetti,
+                rooms: this.inputCamere,
+                services: this.inputServizi.join(','),
+              },
+            });
 
-          const url = `http://127.0.0.1:8000/api/search?latitude=${this.coordinates.lat
-            }&longitude=${this.coordinates.lon}&radius=${this.inputRaggio
-            }&beds=${this.inputLetti}&rooms=${this.inputCamere
+            const url = `http://127.0.0.1:8000/api/search?latitude=${
+              this.coordinates.lat
+            }&longitude=${this.coordinates.lon}&radius=${
+              this.inputRaggio
+            }&beds=${this.inputLetti}&rooms=${
+              this.inputCamere
             }&services=${this.inputServizi.join(',')}`;
 
-          console.log(url);
+            console.log(url);
 
-          axios
-            .get(url)
-            .then((response) => {
-              this.store.searchApartment = response.data.results;
-              console.log(response);
-              this.errors = response.data.errors.rooms;
-            })
-            .catch((error) => {
-              console.log('errore');
-            });
-        });
-    }
+            axios
+              .get(url)
+              .then((response) => {
+                this.store.searchApartment = response.data.results;
+                console.log(response);
+                this.errors = response.data.errors.rooms;
+              })
+              .catch((error) => {
+                console.log('errore');
+              });
+          });
+      }
+    },
+    loadData() {
+      this.inputIndirizzo = this.$route.query.indirizzo;
+      this.inputCamere = this.$route.query.rooms ? this.$route.query.rooms : 1;
+      this.inputLetti = this.$route.query.beds ? this.$route.query.beds : 1;
+      this.inputRaggio = this.$route.query.radius
+        ? this.$route.query.radius
+        : 20;
+      if (this.$route.query.services) {
+        this.inputServizi = this.$route.query.services.split(',').map(Number);
+      }
+    },
   },
-  loadData() {
-    this.inputIndirizzo = this.$route.query.indirizzo;
-    this.inputCamere = this.$route.query.rooms ? this.$route.query.rooms : 1;
-    this.inputLetti = this.$route.query.beds ? this.$route.query.beds : 1;
-    this.inputRaggio = this.$route.query.radius
-      ? this.$route.query.radius
-      : 20;
-    if (this.$route.query.services) {
-      this.inputServizi = this.$route.query.services.split(',').map(Number);
-    }
+  mounted() {
+    this.loadData();
+    const url = `http://127.0.0.1:8000/api/apartments`;
+    axios
+      .get(url)
+      .then((response) => {
+        this.store.homepageContent = response.data.results.data;
+        console.log(this.store.homepageContent);
+      })
+      .catch((error) => {
+        console.log('errore in caricamento index');
+      });
   },
-},
-mounted() {
-  this.loadData();
-  const url = `http://127.0.0.1:8000/api/apartments`;
-  axios
-    .get(url)
-    .then((response) => {
-      this.store.homepageContent = response.data.results.data;
-      console.log(this.store.homepageContent);
-    })
-    .catch((error) => {
-      console.log('errore in caricamento index');
-    });
-},
 };
 </script>
 
@@ -165,10 +170,22 @@ mounted() {
         <div class="search-bar">
           <!-------------------- indirizzo --------------------->
           <div class="suggerimenti-indirizzo">
-            <input class="" id="indirizzo" list="suggestion" type="text" placeholder="Inserisci una città"
-              v-model="inputIndirizzo" @focus="isActive = true" @blur="timeoutShow" autocomplete="off" />
+            <input
+              class=""
+              id="indirizzo"
+              list="suggestion"
+              type="text"
+              placeholder="Inserisci una città"
+              v-model="inputIndirizzo"
+              @focus="isActive = true"
+              @blur="timeoutShow"
+              autocomplete="off"
+            />
             <ul v-show="apiSuggestions.length > 0 && isActive == true">
-              <li @click="writeAddress(singleAddress, $event)" v-for="(singleAddress, i) in apiSuggestions">
+              <li
+                @click="writeAddress(singleAddress, $event)"
+                v-for="(singleAddress, i) in apiSuggestions"
+              >
                 <i class="fa-solid fa-location-dot"></i>
                 <span>{{ singleAddress }}</span>
               </li>
@@ -176,31 +193,45 @@ mounted() {
             <p v-show="visible" class="paragrafo">Inserisci una città</p>
           </div>
           <!-------------------- Tasto ricerca --------------------->
-          <router-link :to="{ name: 'search' }" @click="searchRequest()" class="buttonSearch">
+          <router-link
+            :to="{ name: 'search' }"
+            @click="searchRequest()"
+            class="buttonSearch"
+          >
             <i id="searchIcon" class="fa-solid fa-magnifying-glass"></i>
           </router-link>
         </div>
       </div>
-
 
       <!-- <p v-for="error in errors" class="paragrafo">{{ error }}</p> -->
     </nav>
   </header>
   <hr />
   <div class="apartmentsContainer" :class="{ 'opacity-zero': isLoading }">
-
     <div class="apartmentsWrapper">
-
-      <div class="apartmentCard" v-for="apartment in store.homepageContent" :key="apartment.id">
+      <div
+        class="apartmentCard"
+        v-for="apartment in store.homepageContent"
+        :key="apartment.id"
+      >
         <router-link :to="`/search/${apartment.title}`" class="text-dark">
-          <img :src="apartment.image" width="100" class="cardImg" :alt="apartment.image" />
+          <img
+            :src="apartment.image"
+            width="100"
+            class="cardImg"
+            :alt="apartment.image"
+          />
           <div class="cardText">
             <div class="detailContainer">
-              <span class="apartmentTitle apartmentDetail">{{ apartment.title }}</span>
+              <span class="apartmentTitle apartmentDetail">{{
+                apartment.title
+              }}</span>
             </div>
             <div class="detailContainer">
               <i class="fa-solid fa-map-location-dot"></i>
-              <span class="apartmentDetail">{{ getLastWord(apartment.address_full) }}</span>
+              <span class="apartmentDetail">{{
+                getLastWord(apartment.address_full)
+              }}</span>
             </div>
             <div class="detailContainer">
               <i class="fas fa-door-open"></i>
@@ -211,12 +242,9 @@ mounted() {
               <span class="apartmentDetail">{{ apartment.bathrooms }}</span>
             </div>
           </div>
-
         </router-link>
       </div>
-
     </div>
-
   </div>
 </template>
 
@@ -245,7 +273,7 @@ header {
 .search-bar {
   display: inline-flex;
   height: 5rem;
-  
+
   min-width: 18rem;
   background-color: white;
   border-radius: 30px;
