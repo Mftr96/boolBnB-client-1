@@ -246,11 +246,6 @@ export default {
 </template>
 
 <style scoped>
-.height {
-  height: 100vh;
-  overflow: auto;
-}
-
 .container {
   margin-bottom: 2rem;
   max-width: 1600px;
