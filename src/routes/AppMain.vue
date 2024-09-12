@@ -5,7 +5,7 @@ import { RouterLink } from 'vue-router';
 import AppHeader from '../components/AppHeader.vue';
 
 export default {
-  name: 'AppSearchFilters',
+  name: 'AppMain',
 
   components: {
     AppHeader,
@@ -101,7 +101,6 @@ export default {
       event.stopPropagation();
       this.inputIndirizzo = actualAddress;
       this.isActive = false;
-      this.validCity = true;
     },
 
     timeoutShow() {
@@ -116,61 +115,44 @@ export default {
       // return arrayParole[arrayParole.length - 1];
     },
 
-    searchRequest() {
-      console.log(this.validCity);
+    searchRequest(inputIndirizzo) {
       this.errors = [];
-      if (this.validCity) {
-        // Eseguito se l'input è valido
-        if (!this.inputIndirizzo) {
-          this.visible = true;
-          // this.store.searchApartment = [];
-        } else {
-          this.store.noApartment = false;
-          this.visible = false;
+      // Eseguito se l'input è valido
+      this.store.noApartment = false;
+      this.visible = false;
+      axios
+        .get(
+          `https://api.tomtom.com/search/2/geocode/${inputIndirizzo}.json?key=RUfkTtEK0CYbHBG3YE2RSEslSRGAWZcu&countrySet=IT`
+        )
+        .then((response) => {
+          this.coordinates = response.data.results[0].position;
+          console.log(this.searchData);
+
+          this.$router.push({
+            name: 'search',
+            query: {
+              latitude: this.coordinates.lat,
+              longitude: this.coordinates.lon,
+              radius: this.inputRaggio,
+            },
+          });
+
+          const url = `http://127.0.0.1:8000/api/search?latitude=${this.coordinates.lat
+            }&longitude=${this.coordinates.lon}&radius=20.join(',')}`;
+
+          console.log(url);
+
           axios
-            .get(
-              `https://api.tomtom.com/search/2/geocode/${this.inputIndirizzo}.json?key=RUfkTtEK0CYbHBG3YE2RSEslSRGAWZcu&countrySet=IT`
-            )
+            .get(url)
             .then((response) => {
-              this.coordinates = response.data.results[0].position;
-              console.log(this.searchData);
-
-              this.$router.push({
-                name: 'search',
-                query: {
-                  indirizzo: this.inputIndirizzo,
-                  latitude: this.coordinates.lat,
-                  longitude: this.coordinates.lon,
-                  radius: this.inputRaggio,
-                  beds: this.inputLetti,
-                  rooms: this.inputCamere,
-                  services: this.inputServizi.join(','),
-                },
-              });
-
-              const url = `http://127.0.0.1:8000/api/search?latitude=${this.coordinates.lat
-                }&longitude=${this.coordinates.lon}&radius=20.join(',')}`;
-
-              console.log(url);
-
-              axios
-                .get(url)
-                .then((response) => {
-                  this.store.searchApartment = response.data.results;
-                  console.log(response);
-                  this.errors = response.data.errors.rooms;
-                })
-                .catch((error) => {
-                  console.log('errore');
-                });
+              this.store.searchApartment = response.data.results;
+              console.log(response);
+              this.errors = response.data.errors.rooms;
+            })
+            .catch((error) => {
+              console.log('errore');
             });
-        }
-
-      }
-      else {
-        //Eseguito se l'input non è valido
-        document.getElementById("errNoCittà").setAttribute("style", "display: block;")
-      }
+        });
     },
     loadData() {
       this.inputIndirizzo = this.$route.query.indirizzo;
@@ -204,7 +186,7 @@ export default {
   <div class="fixed">
     <AppHeader />
   </div>
-  <div id="searchContainer">
+  <section id="searchContainer">
     <div id="searchWrapper">
       <!-- @mousemove="moveBackgroundImage" -->
 
@@ -219,9 +201,9 @@ export default {
             <input class="" id="indirizzo" list="suggestion" type="text" placeholder="Inserisci una città"
               v-model="inputIndirizzo" @focus="isActive = true" @blur="timeoutShow" autocomplete="off" />
             <ul v-show="apiSuggestions.length > 0 && isActive == true">
-              <li @click="writeAddress(singleAddress, $event)" v-for="(singleAddress, i) in apiSuggestions">
-                <i class="fa-solid fa-location-dot"></i>
-                <router-link :to="{ name: 'search' }" @click="searchRequest()" class="buttonSearch">
+              <li v-for="(singleAddress, i) in apiSuggestions" @click="searchRequest(singleAddress)">
+                <router-link :to="{ name: 'search' }" class="buttonSearch">
+                  <i class="fa-solid fa-location-dot"></i>
                   <span>{{ singleAddress }}</span>
                 </router-link>
               </li>
@@ -232,7 +214,7 @@ export default {
       </div>
       <p id="errNoCittà">Seleziona una città trà i suggerimenti di ricerca.</p>
     </div>
-  </div>
+  </section>
 
   <section id="apartmentsArea">
     <p id="titoloSezioneCards">Appartamenti in rilievo:</p>
@@ -274,11 +256,25 @@ export default {
 
 
 <style scoped>
+a {
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+}
+a i {
+  margin-right: -0.8rem;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  transition: 0.5s;
+}
 .fixed {
   background: linear-gradient(130deg, #c3b49ba4, #94a7ae98);
   height: 4rem;
   position: fixed;
-  top: 0%;  
+  top: 0%;
   z-index: 999;
   width: 100%;
   border-bottom: 2px solid #a09d9fc2;
@@ -289,15 +285,19 @@ input {
 }
 
 #searchContainer {
-  height: 40rem;
+  height: 80vh;
   margin: 4rem 0 0 0;
   width: 100%;
 }
 
 #searchWrapper {
+  height: 100%;
   position: relative;
   overflow: visible;
-  padding: calc(20rem - 2.5rem) 0 calc(20rem - 2.5rem) 0;
+  display: flex;
+  justify-content: center;
+  padding-top: 25vh;
+  /* padding: calc(20rem - 2.5rem) 0 calc(20rem - 2.5rem) 0; */
   margin: 0;
 }
 
@@ -305,7 +305,7 @@ input {
   position: fixed;
   top: -180px;
   left: 0%;
-  width: 2000px;
+  width: 100%;
   height: 100vh;
   background-image: url('/public/apartment_background1.jpg');
   background-size: cover;
@@ -332,11 +332,14 @@ input {
   margin-bottom: 0.5rem;
   z-index: 10;
 }
+
 #searchBar:hover {
   border: 1px solid #b3a49a;
 }
 
 #indirizzo {
+  position: relative;
+  z-index: 2;
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 500;
@@ -349,13 +352,11 @@ input {
 }
 
 .buttonSearch {
-  background-color: rgb(0, 0, 0);
-  border-radius: 25px;
-  height: 50px;
-  width: 50px;
   display: flex;
   align-items: center;
+  gap: 1rem;
   cursor: pointer;
+  color: black;
 }
 
 .suggerimenti-indirizzo {
@@ -388,15 +389,17 @@ ul {
 }
 
 li {
+  height: 3rem;
   list-style: none;
   margin: 0.2rem 1rem;
   text-align: start;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: flex;
-  align-items: center;
+  /* display: flex;
+  align-items: center; */
   border-radius: 10px;
+  position: relative;
 }
 
 li:hover {
@@ -408,6 +411,8 @@ li:hover {
 #apartmentsArea {
   position: relative;
   z-index: 1;
+  background: rgb(0, 0, 0);
+  background: linear-gradient(0deg, rgba(0,0,0,0.5) 93%, rgba(0,0,0,0.0) 100%);
 }
 
 #titoloSezioneCards {
@@ -420,9 +425,9 @@ li:hover {
   font-weight: 600;
   text-align: center;
   z-index: 1;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   border-radius: 2rem;
-  color: black;
+  color: white;
 }
 
 .apartmentsContainer {
@@ -444,7 +449,7 @@ li:hover {
   width: 33rem;
   height: 23rem;
   border: 1px solid #8b8589;
-  box-shadow: 0.7vw 0.7vw 1vw #8b8589;
+  box-shadow: 0.8rem 0.8rem 1rem rgba(0,0,0,1);
   position: relative;
   border-radius: 2rem;
   overflow: hidden;
@@ -507,22 +512,6 @@ li:hover {
 
 .dettagli {
   display: flex;
-}
-
-a {
-  text-decoration: none;
-  color: rgb(255, 255, 255);
-}
-
-a i {
-  margin-right: -0.8rem;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  transition: 0.5s;
 }
 
 /* Altri stili */
