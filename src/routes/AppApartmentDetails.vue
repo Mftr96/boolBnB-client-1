@@ -112,8 +112,13 @@ export default {
         };
         console.log(data);
 
-        //   await axios.post('URL_DEL_TUO_BACKEND', data);
-        //   console.log('Dati inviati con successo:', data);
+        await axios.post('http://127.0.0.1:8000/api/statistics', data)
+        .then((response)=>{
+          console.log('Dati inviati con successo:', response);
+          
+        }).catch((error)=>{
+          console.log(error.response);
+        });
       } catch (error) {
         console.error("Errore nell'invio dei dati:", error);
       }
@@ -285,6 +290,7 @@ export default {
       </div>
     </div>
   </div>
+  
 </template>
 
 <style scoped>
