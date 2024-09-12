@@ -28,7 +28,7 @@ export default {
       visible: false,
       errors: null,
       isActiveStanze: false,
-      newInputIndirizzo: "",
+      newInputIndirizzo: '',
       validCity: false,
     };
   },
@@ -69,7 +69,9 @@ export default {
 
       const url_tomtom = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(
         indirizzo
-      )}.json?key=${this.apiKey}&typeahead=true&limit=5&countrySet=IT&entityTypeSet=Municipality`;
+      )}.json?key=${
+        this.apiKey
+      }&typeahead=true&limit=5&countrySet=IT&entityTypeSet=Municipality`;
 
       // ricerca axios
 
@@ -99,28 +101,29 @@ export default {
     },
 
     getLastWord(wordsString) {
-      var arrayParole = wordsString.split(" ");
-      return (arrayParole[arrayParole.length - 1]);
+      var arrayParole = wordsString.split(' ');
+      return arrayParole[arrayParole.length - 1];
       // return arrayParole[arrayParole.length - 1];
     },
 
     searchRequest() {
-      console.log(this.validCity);
+        console.log(this.validCity);
       this.errors = [];
-      if (this.validCity) {
+        if (this.validCity) {
         // Eseguito se l'input è valido
         // if (!this.inputIndirizzo) {
-        //   this.visible = true;
-        //   // this.store.searchApartment = [];
-        // } else {
-        //   this.visible = false;
-        //   axios
-        //     .get(
-        //       `https://api.tomtom.com/search/2/geocode/${this.inputIndirizzo}.json?key=RUfkTtEK0CYbHBG3YE2RSEslSRGAWZcu&countrySet=IT`
-        //     )
-        //     .then((response) => {
-        //       this.coordinates = response.data.results[0].position;
-        //       console.log(this.searchData);
+          //   this.visible = true;
+          //   // this.store.searchApartment = [];
+          // } else {
+          //   this.store.noApartment = false;
+          //   this.visible = false;
+          //   axios
+          //     .get(
+          //       `https://api.tomtom.com/search/2/geocode/${this.inputIndirizzo}.json?key=RUfkTtEK0CYbHBG3YE2RSEslSRGAWZcu&countrySet=IT`
+          //     )
+          //     .then((response) => {
+          //       this.coordinates = response.data.results[0].position;
+          //       console.log(this.searchData);
 
         //       this.$router.push({
         //         name: 'search',
@@ -205,10 +208,22 @@ export default {
         <div id="searchBar">
           <!-------------------- Input città --------------------->
           <div class="suggerimenti-indirizzo">
-            <input class="" id="indirizzo" list="suggestion" type="text" placeholder="Inserisci una città"
-              v-model="inputIndirizzo" @focus="isActive = true" @blur="timeoutShow" autocomplete="off" />
+            <input
+              class=""
+              id="indirizzo"
+              list="suggestion"
+              type="text"
+              placeholder="Inserisci una città"
+              v-model="inputIndirizzo"
+              @focus="isActive = true"
+              @blur="timeoutShow"
+              autocomplete="off"
+            />
             <ul v-show="apiSuggestions.length > 0 && isActive == true">
-              <li @click="writeAddress(singleAddress, $event)" v-for="(singleAddress, i) in apiSuggestions">
+              <li
+                @click="writeAddress(singleAddress, $event)"
+                v-for="(singleAddress, i) in apiSuggestions"
+              >
                 <i class="fa-solid fa-location-dot"></i>
                 <span>{{ singleAddress }}</span>
               </li>
@@ -216,7 +231,11 @@ export default {
             <p v-show="visible" class="paragrafo">Inserisci una città</p>
           </div>
           <!-------------------- Tasto ricerca --------------------->
-          <router-link :to="{ name: 'search' }" @click="searchRequest()" class="buttonSearch">
+          <router-link
+            :to="{ name: 'search' }"
+            @click="searchRequest()"
+            class="buttonSearch"
+          >
             <i id="searchIcon" class="fa-solid fa-magnifying-glass"></i>
           </router-link>
         </div>
