@@ -3,12 +3,14 @@ import axios from 'axios';
 import store from '../data/store.js';
 import { RouterLink } from 'vue-router';
 import AppHeader from '../components/AppHeader.vue';
+import Appfooter from '../components/Appfooter.vue'
 
 export default {
   name: 'AppMain',
 
   components: {
     AppHeader,
+    Appfooter,
   },
 
   data() {
@@ -250,6 +252,9 @@ export default {
 
     </div>
   </section>
+  <section id="containerFooter">
+    <Appfooter></Appfooter>
+  </section>
 </template>
 
 
@@ -431,8 +436,9 @@ li:hover {
 }
 
 .apartmentsContainer {
-  margin: 2vw auto;
+  margin: 2vw auto 0 auto;
   width: 90vw;
+  padding-bottom: 3rem;
 }
 
 .apartmentsWrapper {
@@ -549,5 +555,11 @@ li:hover {
 /* Stili per caricamento */
 .opacity-zero {
   opacity: 0;
+}
+/* Stili footer */
+#containerFooter {
+  position: relative;
+  z-index: 10;
+  margin: 0;
 }
 </style>
