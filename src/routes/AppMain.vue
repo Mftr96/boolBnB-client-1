@@ -139,12 +139,9 @@ export default {
             },
           });
 
-          const url = `http://127.0.0.1:8000/api/search?latitude=${
-              this.coordinates.lat
-            }&longitude=${this.coordinates.lon}&radius=${
-              this.inputRaggio
-            }&beds=${this.inputLetti}&rooms=${
-              this.inputCamere
+          const url = `http://127.0.0.1:8000/api/search?latitude=${this.coordinates.lat
+            }&longitude=${this.coordinates.lon}&radius=${this.inputRaggio
+            }&beds=${this.inputLetti}&rooms=${this.inputCamere
             }&services=${this.inputServizi.join(',')}`;
           console.log(url);
 
@@ -248,6 +245,10 @@ export default {
                 <span class="apartmentDetail">{{ apartment.bathrooms }}</span>
               </div>
             </div>
+              <div v-show="apartment.sponsorships && apartment.sponsorships.length > 0
+                " class="badge">
+                Sponsorizzato
+              </div>
 
           </router-link>
         </div>
@@ -269,6 +270,7 @@ a {
   text-decoration: none;
   color: rgb(255, 255, 255);
 }
+
 a i {
   margin-right: -0.8rem;
   width: 50px;
@@ -279,6 +281,7 @@ a i {
   border-radius: 50%;
   transition: 0.5s;
 }
+
 .fixed {
   background: linear-gradient(130deg, #c3b49ba4, #94a7ae98);
   height: 4rem;
@@ -421,7 +424,7 @@ li:hover {
   position: relative;
   z-index: 1;
   background: rgb(0, 0, 0);
-  background: linear-gradient(0deg, rgba(0,0,0,0.5) 93%, rgba(0,0,0,0.0) 100%);
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5) 93%, rgba(0, 0, 0, 0.0) 100%);
 }
 
 #titoloSezioneCards {
@@ -459,11 +462,19 @@ li:hover {
   width: 33rem;
   height: 23rem;
   border: 1px solid #8b8589;
-  box-shadow: 0.8rem 0.8rem 1rem rgba(0,0,0,1);
+  box-shadow: 0.8rem 0.8rem 1rem rgba(0, 0, 0, 1);
   position: relative;
   border-radius: 2rem;
   overflow: hidden;
   transition: 0.4s;
+}
+
+.badge {
+  background-color: rgba(35, 68, 82, 0.5);
+  position: absolute;
+  bottom: 0.5rem;
+  right: 1rem;
+  border-radius: 1rem;
 }
 
 @media screen and (max-width: 700px) {
@@ -560,6 +571,7 @@ li:hover {
 .opacity-zero {
   opacity: 0;
 }
+
 /* Stili footer */
 #containerFooter {
   position: relative;
