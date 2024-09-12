@@ -44,21 +44,41 @@ export default {
         this.image = `http://127.0.0.1:8000/storage/${immagine}`;
       }
     },
+    // updateMapCoordinates() {
+    //   const margin = 0.002;
+    //   const lat = parseFloat(this.latitude);
+    //   const lon = parseFloat(this.longitude);
+
+    //   if (!isNaN(lat) && !isNaN(lon)) {
+    //     const bbox = `${(lon - margin).toFixed(6)},${(lat - margin).toFixed(
+    //       6
+    //     )},${(lon + margin).toFixed(6)},${(lat + margin).toFixed(6)}`;
+    //     this.coordinateMaps = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lon}`;
+    //     console.log(this.longitude + ' ' + this.latitude + ' ' + bbox);
+    //   } else {
+    //     console.error('Latitudine o Longitudine non valide');
+    //   }
+    // },
     updateMapCoordinates() {
-      const margin = 0.002;
       const lat = parseFloat(this.latitude);
       const lon = parseFloat(this.longitude);
 
       if (!isNaN(lat) && !isNaN(lon)) {
-        const bbox = `${(lon - margin).toFixed(6)},${(lat - margin).toFixed(
-          6
-        )},${(lon + margin).toFixed(6)},${(lat + margin).toFixed(6)}`;
-        this.coordinateMaps = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lon}`;
-        console.log(this.longitude + ' ' + this.latitude + ' ' + bbox);
+        // Inizializza la mappa TomTom
+        const map = tt.map({
+          key: 'hQniyYGsdO6E3G6qs7tOGNX2wpgxFccZ', // Sostituisci con la tua API Key
+          container: 'tomtom-map',
+          center: [lon, lat],
+          zoom: 12,
+        });
+
+        // Aggiungi un marker sulla mappa
+        const marker = new tt.Marker().setLngLat([lon, lat]).addTo(map);
       } else {
         console.error('Latitudine o Longitudine non valide');
       }
     },
+
     isValidEmail(email) {
       // Regular expression for validating email
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -208,7 +228,8 @@ export default {
               src="/pin3.png"
               alt=""
             />
-            <div class="ratio ratio-16x9 piegata maps">
+            <!-- <div class="ratio ratio-16x9 piegata maps">
+
               <h4 class="mt-3 title-map">Dove troverai la struttura</h4>
               <iframe
                 :src="coordinateMaps"
@@ -216,6 +237,11 @@ export default {
                 style="border: none"
                 allowfullscreen
               ></iframe>
+            </div> -->
+            <div class="ratio ratio-16x9 piegata maps">
+              <h4 class="mt-3 title-map">Dove troverai la struttura</h4>
+              <div id="tomtom-map" class=""></div>
+              <!-- Container per la mappa -->
             </div>
           </div>
 

@@ -81,7 +81,7 @@ export default {
 <template>
   <AppSearchFilters />
   <div class="container" :class="{ 'opacity-zero': isLoading }">
-    <div class="d-flex flex-column justify-content-center align-items-center">
+    <div class="enter d-flex flex-column align-items-center">
       <div v-show="store.noApartment" class="cerca-appartamento">
         Inizia la tua ricerca per un appartamento su misura
         <div class="home-animation">
@@ -211,6 +211,15 @@ export default {
   padding-top: 13rem;
 }
 
+.enter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Allinea gli elementi all'inizio */
+  height: auto; /* Imposta l'altezza dinamica basata sul contenuto */
+  padding-top: 2rem; /* Aggiungi un po' di padding per dare aria agli elementi */
+}
+
 .cerca-appartamento {
   display: flex;
   flex-direction: column;
@@ -221,10 +230,6 @@ export default {
   font-size: 3rem;
   max-width: 600px;
   color: #69c9f0;
-}
-
-.home-animation {
-  transform: scale(50%);
 }
 
 .card {
@@ -432,19 +437,10 @@ a {
 }
 
 /* --------------------------- home animation ------------------------------- */
-body {
-  background-color: #038fc7;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-  background-image: radial-gradient(circle, #038fc7, #026b95);
-  background-size: cover;
-  background-position: 50% 50%;
-}
 
 svg {
-  width: 66vw;
-  height: 66vh;
+  width: 20vw;
+  height: 20vh;
   /* margin-left: 16.666vw;
   margin-top: 16.666vh; */
 }
