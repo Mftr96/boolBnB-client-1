@@ -139,9 +139,13 @@ export default {
             },
           });
 
-          const url = `http://127.0.0.1:8000/api/search?latitude=${this.coordinates.lat
-            }&longitude=${this.coordinates.lon}&radius=20.join(',')}`;
-
+          const url = `http://127.0.0.1:8000/api/search?latitude=${
+              this.coordinates.lat
+            }&longitude=${this.coordinates.lon}&radius=${
+              this.inputRaggio
+            }&beds=${this.inputLetti}&rooms=${
+              this.inputCamere
+            }&services=${this.inputServizi.join(',')}`;
           console.log(url);
 
           axios
