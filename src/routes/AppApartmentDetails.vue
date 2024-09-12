@@ -44,21 +44,6 @@ export default {
         this.image = `http://127.0.0.1:8000/storage/${immagine}`;
       }
     },
-    // updateMapCoordinates() {
-    //   const margin = 0.002;
-    //   const lat = parseFloat(this.latitude);
-    //   const lon = parseFloat(this.longitude);
-
-    //   if (!isNaN(lat) && !isNaN(lon)) {
-    //     const bbox = `${(lon - margin).toFixed(6)},${(lat - margin).toFixed(
-    //       6
-    //     )},${(lon + margin).toFixed(6)},${(lat + margin).toFixed(6)}`;
-    //     this.coordinateMaps = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lon}`;
-    //     console.log(this.longitude + ' ' + this.latitude + ' ' + bbox);
-    //   } else {
-    //     console.error('Latitudine o Longitudine non valide');
-    //   }
-    // },
     updateMapCoordinates() {
       const lat = parseFloat(this.latitude);
       const lon = parseFloat(this.longitude);
