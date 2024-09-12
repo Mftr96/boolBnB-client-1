@@ -208,8 +208,11 @@ export default {
 </script>
 
 <template>
+  <!---------------------- filtri tablet ------------------------>
   <div class="filter-side" :class="{ 'filter-show': showFilterTablet }">
-    <div class="text-center mb-2">Servizi:</div>
+    <div class="text-center mb-2 mt-2">
+      <span class="fs-3">Servizi:</span>
+    </div>
 
     <!-------------------- Elenco servizi --------------------->
     <div class="d-flex flex-wrap gap-2 justify-content-start pb-2">
@@ -242,7 +245,8 @@ export default {
     </div>
   </div>
 
-  <div class="filter-side" :class="{ 'filter-show': showFilter }">
+  <!---------------------- filtri mobile ------------------------>
+  <div class="filter-side-mobile" :class="{ 'filter-show': showFilter }">
     <!-------------------- stanze --------------------->
     <div class="mobile d-flex flex-column justify-content-center">
       <div class="d-flex justify-content-between align-items-center">
@@ -344,7 +348,7 @@ export default {
       </router-link>
     </div>
   </div>
-
+  <!---------------------- filtri desktop ------------------------>
   <div class="fixed">
     <div class="sugar">
       <AppHeader />
@@ -455,12 +459,13 @@ export default {
                 <i class="fa-solid fa-magnifying-glass"></i>
               </router-link>
             </div>
-            <!------------------ Bottoni filtri ---------------------->
+            <!------------------ Bottoni filtri Mobile ---------------------->
             <div @click="filterToggle()" class="filters">
               <i class="fa-regular fa-pen-to-square"></i> Filtri
             </div>
+            <!------------------ Bottoni filtri Tablet---------------------->
             <div @click="filterToggleTablet()" class="filters-tablet">
-              Filtri
+              <span>Filtri</span>
             </div>
           </div>
           <!-------------------- Elenco servizi --------------------->
@@ -492,43 +497,66 @@ export default {
 .filters {
   border: 3px solid #ffffff;
   color: #8b8589;
-  width: 5rem;
-  border-radius: 10px;
+  border-radius: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 1.4rem;
-  height: 3rem;
+  height: 4rem;
   margin-left: 1rem;
   margin-bottom: 0.4rem;
   display: none;
-  background-color: white;
+  background-color: rgb(203, 197, 197);
   text-align: center;
+  padding: 0rem 1rem 0 5rem;
+  transform: translateX(-5rem) translateY(-1px);
 }
 
 .filters-tablet {
   border: 3px solid #ffffff;
   color: #8b8589;
-  width: 5rem;
-  border-radius: 10px;
+  border-radius: 30px;
   display: flex;
-  justify-content: center;
+  justify-content: end;
   align-items: center;
   font-size: 1.4rem;
-  height: 3rem;
+  height: 4rem;
   margin-left: 1rem;
   margin-bottom: 0.4rem;
   display: none;
-  background-color: white;
-  text-align: center;
+  background-color: rgb(203, 197, 197);
+  /* text-align: center; */
+  padding: 0rem 1rem 0 5rem;
+  transform: translateX(-5rem) translateY(-1px);
+  z-index: 1;
+  /* position: absolute;
+  right: -4rem;
+  top: 0px; */
 }
 
 .filter-side {
   padding-top: calc(45px + 209.18px);
   width: 100%;
+  /* min-height: 100vh; */
+  position: absolute;
+  background: linear-gradient(to bottom right, #d8cfc4, #f9f9f9 50%, #a0d8ef);
+  z-index: 1;
+  transform: translateX(-110%);
+  transition: 1s;
+  border-radius: 0 0 10px 10px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  position: fixed;
+  padding-bottom: 2rem;
+  box-shadow: 10px 10px 10px 5px;
+}
+
+.filter-side-mobile {
+  padding-top: calc(45px + 209.18px);
+  width: 100%;
   min-height: 100vh;
   position: absolute;
-  background-color: #e8ded7;
+  background: linear-gradient(to bottom right, #d8cfc4, #f9f9f9 50%, #a0d8ef);
   z-index: 1;
   transform: translateX(-100%);
   transition: 1s;
@@ -592,6 +620,8 @@ input[type='number']::-webkit-outer-spin-button {
   justify-content: center;
   text-align: center;
   margin-bottom: 0.5rem;
+  z-index: 3;
+  position: relative;
 }
 
 .buttonSearch {
@@ -605,10 +635,11 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 .buttonSearchMobile {
-  background-color: #9f8d7c;
+  border: 2px solid white;
+  background-color: rgb(203, 197, 197);
   border-radius: 30px;
   margin: 0.4px 0;
-  padding: 0 0.5rem 0 1rem;
+  padding: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -877,16 +908,26 @@ hr {
 }
 @media screen and (max-width: 995px) {
   .filters-tablet {
-    display: unset;
+    display: flex;
   }
   .elenco-servizi {
     display: none !important;
   }
+  .filter-side-mobile,
   .filter-side {
     padding-top: calc(53px + 88.38px);
   }
   .filter-show {
     font-size: 1rem;
+  }
+  .search-bar {
+    margin-left: 5rem;
+  }
+
+  .servizi:hover {
+    /* border-color: #b3a49a; */
+    transform: none;
+    box-shadow: none;
   }
 }
 
@@ -904,7 +945,7 @@ hr {
     display: none !important;
   }
   .filters {
-    display: unset;
+    display: flex;
   }
   .button-minus,
   .button-plus {

@@ -81,12 +81,11 @@ export default {
 <template>
   <AppSearchFilters />
   <div class="container" :class="{ 'opacity-zero': isLoading }">
-    <div class="d-flex flex-column justify-content-center align-items-center">
+    <div class="enter d-flex flex-column align-items-center">
       <div v-show="store.noApartment" class="cerca-appartamento">
-        Inizia la tua ricerca per un appartamento su misura
         <div class="home-animation">
           <svg
-            class="ha-logo loading"
+            class="ha-logo"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 10 10"
           >
@@ -121,6 +120,7 @@ export default {
             </g>
           </svg>
         </div>
+        Inizia la ricerca per trovare un appartamento su misura
       </div>
     </div>
     <div class="row g-4 flex-wrap">
@@ -157,7 +157,14 @@ export default {
               </div>
             </div>
             <hr />
-
+            <div
+              v-show="
+                apartment.sponsorships && apartment.sponsorships.length > 0
+              "
+              class="badge"
+            >
+              sponsorizzato
+            </div>
             <h6>Servizi</h6>
             <div class="servizi row">
               <div
@@ -181,7 +188,7 @@ export default {
                 v-if="apartment.services.length == 5"
                 class="altri-servizi col"
               >
-                <div>un altro servizio</div>
+                <!-- <div>un altro servizio</div> -->
               </div>
             </div>
           </div>
@@ -194,13 +201,42 @@ export default {
     class="loading-screen"
     :class="{ 'loading-show': isLoading }"
   >
+    <svg
+      class="ha-logo loading"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 10 10"
+    >
+      <path
+        class="house"
+        d="M1.9 8.5V5.3h-1l4-4.3 2.2 
+       2.1v-.6h1v1.7l1 1.1H7.9v3.2z"
+      />
+      <path
+        class="circut"
+        d="M5 8.5V4m0 3.5l1.6-1.6V4.3M5 
+       6.3L3.5 4.9v-.6m2.7.7l.4.4L7 
+       5M5.9 6.1v.5h.5M4.2 5v.5h-.8m1 
+       1.5v.6h-.6m1.2.8L3.6 6.7M5 
+       8.4l1-.9h.7M4.6 3.6L5 4l.4-.4"
+      />
+      <g>
+        <circle cx="5.5" cy="3.4" r="0.21" />
+        <circle cx="4.5" cy="3.4" r="0.21" />
+        <circle cx="6.6" cy="4.1" r="0.21" />
+        <circle cx="3.5" cy="4.1" r="0.21" />
+        <circle cx="4.2" cy="4.8" r="0.21" />
+        <circle cx="6.1" cy="4.8" r="0.21" />
+        <circle cx="7.1" cy="4.8" r="0.21" />
+        <circle cx="6.6" cy="6.6" r="0.21" />
+        <circle cx="5.9" cy="5.9" r="0.21" />
+        <circle cx="3.2" cy="5.5" r="0.21" />
+        <circle cx="3.5" cy="6.5" r="0.21" />
+        <circle cx="4.4" cy="6.8" r="0.21" />
+        <circle cx="3.6" cy="7.6" r="0.21" />
+        <circle cx="6.9" cy="7.5" r="0.21" />
+      </g>
+    </svg>
     <div class="loading-message">Caricamento appartamenti</div>
-    <div class="loader">
-      <div class="circle"></div>
-      <div class="circle"></div>
-      <div class="circle"></div>
-      <div class="circle"></div>
-    </div>
   </div>
 </template>
 
@@ -209,6 +245,15 @@ export default {
   margin-bottom: 2rem;
   max-width: 1600px;
   padding-top: 13rem;
+}
+
+.enter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Allinea gli elementi all'inizio */
+  height: auto; /* Imposta l'altezza dinamica basata sul contenuto */
+  padding-top: 2rem; /* Aggiungi un po' di padding per dare aria agli elementi */
 }
 
 .cerca-appartamento {
@@ -223,10 +268,6 @@ export default {
   color: #69c9f0;
 }
 
-.home-animation {
-  transform: scale(50%);
-}
-
 .card {
   position: relative;
   border-radius: 10px;
@@ -234,6 +275,12 @@ export default {
   background-color: white;
   transition: 0.5s;
   /* box-shadow: 5px 5px 10px 0px; */
+}
+
+.badge {
+  background-color: #69c9f0;
+  position: absolute;
+  top: 1rem;
 }
 
 .card:hover {
@@ -400,6 +447,10 @@ a {
   left: 50%;
   transform: translate(-50%, -50%);
   opacity: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .loading-show {
@@ -407,12 +458,11 @@ a {
 }
 
 .loading-message {
-  position: fixed;
   color: rgb(25, 172, 221);
   width: 400px;
   font-size: 2rem;
-  top: 30%;
-  left: -40%;
+  top: 100%;
+  left: 0;
 }
 
 .opacity-zero {
@@ -432,19 +482,10 @@ a {
 }
 
 /* --------------------------- home animation ------------------------------- */
-body {
-  background-color: #038fc7;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-  background-image: radial-gradient(circle, #038fc7, #026b95);
-  background-size: cover;
-  background-position: 50% 50%;
-}
 
 svg {
-  width: 66vw;
-  height: 66vh;
+  width: 20vw;
+  height: 20vh;
   /* margin-left: 16.666vw;
   margin-top: 16.666vh; */
 }
