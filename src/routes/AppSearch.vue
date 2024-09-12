@@ -79,168 +79,175 @@ export default {
 </script>
 
 <template>
-  <AppSearchFilters />
-  <div class="container" :class="{ 'opacity-zero': isLoading }">
-    <div class="enter d-flex flex-column align-items-center">
-      <div v-show="store.noApartment" class="cerca-appartamento">
-        <div class="home-animation">
-          <svg
-            class="ha-logo"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 10 10"
-          >
-            <path
-              class="house"
-              d="M1.9 8.5V5.3h-1l4-4.3 2.2 
+  <div class="height">
+    <AppSearchFilters />
+    <div class="container" :class="{ 'opacity-zero': isLoading }">
+      <div class="enter d-flex flex-column align-items-center">
+        <div v-show="store.noApartment" class="cerca-appartamento">
+          <div class="home-animation">
+            <svg
+              class="ha-logo"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 10 10"
+            >
+              <path
+                class="house"
+                d="M1.9 8.5V5.3h-1l4-4.3 2.2 
          2.1v-.6h1v1.7l1 1.1H7.9v3.2z"
-            />
-            <path
-              class="circut"
-              d="M5 8.5V4m0 3.5l1.6-1.6V4.3M5 
+              />
+              <path
+                class="circut"
+                d="M5 8.5V4m0 3.5l1.6-1.6V4.3M5 
          6.3L3.5 4.9v-.6m2.7.7l.4.4L7 
          5M5.9 6.1v.5h.5M4.2 5v.5h-.8m1 
          1.5v.6h-.6m1.2.8L3.6 6.7M5 
          8.4l1-.9h.7M4.6 3.6L5 4l.4-.4"
-            />
-            <g>
-              <circle cx="5.5" cy="3.4" r="0.21" />
-              <circle cx="4.5" cy="3.4" r="0.21" />
-              <circle cx="6.6" cy="4.1" r="0.21" />
-              <circle cx="3.5" cy="4.1" r="0.21" />
-              <circle cx="4.2" cy="4.8" r="0.21" />
-              <circle cx="6.1" cy="4.8" r="0.21" />
-              <circle cx="7.1" cy="4.8" r="0.21" />
-              <circle cx="6.6" cy="6.6" r="0.21" />
-              <circle cx="5.9" cy="5.9" r="0.21" />
-              <circle cx="3.2" cy="5.5" r="0.21" />
-              <circle cx="3.5" cy="6.5" r="0.21" />
-              <circle cx="4.4" cy="6.8" r="0.21" />
-              <circle cx="3.6" cy="7.6" r="0.21" />
-              <circle cx="6.9" cy="7.5" r="0.21" />
-            </g>
-          </svg>
+              />
+              <g>
+                <circle cx="5.5" cy="3.4" r="0.21" />
+                <circle cx="4.5" cy="3.4" r="0.21" />
+                <circle cx="6.6" cy="4.1" r="0.21" />
+                <circle cx="3.5" cy="4.1" r="0.21" />
+                <circle cx="4.2" cy="4.8" r="0.21" />
+                <circle cx="6.1" cy="4.8" r="0.21" />
+                <circle cx="7.1" cy="4.8" r="0.21" />
+                <circle cx="6.6" cy="6.6" r="0.21" />
+                <circle cx="5.9" cy="5.9" r="0.21" />
+                <circle cx="3.2" cy="5.5" r="0.21" />
+                <circle cx="3.5" cy="6.5" r="0.21" />
+                <circle cx="4.4" cy="6.8" r="0.21" />
+                <circle cx="3.6" cy="7.6" r="0.21" />
+                <circle cx="6.9" cy="7.5" r="0.21" />
+              </g>
+            </svg>
+          </div>
+          Inizia la ricerca per trovare un appartamento su misura
         </div>
-        Inizia la ricerca per trovare un appartamento su misura
       </div>
-    </div>
-    <div class="row g-4 flex-wrap">
-      <div
-        v-for="(apartment, i) in store.searchApartment"
-        class="col-12 col-md-6 col-lg-4 col-xl-3"
-      >
-        <router-link :to="`/search/${apartment.title}`" class="card h-100">
-          <img
-            :src="getImage(apartment.image)"
-            class="card-img-top"
-            alt="..."
-          />
-          <div class="card-body">
-            <h5 class="card-title">{{ apartment.title }}</h5>
-            <div class="row">
-              <div class="col-6 dettagli">
-                <p class="">
-                  <i class="fas fa-door-open"></i> {{ apartment.rooms }}
-                  {{ getRightWords(stanze, apartment.rooms) }}
-                </p>
-                <p class="">
-                  <i class="fas fa-bed"></i> {{ apartment.beds }}
-                  {{ getRightWords(letti, apartment.beds) }}
-                </p>
-                <p class="">
-                  <i class="fas fa-bath"></i> {{ apartment.bathrooms }}
-                  {{ getRightWords(bagni, apartment.bathrooms) }}
-                </p>
-              </div>
-              <div class="col-6 d-flex flex-column align-items-center">
-                <div><i class="fa-solid fa-location-dot location"></i></div>
-                {{ apartment.distance.toFixed(2) }} Km dal centro
-              </div>
-            </div>
-            <hr />
-            <div
-              v-show="
-                apartment.sponsorships && apartment.sponsorships.length > 0
-              "
-              class="badge"
-            >
-              sponsorizzato
-            </div>
-            <h6>Servizi</h6>
-            <div class="servizi row">
-              <div
-                v-for="(servizio, i) in apartment.services.slice(0, 4)"
-                class="col-6 servizio"
-              >
-                <div class="center">
-                  <span v-html="getServizio(servizio.id).icon"></span>
-                  <span class="nome-servizio">{{
-                    getServizio(servizio.id).title
-                  }}</span>
+      <div class="row g-4 flex-wrap">
+        <div
+          v-for="(apartment, i) in store.searchApartment"
+          class="col-12 col-md-6 col-lg-4 col-xl-3"
+        >
+          <router-link :to="`/search/${apartment.title}`" class="card h-100">
+            <img
+              :src="getImage(apartment.image)"
+              class="card-img-top"
+              alt="..."
+            />
+            <div class="card-body">
+              <h5 class="card-title">{{ apartment.title }}</h5>
+              <div class="row">
+                <div class="col-6 dettagli">
+                  <p class="">
+                    <i class="fas fa-door-open"></i> {{ apartment.rooms }}
+                    {{ getRightWords(stanze, apartment.rooms) }}
+                  </p>
+                  <p class="">
+                    <i class="fas fa-bed"></i> {{ apartment.beds }}
+                    {{ getRightWords(letti, apartment.beds) }}
+                  </p>
+                  <p class="">
+                    <i class="fas fa-bath"></i> {{ apartment.bathrooms }}
+                    {{ getRightWords(bagni, apartment.bathrooms) }}
+                  </p>
+                </div>
+                <div class="col-6 d-flex flex-column align-items-center">
+                  <div><i class="fa-solid fa-location-dot location"></i></div>
+                  {{ apartment.distance.toFixed(2) }} Km dal centro
                 </div>
               </div>
+              <hr />
               <div
-                v-if="apartment.services.length > 5"
-                class="altri-servizi col"
+                v-show="
+                  apartment.sponsorships && apartment.sponsorships.length > 0
+                "
+                class="badge"
               >
-                <div>altri {{ apartment.services.length - 4 }} servizi</div>
+                sponsorizzato
               </div>
-              <div
-                v-if="apartment.services.length == 5"
-                class="altri-servizi col"
-              >
-                <!-- <div>un altro servizio</div> -->
+              <h6>Servizi</h6>
+              <div class="servizi row">
+                <div
+                  v-for="(servizio, i) in apartment.services.slice(0, 4)"
+                  class="col-6 servizio"
+                >
+                  <div class="center">
+                    <span v-html="getServizio(servizio.id).icon"></span>
+                    <span class="nome-servizio">{{
+                      getServizio(servizio.id).title
+                    }}</span>
+                  </div>
+                </div>
+                <div
+                  v-if="apartment.services.length > 5"
+                  class="altri-servizi col"
+                >
+                  <div>altri {{ apartment.services.length - 4 }} servizi</div>
+                </div>
+                <div
+                  v-if="apartment.services.length == 5"
+                  class="altri-servizi col"
+                >
+                  <!-- <div>un altro servizio</div> -->
+                </div>
               </div>
             </div>
-          </div>
-        </router-link>
+          </router-link>
+        </div>
       </div>
     </div>
-  </div>
-  <div
-    v-show="isLoading"
-    class="loading-screen"
-    :class="{ 'loading-show': isLoading }"
-  >
-    <svg
-      class="ha-logo loading"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 10 10"
+    <div
+      v-show="isLoading"
+      class="loading-screen"
+      :class="{ 'loading-show': isLoading }"
     >
-      <path
-        class="house"
-        d="M1.9 8.5V5.3h-1l4-4.3 2.2 
+      <svg
+        class="ha-logo loading"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 10 10"
+      >
+        <path
+          class="house"
+          d="M1.9 8.5V5.3h-1l4-4.3 2.2 
        2.1v-.6h1v1.7l1 1.1H7.9v3.2z"
-      />
-      <path
-        class="circut"
-        d="M5 8.5V4m0 3.5l1.6-1.6V4.3M5 
+        />
+        <path
+          class="circut"
+          d="M5 8.5V4m0 3.5l1.6-1.6V4.3M5 
        6.3L3.5 4.9v-.6m2.7.7l.4.4L7 
        5M5.9 6.1v.5h.5M4.2 5v.5h-.8m1 
        1.5v.6h-.6m1.2.8L3.6 6.7M5 
        8.4l1-.9h.7M4.6 3.6L5 4l.4-.4"
-      />
-      <g>
-        <circle cx="5.5" cy="3.4" r="0.21" />
-        <circle cx="4.5" cy="3.4" r="0.21" />
-        <circle cx="6.6" cy="4.1" r="0.21" />
-        <circle cx="3.5" cy="4.1" r="0.21" />
-        <circle cx="4.2" cy="4.8" r="0.21" />
-        <circle cx="6.1" cy="4.8" r="0.21" />
-        <circle cx="7.1" cy="4.8" r="0.21" />
-        <circle cx="6.6" cy="6.6" r="0.21" />
-        <circle cx="5.9" cy="5.9" r="0.21" />
-        <circle cx="3.2" cy="5.5" r="0.21" />
-        <circle cx="3.5" cy="6.5" r="0.21" />
-        <circle cx="4.4" cy="6.8" r="0.21" />
-        <circle cx="3.6" cy="7.6" r="0.21" />
-        <circle cx="6.9" cy="7.5" r="0.21" />
-      </g>
-    </svg>
-    <div class="loading-message">Caricamento appartamenti</div>
+        />
+        <g>
+          <circle cx="5.5" cy="3.4" r="0.21" />
+          <circle cx="4.5" cy="3.4" r="0.21" />
+          <circle cx="6.6" cy="4.1" r="0.21" />
+          <circle cx="3.5" cy="4.1" r="0.21" />
+          <circle cx="4.2" cy="4.8" r="0.21" />
+          <circle cx="6.1" cy="4.8" r="0.21" />
+          <circle cx="7.1" cy="4.8" r="0.21" />
+          <circle cx="6.6" cy="6.6" r="0.21" />
+          <circle cx="5.9" cy="5.9" r="0.21" />
+          <circle cx="3.2" cy="5.5" r="0.21" />
+          <circle cx="3.5" cy="6.5" r="0.21" />
+          <circle cx="4.4" cy="6.8" r="0.21" />
+          <circle cx="3.6" cy="7.6" r="0.21" />
+          <circle cx="6.9" cy="7.5" r="0.21" />
+        </g>
+      </svg>
+      <div class="loading-message">Caricamento appartamenti</div>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.height {
+  height: 100vh;
+  overflow: auto;
+}
+
 .container {
   margin-bottom: 2rem;
   max-width: 1600px;

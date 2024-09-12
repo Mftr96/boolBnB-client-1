@@ -16,7 +16,7 @@ export default {
     >
       <div class="col-3 text-end no-show-mobile">
         <a href="http://localhost:5173/">
-          <img class="rounded-5" height="40px" src="/newlogo.png" alt="" />
+          <img class="rounded-5" height="50px" src="/logo.png" alt="" />
         </a>
       </div>
       <div class="col d-flex justify-content-end h-50 navbar-mobile">
@@ -29,9 +29,7 @@ export default {
           >
         </div>
         <div class="pe-1 border-end border-black">
-          <a class="animated-border" href="http://127.0.0.1:8000/login"
-            >LOGIN</a
-          >
+          <a class="animated-border" href="http://127.0.0.1:8000">LOGIN</a>
         </div>
       </div>
     </div>

@@ -5,7 +5,6 @@ import { RouterLink } from 'vue-router';
 import AppHeader from '../components/AppHeader.vue';
 import Appfooter from '../components/Appfooter.vue';
 
-
 export default {
   name: 'AppApartmentDetail',
 
@@ -120,13 +119,14 @@ export default {
         };
         console.log(data);
 
-        await axios.post('http://127.0.0.1:8000/api/statistics', data)
-        .then((response)=>{
-          console.log('Dati inviati con successo:', response);
-          
-        }).catch((error)=>{
-          console.log(error.response);
-        });
+        await axios
+          .post('http://127.0.0.1:8000/api/statistics', data)
+          .then((response) => {
+            console.log('Dati inviati con successo:', response);
+          })
+          .catch((error) => {
+            console.log(error.response);
+          });
       } catch (error) {
         console.error("Errore nell'invio dei dati:", error);
       }
@@ -329,6 +329,7 @@ export default {
   width: 100%;
   min-height: 100vh;
   overflow: hidden;
+  padding-bottom: 3rem;
 }
 
 .card {
