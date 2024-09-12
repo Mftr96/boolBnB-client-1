@@ -278,6 +278,7 @@ export default {
   background: linear-gradient(130deg, #c3b49ba4, #94a7ae98);
   height: 4rem;
   position: fixed;
+  top: 0%;  
   z-index: 999;
   width: 100%;
   border-bottom: 2px solid #a09d9fc2;
