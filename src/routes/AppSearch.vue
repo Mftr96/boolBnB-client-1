@@ -3,12 +3,14 @@ import store from '../data/store.js';
 import { RouterLink } from 'vue-router';
 import AppSearchFilters from '../components/AppSearchFilters.vue';
 import axios from 'axios';
+import Appfooter from '../components/Appfooter.vue';
 
 export default {
   name: 'AppSearch',
 
   components: {
     AppSearchFilters,
+    Appfooter,
   },
 
   data() {
@@ -240,6 +242,7 @@ export default {
       <div class="loading-message">Caricamento appartamenti</div>
     </div>
   </div>
+  <Appfooter />
 </template>
 
 <style scoped>

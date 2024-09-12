@@ -304,7 +304,7 @@ export default {
       </div>
     </div>
   </div>
-  <Appfooter> </Appfooter>
+  <Appfooter />
 </template>
 
 <style scoped>
