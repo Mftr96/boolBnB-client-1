@@ -3,12 +3,15 @@ import store from '../data/store.js';
 import axios from 'axios';
 import { RouterLink } from 'vue-router';
 import AppHeader from '../components/AppHeader.vue';
+import Appfooter from '../components/Appfooter.vue';
+
 
 export default {
   name: 'AppApartmentDetail',
 
   components: {
     AppHeader,
+    Appfooter,
   },
 
   data() {
@@ -301,7 +304,7 @@ export default {
       </div>
     </div>
   </div>
-  
+  <Appfooter> </Appfooter>
 </template>
 
 <style scoped>
