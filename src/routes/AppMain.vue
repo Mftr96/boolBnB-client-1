@@ -47,9 +47,20 @@ export default {
       const container = document.querySelector('#searchWrapper');
       const imageContainer = document.querySelector('#searchBGContainer');
       const rect = container.getBoundingClientRect();
-      const x = (event.clientX - rect.left) / rect.width;
-      const y = (event.clientY - rect.top) / rect.height;
-      imageContainer.style.transform = `translate(-${x * 1500}px, -${y * 0}px)`; // Adjust the multiplier for the desired effect
+      // Calculate the scroll position based on mouse movement
+      const x = (event.clientX - rect.left - rect.width / 2) / rect.width;
+      const y = (event.clientY - rect.top - rect.height / 2) / rect.height;
+      console.log(rect.left, rect.width);
+      console.log(rect.top, rect.height);
+      console.log(x, y);
+      // Adjust the scrolling speed
+      const scrollX = x * 1500;
+      const scrollY = y * 0;
+      // Combine scaling and translation transformations
+      // Adjust the scroll position to allow continuous scrolling towards the left
+      const offsetX = scrollX > 0 ? Math.floor(scrollX % 2000) : Math.ceil(scrollX % 2000);
+
+      imageContainer.style.transform = `translate(-${offsetX}px, -${scrollY}px)`;
     },
 
     getImage(immagine) {
@@ -69,9 +80,8 @@ export default {
 
       const url_tomtom = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(
         indirizzo
-      )}.json?key=${
-        this.apiKey
-      }&typeahead=true&limit=5&countrySet=IT&entityTypeSet=Municipality`;
+      )}.json?key=${this.apiKey
+        }&typeahead=true&limit=5&countrySet=IT&entityTypeSet=Municipality`;
 
       // ricerca axios
 
@@ -107,56 +117,54 @@ export default {
     },
 
     searchRequest() {
-        console.log(this.validCity);
+      console.log(this.validCity);
       this.errors = [];
-        if (this.validCity) {
+      if (this.validCity) {
         // Eseguito se l'input è valido
-        // if (!this.inputIndirizzo) {
-          //   this.visible = true;
-          //   // this.store.searchApartment = [];
-          // } else {
-          //   this.store.noApartment = false;
-          //   this.visible = false;
-          //   axios
-          //     .get(
-          //       `https://api.tomtom.com/search/2/geocode/${this.inputIndirizzo}.json?key=RUfkTtEK0CYbHBG3YE2RSEslSRGAWZcu&countrySet=IT`
-          //     )
-          //     .then((response) => {
-          //       this.coordinates = response.data.results[0].position;
-          //       console.log(this.searchData);
+        if (!this.inputIndirizzo) {
+          this.visible = true;
+          // this.store.searchApartment = [];
+        } else {
+          this.store.noApartment = false;
+          this.visible = false;
+          axios
+            .get(
+              `https://api.tomtom.com/search/2/geocode/${this.inputIndirizzo}.json?key=RUfkTtEK0CYbHBG3YE2RSEslSRGAWZcu&countrySet=IT`
+            )
+            .then((response) => {
+              this.coordinates = response.data.results[0].position;
+              console.log(this.searchData);
 
-        //       this.$router.push({
-        //         name: 'search',
-        //         query: {
-        //           indirizzo: this.inputIndirizzo,
-        //           latitude: this.coordinates.lat,
-        //           longitude: this.coordinates.lon,
-        //           radius: this.inputRaggio,
-        //           beds: this.inputLetti,
-        //           rooms: this.inputCamere,
-        //           services: this.inputServizi.join(','),
-        //         },
-        //       });
+              this.$router.push({
+                name: 'search',
+                query: {
+                  indirizzo: this.inputIndirizzo,
+                  latitude: this.coordinates.lat,
+                  longitude: this.coordinates.lon,
+                  radius: this.inputRaggio,
+                  beds: this.inputLetti,
+                  rooms: this.inputCamere,
+                  services: this.inputServizi.join(','),
+                },
+              });
 
-        //       const url = `http://127.0.0.1:8000/api/search?latitude=${this.coordinates.lat
-        //         }&longitude=${this.coordinates.lon}&radius=${this.inputRaggio
-        //         }&beds=${this.inputLetti}&rooms=${this.inputCamere
-        //         }&services=${this.inputServizi.join(',')}`;
+              const url = `http://127.0.0.1:8000/api/search?latitude=${this.coordinates.lat
+                }&longitude=${this.coordinates.lon}&radius=20.join(',')}`;
 
-        //       console.log(url);
+              console.log(url);
 
-        //       axios
-        //         .get(url)
-        //         .then((response) => {
-        //           this.store.searchApartment = response.data.results;
-        //           console.log(response);
-        //           this.errors = response.data.errors.rooms;
-        //         })
-        //         .catch((error) => {
-        //           console.log('errore');
-        //         });
-        //     });
-        // }
+              axios
+                .get(url)
+                .then((response) => {
+                  this.store.searchApartment = response.data.results;
+                  console.log(response);
+                  this.errors = response.data.errors.rooms;
+                })
+                .catch((error) => {
+                  console.log('errore');
+                });
+            });
+        }
 
       }
       else {
@@ -197,9 +205,9 @@ export default {
     <AppHeader />
   </div>
   <div id="searchContainer">
-    <div id="searchWrapper" @mousemove="moveBackgroundImage">
+    <div id="searchWrapper">
       <!-- @mousemove="moveBackgroundImage" -->
-      
+
       <div id="searchBGContainer">
 
       </div>
@@ -208,36 +216,18 @@ export default {
         <div id="searchBar">
           <!-------------------- Input città --------------------->
           <div class="suggerimenti-indirizzo">
-            <input
-              class=""
-              id="indirizzo"
-              list="suggestion"
-              type="text"
-              placeholder="Inserisci una città"
-              v-model="inputIndirizzo"
-              @focus="isActive = true"
-              @blur="timeoutShow"
-              autocomplete="off"
-            />
+            <input class="" id="indirizzo" list="suggestion" type="text" placeholder="Inserisci una città"
+              v-model="inputIndirizzo" @focus="isActive = true" @blur="timeoutShow" autocomplete="off" />
             <ul v-show="apiSuggestions.length > 0 && isActive == true">
-              <li
-                @click="writeAddress(singleAddress, $event)"
-                v-for="(singleAddress, i) in apiSuggestions"
-              >
+              <li @click="writeAddress(singleAddress, $event)" v-for="(singleAddress, i) in apiSuggestions">
                 <i class="fa-solid fa-location-dot"></i>
-                <span>{{ singleAddress }}</span>
+                <router-link :to="{ name: 'search' }" @click="searchRequest()" class="buttonSearch">
+                  <span>{{ singleAddress }}</span>
+                </router-link>
               </li>
             </ul>
             <p v-show="visible" class="paragrafo">Inserisci una città</p>
           </div>
-          <!-------------------- Tasto ricerca --------------------->
-          <router-link
-            :to="{ name: 'search' }"
-            @click="searchRequest()"
-            class="buttonSearch"
-          >
-            <i id="searchIcon" class="fa-solid fa-magnifying-glass"></i>
-          </router-link>
         </div>
       </div>
       <p id="errNoCittà">Seleziona una città trà i suggerimenti di ricerca.</p>
@@ -247,9 +237,9 @@ export default {
   <section id="apartmentsArea">
     <p id="titoloSezioneCards">Appartamenti in rilievo:</p>
     <div class="apartmentsContainer" :class="{ 'opacity-zero': isLoading }">
-      
+
       <div class="apartmentsWrapper">
-  
+
         <div class="apartmentCard" v-for="apartment in store.homepageContent" :key="apartment.id">
           <router-link :to="`/search/${apartment.title}`" class="text-dark">
             <img :src="getImage(apartment.image)" width="100" class="cardImg" :alt="apartment.image" />
@@ -270,12 +260,12 @@ export default {
                 <span class="apartmentDetail">{{ apartment.bathrooms }}</span>
               </div>
             </div>
-  
+
           </router-link>
         </div>
-  
+
       </div>
-  
+
     </div>
   </section>
 </template>
@@ -302,6 +292,7 @@ input {
   margin: 4rem 0 0 0;
   width: 100%;
 }
+
 #searchWrapper {
   position: relative;
   overflow: visible;
@@ -314,7 +305,7 @@ input {
   top: -180px;
   left: 0%;
   width: 2000px;
-  height: 1000px;
+  height: 100vh;
   background-image: url('/public/apartment_background1.jpg');
   background-size: cover;
   transform: scale(1.5);
@@ -340,9 +331,11 @@ input {
   margin-bottom: 0.5rem;
   z-index: 10;
 }
+#searchBar:hover {
+  border: 1px solid #b3a49a;
+}
 
 #indirizzo {
-  margin-right: 0.5rem;
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 500;
@@ -415,6 +408,7 @@ li:hover {
   position: relative;
   z-index: 1;
 }
+
 #titoloSezioneCards {
   position: relative;
   margin: 0 auto;
@@ -425,9 +419,9 @@ li:hover {
   font-weight: 600;
   text-align: center;
   z-index: 1;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(255, 255, 255, 0.5);
   border-radius: 2rem;
-  color: white;
+  color: black;
 }
 
 .apartmentsContainer {
@@ -447,7 +441,7 @@ li:hover {
 
 .apartmentCard {
   width: 33rem;
-  height: 25rem;
+  height: 23rem;
   border: 1px solid #8b8589;
   box-shadow: 0.7vw 0.7vw 1vw #8b8589;
   position: relative;
@@ -456,14 +450,22 @@ li:hover {
   transition: 0.4s;
 }
 
+@media screen and (max-width: 700px) {
+  .apartmentCard {
+    width: 25rem;
+    height: 18rem;
+  }
+}
+
 .apartmentCard:hover {
   transform: translate3d(-5px, -5px, 0);
   border: 1px solid #000000;
 }
 
 .cardImg {
-  width: 120%;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   border-radius: 2rem;
 }
 
@@ -473,6 +475,7 @@ li:hover {
   left: 10px;
   color: white;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
   flex-grow: 0;
   width: 100%;
