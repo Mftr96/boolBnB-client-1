@@ -2,11 +2,14 @@
 import axios from 'axios';
 import store from '../data/store.js';
 import { RouterLink } from 'vue-router';
+import AppHeader from '../components/AppHeader.vue';
 
 export default {
   name: 'AppSearchFilters',
 
-  components: {},
+  components: {
+    AppHeader,
+  },
 
   data() {
     return {
@@ -39,6 +42,23 @@ export default {
   },
 
   methods: {
+    moveBackgroundImage(event) {
+      console.log(event.clientX, event.clientY);
+      const container = document.querySelector('#searchWrapper');
+      const imageContainer = document.querySelector('#searchBGContainer');
+      const rect = container.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width;
+      const y = (event.clientY - rect.top) / rect.height;
+      imageContainer.style.transform = `translate(-${x * 1500}px, -${y * 0}px)`; // Adjust the multiplier for the desired effect
+    },
+
+    getImage(immagine) {
+      if (immagine.startsWith('http')) {
+        return immagine;
+      } else {
+        return `http://127.0.0.1:8000/storage/${immagine}`;
+      }
+    },
 
     assistenzaIndirizzo(indirizzo) {
       // const url_tomtom = `https://api.tomtom.com/search/2/search/${encodeURIComponent(
@@ -85,95 +105,104 @@ export default {
     },
 
     searchRequest() {
-    console.log(this.validCity);
-    this.errors = [];
-    if (this.validCity) {
-      // Eseguito se l'input è valido
-      // if (!this.inputIndirizzo) {
-      //   this.visible = true;
-      //   // this.store.searchApartment = [];
-      // } else {
-      //   this.visible = false;
-      //   axios
-      //     .get(
-      //       `https://api.tomtom.com/search/2/geocode/${this.inputIndirizzo}.json?key=RUfkTtEK0CYbHBG3YE2RSEslSRGAWZcu&countrySet=IT`
-      //     )
-      //     .then((response) => {
-      //       this.coordinates = response.data.results[0].position;
-      //       console.log(this.searchData);
-  
-      //       this.$router.push({
-      //         name: 'search',
-      //         query: {
-      //           indirizzo: this.inputIndirizzo,
-      //           latitude: this.coordinates.lat,
-      //           longitude: this.coordinates.lon,
-      //           radius: this.inputRaggio,
-      //           beds: this.inputLetti,
-      //           rooms: this.inputCamere,
-      //           services: this.inputServizi.join(','),
-      //         },
-      //       });
-  
-      //       const url = `http://127.0.0.1:8000/api/search?latitude=${this.coordinates.lat
-      //         }&longitude=${this.coordinates.lon}&radius=${this.inputRaggio
-      //         }&beds=${this.inputLetti}&rooms=${this.inputCamere
-      //         }&services=${this.inputServizi.join(',')}`;
-  
-      //       console.log(url);
-  
-      //       axios
-      //         .get(url)
-      //         .then((response) => {
-      //           this.store.searchApartment = response.data.results;
-      //           console.log(response);
-      //           this.errors = response.data.errors.rooms;
-      //         })
-      //         .catch((error) => {
-      //           console.log('errore');
-      //         });
-      //     });
-      // }
+      console.log(this.validCity);
+      this.errors = [];
+      if (this.validCity) {
+        // Eseguito se l'input è valido
+        // if (!this.inputIndirizzo) {
+        //   this.visible = true;
+        //   // this.store.searchApartment = [];
+        // } else {
+        //   this.visible = false;
+        //   axios
+        //     .get(
+        //       `https://api.tomtom.com/search/2/geocode/${this.inputIndirizzo}.json?key=RUfkTtEK0CYbHBG3YE2RSEslSRGAWZcu&countrySet=IT`
+        //     )
+        //     .then((response) => {
+        //       this.coordinates = response.data.results[0].position;
+        //       console.log(this.searchData);
 
-    }
-    else {
-      //Eseguito se l'input non è valido
-      document.getElementById("errNoCittà").setAttribute("style", "display: block;")
-    }
+        //       this.$router.push({
+        //         name: 'search',
+        //         query: {
+        //           indirizzo: this.inputIndirizzo,
+        //           latitude: this.coordinates.lat,
+        //           longitude: this.coordinates.lon,
+        //           radius: this.inputRaggio,
+        //           beds: this.inputLetti,
+        //           rooms: this.inputCamere,
+        //           services: this.inputServizi.join(','),
+        //         },
+        //       });
+
+        //       const url = `http://127.0.0.1:8000/api/search?latitude=${this.coordinates.lat
+        //         }&longitude=${this.coordinates.lon}&radius=${this.inputRaggio
+        //         }&beds=${this.inputLetti}&rooms=${this.inputCamere
+        //         }&services=${this.inputServizi.join(',')}`;
+
+        //       console.log(url);
+
+        //       axios
+        //         .get(url)
+        //         .then((response) => {
+        //           this.store.searchApartment = response.data.results;
+        //           console.log(response);
+        //           this.errors = response.data.errors.rooms;
+        //         })
+        //         .catch((error) => {
+        //           console.log('errore');
+        //         });
+        //     });
+        // }
+
+      }
+      else {
+        //Eseguito se l'input non è valido
+        document.getElementById("errNoCittà").setAttribute("style", "display: block;")
+      }
+    },
+    loadData() {
+      this.inputIndirizzo = this.$route.query.indirizzo;
+      this.inputCamere = this.$route.query.rooms ? this.$route.query.rooms : 1;
+      this.inputLetti = this.$route.query.beds ? this.$route.query.beds : 1;
+      this.inputRaggio = this.$route.query.radius
+        ? this.$route.query.radius
+        : 20;
+      if (this.$route.query.services) {
+        this.inputServizi = this.$route.query.services.split(',').map(Number);
+      }
+    },
   },
-  loadData() {
-    this.inputIndirizzo = this.$route.query.indirizzo;
-    this.inputCamere = this.$route.query.rooms ? this.$route.query.rooms : 1;
-    this.inputLetti = this.$route.query.beds ? this.$route.query.beds : 1;
-    this.inputRaggio = this.$route.query.radius
-      ? this.$route.query.radius
-      : 20;
-    if (this.$route.query.services) {
-      this.inputServizi = this.$route.query.services.split(',').map(Number);
-    }
+  mounted() {
+    this.loadData();
+    const url = `http://127.0.0.1:8000/api/apartments`;
+    axios
+      .get(url)
+      .then((response) => {
+        this.store.homepageContent = response.data.results.data;
+        console.log(this.store.homepageContent);
+      })
+      .catch((error) => {
+        console.log('errore in caricamento index');
+      });
   },
-},
-mounted() {
-  this.loadData();
-  const url = `http://127.0.0.1:8000/api/apartments`;
-  axios
-    .get(url)
-    .then((response) => {
-      this.store.homepageContent = response.data.results.data;
-      console.log(this.store.homepageContent);
-    })
-    .catch((error) => {
-      console.log('errore in caricamento index');
-    });
-},
 };
 </script>
 
 <template>
-  <header>
-    <div class="container">
-      <div class="search-container">
-        <div class="search-bar">
+  <div class="fixed">
+    <AppHeader />
+  </div>
+  <div id="searchContainer">
+    <div id="searchWrapper" @mousemove="moveBackgroundImage">
+      <!-- @mousemove="moveBackgroundImage" -->
+      
+      <div id="searchBGContainer">
+
+      </div>
+
+      <div id="searchbarContainer">
+        <div id="searchBar">
           <!-------------------- Input città --------------------->
           <div class="suggerimenti-indirizzo">
             <input class="" id="indirizzo" list="suggestion" type="text" placeholder="Inserisci una città"
@@ -194,67 +223,94 @@ mounted() {
       </div>
       <p id="errNoCittà">Seleziona una città trà i suggerimenti di ricerca.</p>
     </div>
-  </header>
-  <hr />
-  <div class="apartmentsContainer" :class="{ 'opacity-zero': isLoading }">
-
-    <div class="apartmentsWrapper">
-
-      <div class="apartmentCard" v-for="apartment in store.homepageContent" :key="apartment.id">
-        <router-link :to="`/search/${apartment.title}`" class="text-dark">
-          <img :src="apartment.image" width="100" class="cardImg" :alt="apartment.image" />
-          <div class="cardText">
-            <div class="detailContainer">
-              <span class="apartmentTitle apartmentDetail">{{ apartment.title }}</span>
-            </div>
-            <div class="detailContainer">
-              <i class="fa-solid fa-map-location-dot"></i>
-              <span class="apartmentDetail">{{ getLastWord(apartment.address_full) }}</span>
-            </div>
-            <div class="detailContainer">
-              <i class="fas fa-door-open"></i>
-              <span class="apartmentDetail">{{ apartment.rooms }}</span>
-            </div>
-            <div class="detailContainer">
-              <i class="fa-solid fa-shower"></i>
-              <span class="apartmentDetail">{{ apartment.bathrooms }}</span>
-            </div>
-          </div>
-
-        </router-link>
-      </div>
-
-    </div>
-
   </div>
+
+  <section id="apartmentsArea">
+    <p id="titoloSezioneCards">Appartamenti in rilievo:</p>
+    <div class="apartmentsContainer" :class="{ 'opacity-zero': isLoading }">
+      
+      <div class="apartmentsWrapper">
+  
+        <div class="apartmentCard" v-for="apartment in store.homepageContent" :key="apartment.id">
+          <router-link :to="`/search/${apartment.title}`" class="text-dark">
+            <img :src="getImage(apartment.image)" width="100" class="cardImg" :alt="apartment.image" />
+            <div class="cardText">
+              <div class="detailContainer">
+                <span class="apartmentDetail" id="apartmentTitle">{{ apartment.title }}</span>
+              </div>
+              <div class="detailContainer">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <span class="apartmentDetail">{{ getLastWord(apartment.address_full) }}</span>
+              </div>
+              <div class="detailContainer">
+                <i class="fas fa-door-open"></i>
+                <span class="apartmentDetail">{{ apartment.rooms }}</span>
+              </div>
+              <div class="detailContainer">
+                <i class="fa-solid fa-shower"></i>
+                <span class="apartmentDetail">{{ apartment.bathrooms }}</span>
+              </div>
+            </div>
+  
+          </router-link>
+        </div>
+  
+      </div>
+  
+    </div>
+  </section>
 </template>
 
+
+
+
 <style scoped>
+.fixed {
+  background: linear-gradient(130deg, #c3b49ba4, #94a7ae98);
+  height: 4rem;
+  position: fixed;
+  z-index: 999;
+  width: 100%;
+  border-bottom: 2px solid #a09d9fc2;
+}
+
 input {
   all: unset;
 }
 
-header {
+#searchContainer {
+  height: 40rem;
+  margin: 4rem 0 0 0;
   width: 100%;
-  min-height: 10rem;
-  display: flex;
-  align-items: center;
-  padding-top: 1rem;
 }
-
-.container {
+#searchWrapper {
   position: relative;
+  overflow: visible;
+  padding: calc(20rem - 2.5rem) 0 calc(20rem - 2.5rem) 0;
+  margin: 0;
 }
 
-.search-container {
+#searchBGContainer {
+  position: fixed;
+  top: -180px;
+  left: 0%;
+  width: 2000px;
+  height: 1000px;
+  background-image: url('/public/apartment_background1.jpg');
+  background-size: cover;
+  transform: scale(1.5);
+  transition: transform 0.2s;
+}
+
+#searchbarContainer {
   display: flex;
   justify-content: center;
 }
 
-.search-bar {
+#searchBar {
   display: inline-flex;
   height: 5rem;
-  
+
   min-width: 18rem;
   background-color: white;
   border-radius: 30px;
@@ -263,7 +319,9 @@ header {
   align-items: center;
   text-align: center;
   margin-bottom: 0.5rem;
+  z-index: 10;
 }
+
 #indirizzo {
   margin-right: 0.5rem;
   overflow: hidden;
@@ -276,6 +334,7 @@ header {
   font-size: 1.3rem;
   border-radius: 1rem;
 }
+
 .buttonSearch {
   background-color: rgb(0, 0, 0);
   border-radius: 25px;
@@ -285,6 +344,7 @@ header {
   align-items: center;
   cursor: pointer;
 }
+
 .suggerimenti-indirizzo {
   display: flex;
   position: relative;
@@ -294,6 +354,7 @@ header {
   font-size: 40px;
   padding: 0.5rem;
 }
+
 #errNoCittà {
   display: none;
   /* position: fixed; */
@@ -301,6 +362,7 @@ header {
   border: 1px solid red;
   border-radius: 0.5rem;
 }
+
 ul {
   background-color: #d8cfc4;
   padding: 0;
@@ -330,6 +392,25 @@ li:hover {
 }
 
 /***** Stile cards *****/
+#apartmentsArea {
+  position: relative;
+  z-index: 1;
+}
+#titoloSezioneCards {
+  position: relative;
+  margin: 0 auto;
+  height: 4rem;
+  width: 25rem;
+  color: #6e6259;
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 2rem;
+  color: white;
+}
+
 .apartmentsContainer {
   margin: 2vw auto;
   width: 90vw;
@@ -375,6 +456,11 @@ li:hover {
   display: flex;
   justify-content: space-around;
   flex-grow: 0;
+  width: 100%;
+}
+
+#apartmentTitle {
+  text-align: center;
 }
 
 .detailContainer {
@@ -438,10 +524,12 @@ a i {
   opacity: 100;
   transition: 1s;
 }
+
 #searchIcon {
   color: #ffffff;
   background-color: #d8cfc4;
 }
+
 #searchIcon:hover {
   background-color: #b3a49a;
 }
