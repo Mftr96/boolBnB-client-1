@@ -101,6 +101,23 @@ export default {
           });
       }
     },
+    async sendVisitData() {
+      try {
+        const ipResponse = await axios.get('https://api.ipify.org?format=json');
+        const ipAddress = ipResponse.data.ip;
+
+        const data = {
+          ip: ipAddress,
+          apartmentId: this.apartment_id,
+        };
+        console.log(data);
+
+        //   await axios.post('URL_DEL_TUO_BACKEND', data);
+        //   console.log('Dati inviati con successo:', data);
+      } catch (error) {
+        console.error("Errore nell'invio dei dati:", error);
+      }
+    },
   },
 
   created() {
@@ -123,8 +140,12 @@ export default {
         this.getImage(this.apartment.image);
         this.updateMapCoordinates();
         console.log(this.apartment);
+
+        this.sendVisitData();
       });
   },
+
+  mounted() {},
 };
 </script>
 
@@ -335,7 +356,7 @@ export default {
 }
 
 .piegata {
-  transform: rotate(-5deg);
+  transform: rotate(-2deg);
   box-shadow: 10px 10px 10px 5px;
   border-radius: 10px;
 }
