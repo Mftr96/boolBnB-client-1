@@ -86,7 +86,6 @@ export default {
         }&typeahead=true&limit=5&countrySet=IT&entityTypeSet=Municipality`;
 
       // ricerca axios
-
       axios.get(url_tomtom).then((response) => {
         let apiResponse = response.data.results;
         const newSuggestions = [];
@@ -220,7 +219,9 @@ export default {
   </section>
 
   <section id="apartmentsArea">
-    <p id="titoloSezioneCards">Appartamenti in rilievo:</p>
+    <div id="titoloSezioneCards">
+      <p>Appartamenti in rilievo:</p>
+    </div>
     <div class="apartmentsContainer" :class="{ 'opacity-zero': isLoading }">
 
       <div class="apartmentsWrapper">
@@ -430,7 +431,7 @@ li:hover {
 #titoloSezioneCards {
   position: relative;
   margin: 0 auto;
-  height: 4rem;
+  padding: 0.6rem 0.5rem 1rem 0.5rem;
   width: 25rem;
   color: #6e6259;
   font-size: 2rem;
@@ -440,6 +441,9 @@ li:hover {
   background-color: rgba(0, 0, 0, 0.7);
   border-radius: 2rem;
   color: white;
+}
+#titoloSezioneCards p{
+  margin: 0;
 }
 
 .apartmentsContainer {
