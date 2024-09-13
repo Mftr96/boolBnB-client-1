@@ -3,7 +3,7 @@ import axios from 'axios';
 import store from '../data/store.js';
 import { RouterLink } from 'vue-router';
 import AppHeader from '../components/AppHeader.vue';
-import Appfooter from '../components/Appfooter.vue'
+import Appfooter from '../components/Appfooter.vue';
 
 export default {
   name: 'AppMain',
@@ -60,7 +60,8 @@ export default {
       const scrollY = y * 0;
       // Combine scaling and translation transformations
       // Adjust the scroll position to allow continuous scrolling towards the left
-      const offsetX = scrollX > 0 ? Math.floor(scrollX % 2000) : Math.ceil(scrollX % 2000);
+      const offsetX =
+        scrollX > 0 ? Math.floor(scrollX % 2000) : Math.ceil(scrollX % 2000);
 
       imageContainer.style.transform = `translate(-${offsetX}px, -${scrollY}px)`;
     },
@@ -82,8 +83,9 @@ export default {
 
       const url_tomtom = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(
         indirizzo
-      )}.json?key=${this.apiKey
-        }&typeahead=true&limit=5&countrySet=IT&entityTypeSet=Municipality`;
+      )}.json?key=${
+        this.apiKey
+      }&typeahead=true&limit=5&countrySet=IT&entityTypeSet=Municipality`;
 
       // ricerca axios
       axios.get(url_tomtom).then((response) => {
@@ -138,10 +140,11 @@ export default {
             },
           });
 
-          const url = `http://127.0.0.1:8000/api/search?latitude=${this.coordinates.lat
-            }&longitude=${this.coordinates.lon}&radius=${this.inputRaggio
-            }&beds=${this.inputLetti}&rooms=${this.inputCamere
-            }&services=${this.inputServizi.join(',')}`;
+          const url = `http://127.0.0.1:8000/api/search?latitude=${
+            this.coordinates.lat
+          }&longitude=${this.coordinates.lon}&radius=${this.inputRaggio}&beds=${
+            this.inputLetti
+          }&rooms=${this.inputCamere}&services=${this.inputServizi.join(',')}`;
           console.log(url);
 
           axios
@@ -192,18 +195,28 @@ export default {
     <div id="searchWrapper">
       <!-- @mousemove="moveBackgroundImage" -->
 
-      <div id="searchBGContainer">
-
-      </div>
+      <div id="searchBGContainer"></div>
 
       <div id="searchbarContainer">
         <div id="searchBar">
           <!-------------------- Input città --------------------->
           <div class="suggerimenti-indirizzo">
-            <input class="" id="indirizzo" list="suggestion" type="text" placeholder="Inserisci una città"
-              v-model="inputIndirizzo" @focus="isActive = true" @blur="timeoutShow" autocomplete="off" />
+            <input
+              class=""
+              id="indirizzo"
+              list="suggestion"
+              type="text"
+              placeholder="Inserisci una città"
+              v-model="inputIndirizzo"
+              @focus="isActive = true"
+              @blur="timeoutShow"
+              autocomplete="off"
+            />
             <ul v-show="apiSuggestions.length > 0 && isActive == true">
-              <li v-for="(singleAddress, i) in apiSuggestions" @click="searchRequest(singleAddress)">
+              <li
+                v-for="(singleAddress, i) in apiSuggestions"
+                @click="searchRequest(singleAddress)"
+              >
                 <router-link :to="{ name: 'search' }" class="buttonSearch">
                   <i class="fa-solid fa-location-dot"></i>
                   <span>{{ singleAddress }}</span>
@@ -223,19 +236,30 @@ export default {
       <p>Appartamenti in rilievo:</p>
     </div>
     <div class="apartmentsContainer" :class="{ 'opacity-zero': isLoading }">
-
       <div class="apartmentsWrapper">
-
-        <div class="apartmentCard" v-for="apartment in store.homepageContent" :key="apartment.id">
+        <div
+          class="apartmentCard"
+          v-for="apartment in store.homepageContent"
+          :key="apartment.id"
+        >
           <router-link :to="`/search/${apartment.title}`" class="text-dark">
-            <img :src="getImage(apartment.image)" width="100" class="cardImg" :alt="apartment.image" />
+            <img
+              :src="getImage(apartment.image)"
+              width="100"
+              class="cardImg"
+              :alt="apartment.image"
+            />
             <div class="cardText">
               <div class="detailContainer">
-                <span class="apartmentDetail" id="apartmentTitle">{{ apartment.title }}</span>
+                <span class="apartmentDetail" id="apartmentTitle">{{
+                  apartment.title
+                }}</span>
               </div>
               <div class="detailContainer">
                 <i class="fa-solid fa-map-location-dot"></i>
-                <span class="apartmentDetail">{{ getLastWord(apartment.address_full) }}</span>
+                <span class="apartmentDetail">{{
+                  getLastWord(apartment.address_full)
+                }}</span>
               </div>
               <div class="detailContainer">
                 <i class="fas fa-door-open"></i>
@@ -246,25 +270,23 @@ export default {
                 <span class="apartmentDetail">{{ apartment.bathrooms }}</span>
               </div>
             </div>
-              <div v-show="apartment.sponsorships && apartment.sponsorships.length > 0
-                " class="badge">
-                Sponsorizzato
-              </div>
-
+            <div
+              v-show="
+                apartment.sponsorships && apartment.sponsorships.length > 0
+              "
+              class="badge"
+            >
+              Sponsorizzato
+            </div>
           </router-link>
         </div>
-
       </div>
-
     </div>
   </section>
   <section id="containerFooter">
     <Appfooter></Appfooter>
   </section>
 </template>
-
-
-
 
 <style scoped>
 a {
@@ -291,6 +313,7 @@ a i {
   z-index: 999;
   width: 100%;
   border-bottom: 2px solid #a09d9fc2;
+  box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.711);
 }
 
 input {
@@ -425,7 +448,11 @@ li:hover {
   position: relative;
   z-index: 1;
   background: rgb(0, 0, 0);
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5) 93%, rgba(0, 0, 0, 0.0) 100%);
+  background: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.5) 93%,
+    rgba(0, 0, 0, 0) 100%
+  );
 }
 
 #titoloSezioneCards {
@@ -442,7 +469,7 @@ li:hover {
   border-radius: 2rem;
   color: white;
 }
-#titoloSezioneCards p{
+#titoloSezioneCards p {
   margin: 0;
 }
 

@@ -320,6 +320,7 @@ export default {
   z-index: 2;
   width: 100%;
   border-bottom: 2px solid #a09d9fc2;
+  box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.711);
 }
 
 .apartment-detail {

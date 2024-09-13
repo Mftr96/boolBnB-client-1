@@ -23,7 +23,7 @@ export default {
       </ul>
       <div class="social-media col30">
         <a href="https://www.facebook.com/login/?locale=it_IT"
-          ><i class="fa-brands fa-facebook"></i
+          ><i class="fa-brands fa-square-facebook"></i
         ></a>
         <a href="https://x.com/i/flow/login"
           ><i class="fa-brands fa-x-twitter"></i
@@ -45,13 +45,14 @@ i {
 }
 
 i {
-  background-color: rgb(5, 7, 100);
-  border-radius: 15px;
+  background-color: rgba(5, 7, 100, 0);
+  font-size: 20px;
 }
 
 a {
   color: white;
   text-decoration: none;
+  transition: 0.5s ease;
 }
 
 .app-footer {
@@ -60,6 +61,7 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: inset 0px 10px 20px -10px rgb(0, 0, 0);
 }
 
 .footer-content {
@@ -70,11 +72,12 @@ a {
   padding: 0.5rem;
   width: 1600px;
 }
-.footer-content > p, .footer-content > ul {
+.footer-content > p,
+.footer-content > ul {
   margin: 0;
 }
 .footer-content > ul > a {
-  border-radius: 1rem;
+  border-radius: 5px;
   padding: 0.35rem;
   margin: 0 0.2rem;
 }
@@ -96,7 +99,7 @@ a {
   display: inline-block;
   width: 2rem;
   height: 2rem;
-  border-radius: 1rem;
+  border-radius: 5px;
 }
 .social-media > a > i {
   position: absolute;
@@ -106,5 +109,4 @@ a {
 .social-media > a:hover {
   background-color: rgb(20, 20, 20);
 }
-
 </style>

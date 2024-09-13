@@ -584,12 +584,11 @@ input[type='number']::-webkit-outer-spin-button {
 .fixed {
   width: 100%;
   position: fixed;
-  /* background-image: url(/background-cork.jpg); */
   z-index: 1;
+  box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.711);
 }
 
 .sugar {
-  /* background-color: rgba(231, 206, 185, 0.662); */
   background: linear-gradient(130deg, #c3b49ba4, #94a7ae98);
 }
 

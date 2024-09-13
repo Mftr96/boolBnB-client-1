@@ -84,6 +84,9 @@ export default {
   <div class="height">
     <AppSearchFilters />
     <div class="container" :class="{ 'opacity-zero': isLoading }">
+      <div class="find">
+        Trovati {{ store.searchApartment.length }} appartamenti:
+      </div>
       <div class="enter d-flex flex-column align-items-center">
         <div v-show="store.noApartment" class="cerca-appartamento">
           <div class="home-animation">
@@ -257,9 +260,15 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* Allinea gli elementi all'inizio */
-  height: auto; /* Imposta l'altezza dinamica basata sul contenuto */
-  padding-top: 2rem; /* Aggiungi un po' di padding per dare aria agli elementi */
+  justify-content: flex-start;
+  height: auto;
+  padding-top: 2rem;
+}
+
+.find {
+  font-size: 20px;
+  color: #6a6569;
+  font-weight: 500;
 }
 
 .cerca-appartamento {
