@@ -250,6 +250,7 @@ export default {
   margin-bottom: 2rem;
   max-width: 1600px;
   padding-top: 13rem;
+  min-height: 100vh;
 }
 
 .enter {
