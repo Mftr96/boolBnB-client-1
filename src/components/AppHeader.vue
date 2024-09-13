@@ -16,7 +16,7 @@ export default {
     >
       <div class="col-3 text-end no-show-mobile">
         <a href="http://localhost:5173/">
-          <img class="rounded-5" height="50px" src="/logo.png" alt="" />
+          <img height="50px" src="/logo.png" alt="" />
         </a>
       </div>
       <div class="col d-flex justify-content-end h-50 navbar-mobile">
