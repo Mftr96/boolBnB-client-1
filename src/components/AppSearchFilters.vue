@@ -363,7 +363,7 @@ export default {
                   id="indirizzo"
                   list="suggestion"
                   type="text"
-                  placeholder="Inserisci città"
+                  placeholder="Inserisci un indirizzo"
                   v-model="inputIndirizzo"
                   @focus="isActive = true"
                   @blur="timeoutShow"
@@ -651,6 +651,12 @@ input[type='number']::-webkit-outer-spin-button {
   text-overflow: ellipsis;
   font-weight: 500;
   width: 150px;
+  transition: 0.5s;
+  border: 1px solid rgba(179, 164, 154, 0);
+  border-radius: 2rem;
+}
+#indirizzo:hover {
+  border: 1px solid rgba(179, 164, 154, 1);
 }
 
 .suggerimenti-indirizzo {
