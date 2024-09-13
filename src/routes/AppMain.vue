@@ -498,8 +498,8 @@ li:hover {
 
 .cardText {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 0.5rem;
+  left: 0;
   color: white;
   display: flex;
   flex-wrap: wrap;
@@ -514,13 +514,13 @@ li:hover {
 
 .detailContainer {
   height: 50px;
-  padding: 0 0.3rem;
+  padding: 0 0.2rem;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: flex-start;
   align-items: center;
   border-radius: 25px;
-  margin: 0 1rem 1rem 0;
+  margin-bottom: 1rem;
 }
 
 .apartmentDetail {
