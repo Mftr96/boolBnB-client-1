@@ -450,8 +450,8 @@ li:hover {
   background: rgb(0, 0, 0);
   background: linear-gradient(
     0deg,
-    rgba(0, 0, 0, 0.5) 93%,
-    rgba(0, 0, 0, 0) 100%
+    rgba(255, 255, 255, 0.8) 92%,
+    rgba(255, 255, 255, 0) 100%
   );
 }
 
@@ -524,7 +524,6 @@ li:hover {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 2rem;
 }
 
 .cardText {
