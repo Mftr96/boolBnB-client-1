@@ -397,11 +397,11 @@ textarea {
   left: 50%;
   transform: translateY(-50%) translateX(-50%);
   text-align: center;
-  background-color: rgba(129, 219, 129, 0.965);
+  background-color: rgb(255, 255, 255);
+  border: 2px solid rgb(41, 213, 41);
+  color: rgb(41, 213, 41);
   border-radius: 10px;
-  font-weight: bold;
   font-size: 25px;
-  box-shadow: 0px 0px 40px 20px;
   opacity: 0;
   animation: messageAnimation 2.6s ease forwards;
 }
