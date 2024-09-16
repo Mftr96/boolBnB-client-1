@@ -60,8 +60,7 @@ export default {
       const scrollY = y * 0;
       // Combine scaling and translation transformations
       // Adjust the scroll position to allow continuous scrolling towards the left
-      const offsetX =
-        scrollX > 0 ? Math.floor(scrollX % 2000) : Math.ceil(scrollX % 2000);
+      const offsetX = scrollX > 0 ? Math.floor(scrollX % 2000) : Math.ceil(scrollX % 2000);
 
       imageContainer.style.transform = `translate(-${offsetX}px, -${scrollY}px)`;
     },
@@ -81,9 +80,7 @@ export default {
       //   this.apiKey
       // }&typeahead=true&limit=5&countrySet=IT&idxSet=Geo`;
 
-      const url_tomtom = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(
-        indirizzo
-      )}.json?key=${
+      const url_tomtom = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(indirizzo)}.json?key=${
         this.apiKey
       }&typeahead=true&limit=5&countrySet=IT&entityTypeSet=Municipality`;
 
@@ -134,17 +131,18 @@ export default {
           this.$router.push({
             name: 'search',
             query: {
+              indirizzo: this.inputIndirizzo,
               latitude: this.coordinates.lat,
               longitude: this.coordinates.lon,
               radius: this.inputRaggio,
             },
           });
 
-          const url = `http://127.0.0.1:8000/api/search?latitude=${
-            this.coordinates.lat
-          }&longitude=${this.coordinates.lon}&radius=${this.inputRaggio}&beds=${
-            this.inputLetti
-          }&rooms=${this.inputCamere}&services=${this.inputServizi.join(',')}`;
+          const url = `http://127.0.0.1:8000/api/search?latitude=${this.coordinates.lat}&longitude=${
+            this.coordinates.lon
+          }&radius=${this.inputRaggio}&beds=${this.inputLetti}&rooms=${
+            this.inputCamere
+          }&services=${this.inputServizi.join(',')}`;
           console.log(url);
 
           axios
@@ -163,9 +161,7 @@ export default {
       this.inputIndirizzo = this.$route.query.indirizzo;
       this.inputCamere = this.$route.query.rooms ? this.$route.query.rooms : 1;
       this.inputLetti = this.$route.query.beds ? this.$route.query.beds : 1;
-      this.inputRaggio = this.$route.query.radius
-        ? this.$route.query.radius
-        : 20;
+      this.inputRaggio = this.$route.query.radius ? this.$route.query.radius : 20;
       if (this.$route.query.services) {
         this.inputServizi = this.$route.query.services.split(',').map(Number);
       }
@@ -213,10 +209,7 @@ export default {
               autocomplete="off"
             />
             <ul v-show="apiSuggestions.length > 0 && isActive == true">
-              <li
-                v-for="(singleAddress, i) in apiSuggestions"
-                @click="searchRequest(singleAddress)"
-              >
+              <li v-for="(singleAddress, i) in apiSuggestions" @click="searchRequest(singleAddress)">
                 <router-link :to="{ name: 'search' }" class="buttonSearch">
                   <i class="fa-solid fa-location-dot"></i>
                   <span>{{ singleAddress }}</span>
@@ -237,29 +230,16 @@ export default {
     </div>
     <div class="apartmentsContainer" :class="{ 'opacity-zero': isLoading }">
       <div class="apartmentsWrapper">
-        <div
-          class="apartmentCard"
-          v-for="apartment in store.homepageContent"
-          :key="apartment.id"
-        >
+        <div class="apartmentCard" v-for="apartment in store.homepageContent" :key="apartment.id">
           <router-link :to="`/search/${apartment.title}`" class="text-dark">
-            <img
-              :src="getImage(apartment.image)"
-              width="100"
-              class="cardImg"
-              :alt="apartment.image"
-            />
+            <img :src="getImage(apartment.image)" width="100" class="cardImg" :alt="apartment.image" />
             <div class="cardText">
               <div class="detailContainer">
-                <span class="apartmentDetail" id="apartmentTitle">{{
-                  apartment.title
-                }}</span>
+                <span class="apartmentDetail" id="apartmentTitle">{{ apartment.title }}</span>
               </div>
               <div class="detailContainer">
                 <i class="fa-solid fa-map-location-dot"></i>
-                <span class="apartmentDetail">{{
-                  getLastWord(apartment.address_full)
-                }}</span>
+                <span class="apartmentDetail">{{ getLastWord(apartment.address_full) }}</span>
               </div>
               <div class="detailContainer">
                 <i class="fas fa-door-open"></i>
@@ -270,14 +250,7 @@ export default {
                 <span class="apartmentDetail">{{ apartment.bathrooms }}</span>
               </div>
             </div>
-            <div
-              v-show="
-                apartment.sponsorships && apartment.sponsorships.length > 0
-              "
-              class="badge"
-            >
-              Sponsorizzato
-            </div>
+            <div v-show="apartment.sponsorships && apartment.sponsorships.length > 0" class="badge">Sponsorizzato</div>
           </router-link>
         </div>
       </div>
@@ -448,11 +421,7 @@ li:hover {
   position: relative;
   z-index: 1;
   background: rgb(0, 0, 0);
-  background: linear-gradient(
-    0deg,
-    rgba(255, 255, 255, 0.8) 92%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.8) 92%, rgba(255, 255, 255, 0) 100%);
 }
 
 #titoloSezioneCards {
