@@ -25,13 +25,16 @@ export default {
       rooms: null,
       beds: null,
       bathrooms: null,
-      services: null,
+      services: [],
       address: null,
       dimension: null,
       apartment_id: null,
       errorEmail: null,
       errorText: null,
       sentMessage: false,
+      serviziAppartamento: [],
+
+      servicesId: [],
 
       emailUtente: null,
       nomeUtente: null,
@@ -148,6 +151,15 @@ export default {
       }
       return null;
     },
+    getServices() {
+      for (let i = 0; i < this.services.length; i++) {
+        this.servicesId.push(this.services[i].id);
+      }
+      for (let i = 0; i < this.servicesId.length; i++) {
+        this.serviziAppartamento.push(this.store.servizi_bnb[this.servicesId[i] - 1]);
+        console.log(this.serviziAppartamento);
+      }
+    },
   },
 
   created() {
@@ -172,7 +184,8 @@ export default {
       this.sendVisitData();
 
       this.city = this.getAddressAfterLastComma(this.address);
-      console.log('la città è ' + this.city);
+      console.log(this.services);
+      this.getServices();
     });
   },
 
@@ -240,7 +253,7 @@ export default {
             </div>
             <h3 class="mt-4">Servizi presenti</h3>
             <div class="d-flex flex-column mt-3 mb-4">
-              <div v-for="servizio in store.servizi_bnb" class="m-1 d-flex align-items-center">
+              <div v-for="servizio in serviziAppartamento" class="m-1 d-flex align-items-center">
                 <div class="rounded px-2 fs-5 servizi lg-show">
                   <span v-html="servizio.icon" class="ms-2"></span>
                   {{ servizio.description }}
