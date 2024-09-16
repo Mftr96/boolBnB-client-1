@@ -41,6 +41,9 @@ export default {
   },
 
   methods: {
+    formatTitleWithSpaces(title) {
+      return title.replace(/-/g, ' '); // Sostituisce solo i trattini con spazi
+    },
     getImage(immagine) {
       if (immagine.startsWith('http')) {
         this.image = immagine;
@@ -148,7 +151,8 @@ export default {
   },
 
   created() {
-    const apartmentId = this.$route.params.title;
+    const apartmentId = this.formatTitleWithSpaces(this.$route.params.title);
+    console.log(this.$route.params.title);
     axios.get(`http://127.0.0.1:8000/api/apartments/${apartmentId}`).then((response) => {
       console.log(response.data.project);
       this.apartment = response.data.project;
@@ -164,7 +168,6 @@ export default {
       this.dimension = this.apartment.dimension_mq;
       this.getImage(this.apartment.image);
       this.updateMapCoordinates();
-      console.log(this.apartment);
 
       this.sendVisitData();
 

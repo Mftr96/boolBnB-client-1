@@ -25,6 +25,9 @@ export default {
   },
 
   methods: {
+    formatTitle(title) {
+      return title.replace(/\s+/g, '-');
+    },
     getImage(immagine) {
       if (immagine.startsWith('http')) {
         return immagine;
@@ -144,7 +147,7 @@ export default {
       </div>
       <div class="row g-4 flex-wrap">
         <div v-for="(apartment, i) in store.searchApartment" class="col-12 col-md-6 col-lg-4 col-xxl-3">
-          <router-link :to="`/search/${apartment.title}`" class="card h-100">
+          <router-link :to="`/search/${formatTitle(apartment.title)}`" class="card h-100">
             <img :src="getImage(apartment.image)" class="card-img-top" alt="..." />
             <div class="card-body">
               <h5 class="card-title">{{ apartment.title }}</h5>
