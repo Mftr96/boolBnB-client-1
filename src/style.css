@@ -1,6 +1,12 @@
+* {
+  font-family: 'Inria Sans', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
 body {
   /* background: linear-gradient(130deg, #ecdfc9, #c5d8df); */
-  background: linear-gradient(to bottom right, #d8cfc4, #f9f9f9 50%, #a0d8ef);
+  /* background: linear-gradient(to bottom right, #d8cfc4, #f9f9f9 50%, #a0d8ef); */
   /* background-image: url(/paper.jpg); */
   min-height: 100vh;
 }

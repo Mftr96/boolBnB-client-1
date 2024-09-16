@@ -31,10 +31,12 @@ export default {
       apartment_id: null,
       errorEmail: null,
       errorText: null,
+      sentMessage: false,
 
       emailUtente: null,
       nomeUtente: null,
       messaggioUtente: null,
+      city: null,
     };
   },
 
@@ -99,12 +101,17 @@ export default {
           .post('http://127.0.0.1:8000/api/messages', data)
           .then((response) => {
             console.log('tutto riuscito');
+            this.sentMessage = true;
+
+            setTimeout(() => {
+              this.sentMessage = false;
+              this.emailUtente = '';
+              this.nomeUtente = '';
+              this.messaggioUtente = '';
+            }, 2600);
           })
           .catch((error) => {
-            console.log(
-              "Errore durante l'invio del messaggio:",
-              error.response
-            );
+            console.log("Errore durante l'invio del messaggio:", error.response);
           });
       }
     },
@@ -131,31 +138,39 @@ export default {
         console.error("Errore nell'invio dei dati:", error);
       }
     },
+    getAddressAfterLastComma(address) {
+      const lastCommaIndex = address.lastIndexOf(',');
+      if (lastCommaIndex !== -1) {
+        return address.substring(lastCommaIndex + 1).trim();
+      }
+      return null;
+    },
   },
 
   created() {
     const apartmentId = this.$route.params.title;
-    axios
-      .get(`http://127.0.0.1:8000/api/apartments/${apartmentId}`)
-      .then((response) => {
-        console.log(response.data.project);
-        this.apartment = response.data.project;
-        this.apartment_id = this.apartment.id;
-        this.title = this.apartment.title;
-        this.latitude = this.apartment.latitude;
-        this.longitude = this.apartment.longitude;
-        this.rooms = this.apartment.rooms;
-        this.beds = this.apartment.beds;
-        this.bathrooms = this.apartment.bathrooms;
-        this.services = this.apartment.services;
-        this.address = this.apartment.address_full;
-        this.dimension = this.apartment.dimension_mq;
-        this.getImage(this.apartment.image);
-        this.updateMapCoordinates();
-        console.log(this.apartment);
+    axios.get(`http://127.0.0.1:8000/api/apartments/${apartmentId}`).then((response) => {
+      console.log(response.data.project);
+      this.apartment = response.data.project;
+      this.apartment_id = this.apartment.id;
+      this.title = this.apartment.title;
+      this.latitude = this.apartment.latitude;
+      this.longitude = this.apartment.longitude;
+      this.rooms = this.apartment.rooms;
+      this.beds = this.apartment.beds;
+      this.bathrooms = this.apartment.bathrooms;
+      this.services = this.apartment.services;
+      this.address = this.apartment.address_full;
+      this.dimension = this.apartment.dimension_mq;
+      this.getImage(this.apartment.image);
+      this.updateMapCoordinates();
+      console.log(this.apartment);
 
-        this.sendVisitData();
-      });
+      this.sendVisitData();
+
+      this.city = this.getAddressAfterLastComma(this.address);
+      console.log('la città è ' + this.city);
+    });
   },
 
   mounted() {},
@@ -163,94 +178,88 @@ export default {
 </script>
 
 <template>
-  <div class="fixed">
-    <AppHeader />
-  </div>
-  <div class="apartment-detail">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-6 mb-4 relative">
-          <img class="absolute" width="80px" src="/pin.png" alt="" />
-
-          <img
-            :src="image"
-            class="img-fluid rounded piegata"
-            alt="Appartamento"
-          />
+  <div class="sugar">
+    <div class="fixed">
+      <AppHeader />
+    </div>
+    <div class="apartment-detail">
+      <div class="container">
+        <!-- Titolo e indirizzo -->
+        <div class="text-end">
+          <h1 class="display-4">{{ title }}</h1>
+          <p class="text-muted"><i class="fa-solid fa-location-dot"></i> {{ address }}</p>
         </div>
-        <div class="col-lg-6 h-100">
-          <div class="card h-100 shadow-sm relative">
-            <img class="absolute left" width="80px" src="/pin5.png" alt="" />
-            <div class="card-body piegata-destra">
-              <h1 class="card-title display-5">{{ title }}</h1>
-              <p class="card-text text-muted">
-                <i class="fa-solid fa-location-dot"></i> {{ address }}
-              </p>
-              <ul class="list-unstyled mb-4">
-                <li>
-                  <i class="fa-solid fa-person-shelter"></i> Stanze: {{ rooms }}
-                </li>
-                <li><i class="fa-solid fa-bed"></i> Posti letto: {{ beds }}</li>
-                <li><i class="fa-solid fa-bath"></i> Bagni: {{ bathrooms }}</li>
-                <li>
-                  <i class="fa-solid fa-ruler-combined"></i> Dimensione (Mq):
-                  {{ dimension }}
-                </li>
-              </ul>
+        <div class="row">
+          <!-- Immagine dell'appartamento -->
+          <div class="col-lg-8 img-container mb-4">
+            <img :src="image" class="img-apartment shadow" alt="Appartamento" />
+          </div>
 
-              <h5 class="mt-4">Servizi presenti</h5>
-              <div class="d-flex flex-wrap">
-                <span
-                  v-for="servizio in store.servizi_bnb"
-                  class="badge bg-light text-dark m-1 d-flex align-items-center"
-                >
-                  <span v-html="servizio.icon" class="ms-2"> </span>
+          <!-- info generali-->
+          <div class="col-lg-4 d-flex flex-column justify-content-start mb-4">
+            <h2 class="">
+              {{ city }}, Italia. <br />
+              Alloggio in affitto
+            </h2>
+            <h5 class="text-success mt-4">
+              <i class="fa-solid fa-check-circle"></i> Le nostre strutture sono certificate
+            </h5>
+            <p class="text-muted">
+              Garantiamo che tutte le nostre strutture sono conformi ai più alti standard di sicurezza e igiene.
+            </p>
+
+            <h5 class="text-primary mt-4"><i class="fa-solid fa-shield-alt"></i> Sicurezza e garanzia</h5>
+            <p class="text-muted">
+              <i class="fa-solid fa-handshake"></i> Prenotazioni sicure e garantite con politiche di cancellazione
+              flessibili.
+            </p>
+
+            <h5 class="text-warning mt-4"><i class="fa-solid fa-star"></i> Esperienza a 5 stelle</h5>
+            <p class="text-muted">
+              Goditi un soggiorno indimenticabile nelle nostre strutture. Il comfort e la soddisfazione dei nostri
+              ospiti sono la nostra priorità.
+            </p>
+          </div>
+        </div>
+        <!-- Dettagli appartamento -->
+        <div class="row">
+          <!-- Caratteristiche e servizi -->
+          <div class="col-lg-8">
+            <h3 class="mt-2">Caratteristiche</h3>
+            <div class="d-flex flex-wrap mt-2">
+              <span><i class="fa-solid fa-users"></i> {{ beds }} Ospiti</span>
+              <span class="mx-2">&bull;</span>
+              <span><i class="fa-solid fa-person-shelter"></i> {{ rooms }} Stanze </span>
+              <span class="mx-2">&bull;</span>
+              <span><i class="fa-solid fa-bath"></i> {{ bathrooms }} Bagni</span>
+              <span class="mx-2">&bull;</span>
+              <span><i class="fa-solid fa-ruler-combined"></i> Dimensione: {{ dimension }}mq</span>
+            </div>
+            <h3 class="mt-4">Servizi presenti</h3>
+            <div class="d-flex flex-column mt-3 mb-4">
+              <div v-for="servizio in store.servizi_bnb" class="m-1 d-flex align-items-center">
+                <div class="rounded px-2 fs-5 servizi lg-show">
+                  <span v-html="servizio.icon" class="ms-2"></span>
+                  {{ servizio.description }}
+                </div>
+                <div class="rounded px-2 fs-5 servizi mobile-show">
+                  <span v-html="servizio.icon" class="ms-2"></span>
                   {{ servizio.title }}
-                </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="relative mt-5">
-        <div class="row mt-1">
-          <div class="col-lg-8 mb-4 relative">
-            <img
-              class="absolute pin-mappa"
-              width="80px"
-              src="/pin3.png"
-              alt=""
-            />
-            <!-- <div class="ratio ratio-16x9 piegata maps">
 
-              <h4 class="mt-3 title-map">Dove troverai la struttura</h4>
-              <iframe
-                :src="coordinateMaps"
-                class=""
-                style="border: none"
-                allowfullscreen
-              ></iframe>
-            </div> -->
-            <div class="ratio ratio-16x9 piegata maps">
-              <h4 class="mt-3 title-map">Dove troverai la struttura</h4>
-              <div id="tomtom-map" class=""></div>
-              <!-- Container per la mappa -->
-            </div>
-          </div>
-
-          <div class="col-lg-4 relative">
-            <img
-              class="absolute contatti"
-              width="80px"
-              src="/pin4.png"
-              alt=""
-            />
-            <div class="card piegata">
-              <div class="card-body rounded-2">
+          <!-- Modulo di contatto -->
+          <div class="col-lg-4">
+            <div class="card shadow mt-3">
+              <div v-show="sentMessage" class="blur">
+                <div class="sentMessage">Messaggio inviato correttamente</div>
+              </div>
+              <div class="card-body">
                 <h5 class="card-title text-center mb-4">Contatta l'host</h5>
                 <form>
-                  <div class="mb-3 error">
-                    <div class="error-text">{{ errorEmail }}</div>
+                  <div class="mb-3">
                     <label for="emailUtente" class="form-label">Email*</label>
                     <input
                       v-model="emailUtente"
@@ -260,6 +269,7 @@ export default {
                       placeholder="Inserisci email valida"
                       required
                     />
+                    <div class="error-text">{{ errorEmail }}</div>
                   </div>
                   <div class="mb-3">
                     <label for="nomeUtente" class="form-label">Nome</label>
@@ -272,11 +282,8 @@ export default {
                       required
                     />
                   </div>
-                  <div class="mb-3 error">
-                    <div class="error-text">{{ errorText }}</div>
-                    <label for="messaggioUtente" class="form-label"
-                      >Messaggio*</label
-                    >
+                  <div class="mb-3">
+                    <label for="messaggioUtente" class="form-label">Messaggio*</label>
                     <textarea
                       v-model="messaggioUtente"
                       class="form-control"
@@ -285,20 +292,20 @@ export default {
                       placeholder="Scrivi il tuo messaggio"
                       required
                     ></textarea>
+                    <div class="error-text">{{ errorText }}</div>
                   </div>
-                  <p class="text-muted small">
-                    I campi contrassegnati con * sono obbligatori
-                  </p>
-                  <button
-                    type="button"
-                    @click="sendMessage"
-                    class="btn btn-colore w-100"
-                  >
-                    Invia
-                  </button>
+                  <button type="button" @click="sendMessage" class="btn btn-primary w-100">Invia</button>
                 </form>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Mappa della struttura -->
+        <div class="mt-5">
+          <div class="map-container">
+            <h4 class="title-map">Dove troverai la struttura</h4>
+            <div class="shadow" id="tomtom-map"></div>
           </div>
         </div>
       </div>
@@ -308,13 +315,29 @@ export default {
 </template>
 
 <style scoped>
+.sugar {
+  min-height: 100vh;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1s ease; /* Imposta la durata della transizione */
+}
+
+.fade-enter, .fade-leave-to /* .fade-leave-active in Vue 2 */ {
+  opacity: 0; /* Elemento trasparente all'inizio o alla fine */
+}
+
+textarea {
+  height: 10em;
+}
+
 .container {
-  max-width: 1600px;
+  padding-top: 5rem;
 }
 
 .fixed {
-  /* background: linear-gradient(130deg, #fff6e7, #d1e6ed); */
-  background: linear-gradient(130deg, #c3b49ba4, #94a7ae98);
+  background: linear-gradient(130deg, #ffd489a4, #8cd7f298);
   height: 4rem;
   position: fixed;
   z-index: 2;
@@ -323,109 +346,85 @@ export default {
   box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.711);
 }
 
-.apartment-detail {
-  padding-top: 8rem;
-  background: linear-gradient(to bottom right, #d8cfc4, #f9f9f9 50%, #a0d8ef);
-  z-index: 1;
-  width: 100%;
-  min-height: 100vh;
-  overflow: hidden;
-  padding-bottom: 3rem;
+.img-container {
+  height: 30rem;
 }
 
-.card {
-  background-color: transparent;
-  border: none;
-}
-
-.card-body {
-  background-color: white;
-}
-
-.card-title {
-  color: #333;
-}
-.badge {
-  font-size: 0.9rem;
-}
-.ratio iframe {
+.img-apartment {
   width: 100%;
   height: 100%;
-}
-
-.error {
-  position: relative;
-}
-
-.error-text {
-  color: red;
-  position: absolute;
-  left: 30%;
-  font-size: 1rem;
-  line-height: 1rem;
-}
-
-.relative {
-  position: relative;
-  perspective: 500px;
-}
-
-.absolute {
-  position: absolute;
-  left: 60%;
-  top: -5%;
-  z-index: 1;
-}
-
-.piegata {
-  transform: rotate(-2deg);
-  box-shadow: 10px 10px 10px 5px;
   border-radius: 10px;
+  object-fit: cover;
 }
 
-.piegata-destra {
-  transform: rotate(3deg);
-  box-shadow: 10px 10px 10px 5px;
+.servizi {
+  background-color: rgb(206, 240, 255);
+  /* color: rgb(82, 68, 40); */
+}
+
+.map-container {
+  width: 100%;
+  max-width: 100%;
+  height: 400px; /* Altezza fissa per la mappa */
+  margin-bottom: 5rem; /* Margine sotto la mappa */
+}
+
+#tomtom-map {
+  width: 100%;
+  height: 100%;
   border-radius: 10px;
-}
-
-.contatti {
-  top: -8%;
-  left: 70%;
-}
-
-.pin-mappa {
-  top: -12%;
-  left: 30%;
-}
-
-.left {
-  left: 20%;
-  top: -14%;
-}
-
-.maps {
-  transform: rotate(3deg);
 }
 
 .title-map {
-  background-color: rgb(255, 255, 255);
-  border: 1px solid rgb(159, 145, 133);
-  display: inline-block;
-  padding: 0.3rem 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.mobile-show {
+  display: none;
+}
+
+.card {
+  position: relative;
+}
+
+.sentMessage {
   position: absolute;
-  z-index: 3;
-  left: 10%;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+  text-align: center;
+  background-color: rgba(129, 219, 129, 0.965);
   border-radius: 10px;
-  width: 20rem;
-  height: 3rem;
+  font-weight: bold;
+  font-size: 25px;
+  box-shadow: 0px 0px 40px 20px;
+  opacity: 0;
+  animation: messageAnimation 2.6s ease forwards;
 }
 
-.btn-colore {
-  background-color: rgb(209, 189, 173);
+@keyframes messageAnimation {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
-.btn-colore:hover {
-  background-color: rgb(159, 145, 133);
+@media screen and (max-width: 447px) {
+  .mobile-show {
+    display: unset;
+  }
+
+  .lg-show {
+    display: none;
+  }
 }
 </style>

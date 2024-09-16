@@ -19,6 +19,7 @@ export default {
       stanze: 'Camere',
       letti: 'Posti letto',
       bagni: 'Bagni',
+      isApartment: false,
       isLoading: false,
     };
   },
@@ -51,6 +52,18 @@ export default {
     getServizio(id) {
       return this.store.servizi_bnb[id - 1];
     },
+    apartmentSponsorship(sponsorships) {
+      let isSponsored = false;
+      const now = new Date();
+      if (sponsorships.length == 0) {
+        return false;
+      }
+      const endDate = new Date(sponsorships[sponsorships.length - 1].pivot.ending_date);
+      if (endDate > now) {
+        isSponsored = true;
+      }
+      return isSponsored;
+    },
   },
 
   watch: {
@@ -71,6 +84,12 @@ export default {
         .get(url)
         .then((response) => {
           this.store.searchApartment = response.data.results;
+          if (response.data.results.length > 0) {
+            this.isApartment = true;
+          } else {
+            this.isApartment = false;
+          }
+          console.log(this.isApartment);
         })
         .catch((error) => {
           console.log('errore');
@@ -84,17 +103,11 @@ export default {
   <div class="height">
     <AppSearchFilters />
     <div class="container" :class="{ 'opacity-zero': isLoading }">
-      <div class="find">
-        Trovati {{ store.searchApartment.length }} appartamenti:
-      </div>
+      <h4 v-show="isApartment" class="">Trovati {{ store.searchApartment.length }} appartamenti:</h4>
       <div class="enter d-flex flex-column align-items-center">
         <div v-show="store.noApartment" class="cerca-appartamento">
           <div class="home-animation">
-            <svg
-              class="ha-logo"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 10 10"
-            >
+            <svg class="ha-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
               <path
                 class="house"
                 d="M1.9 8.5V5.3h-1l4-4.3 2.2 
@@ -130,16 +143,9 @@ export default {
         </div>
       </div>
       <div class="row g-4 flex-wrap">
-        <div
-          v-for="(apartment, i) in store.searchApartment"
-          class="col-12 col-md-6 col-lg-4 col-xl-3"
-        >
+        <div v-for="(apartment, i) in store.searchApartment" class="col-12 col-md-6 col-lg-4 col-xxl-3">
           <router-link :to="`/search/${apartment.title}`" class="card h-100">
-            <img
-              :src="getImage(apartment.image)"
-              class="card-img-top"
-              alt="..."
-            />
+            <img :src="getImage(apartment.image)" class="card-img-top" alt="..." />
             <div class="card-body">
               <h5 class="card-title">{{ apartment.title }}</h5>
               <div class="row">
@@ -163,37 +169,22 @@ export default {
                 </div>
               </div>
               <hr />
-              <div
-                v-show="
-                  apartment.sponsorships && apartment.sponsorships.length > 0
-                "
-                class="badge"
-              >
-                sponsorizzato
+              <div v-show="apartmentSponsorship(apartment.sponsorships)" class="badge animation fs-4">
+                <i class="fa-solid fa-rocket"></i>
+                <div class="rocket-trail"></div>
               </div>
               <h6>Servizi</h6>
               <div class="servizi row">
-                <div
-                  v-for="(servizio, i) in apartment.services.slice(0, 4)"
-                  class="col-6 servizio"
-                >
+                <div v-for="(servizio, i) in apartment.services.slice(0, 4)" class="col-6 servizio">
                   <div class="center">
                     <span v-html="getServizio(servizio.id).icon"></span>
-                    <span class="nome-servizio">{{
-                      getServizio(servizio.id).title
-                    }}</span>
+                    <span class="nome-servizio">{{ getServizio(servizio.id).title }}</span>
                   </div>
                 </div>
-                <div
-                  v-if="apartment.services.length > 5"
-                  class="altri-servizi col"
-                >
+                <div v-if="apartment.services.length > 5" class="altri-servizi col">
                   <div>altri {{ apartment.services.length - 4 }} servizi</div>
                 </div>
-                <div
-                  v-if="apartment.services.length == 5"
-                  class="altri-servizi col"
-                >
+                <div v-if="apartment.services.length == 5" class="altri-servizi col">
                   <!-- <div>un altro servizio</div> -->
                 </div>
               </div>
@@ -202,16 +193,9 @@ export default {
         </div>
       </div>
     </div>
-    <div
-      v-show="isLoading"
-      class="loading-screen"
-      :class="{ 'loading-show': isLoading }"
-    >
-      <svg
-        class="ha-logo loading"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 10 10"
-      >
+    <Appfooter />
+    <div v-show="isLoading" class="loading-screen" :class="{ 'loading-show': isLoading }">
+      <svg class="ha-logo loading" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
         <path
           class="house"
           d="M1.9 8.5V5.3h-1l4-4.3 2.2 
@@ -245,14 +229,13 @@ export default {
       <div class="loading-message">Caricamento appartamenti</div>
     </div>
   </div>
-  <Appfooter />
 </template>
 
 <style scoped>
 .container {
   margin-bottom: 2rem;
   max-width: 1600px;
-  padding-top: 13rem;
+  padding-top: 11rem;
   min-height: 100vh;
 }
 
@@ -287,7 +270,7 @@ export default {
   position: relative;
   border-radius: 10px;
   border: none;
-  background-color: white;
+  background-color: rgba(202, 212, 210, 0.237);
   transition: 0.5s;
   /* box-shadow: 5px 5px 10px 0px; */
 }
@@ -296,13 +279,13 @@ export default {
   background-color: #69c9f0;
   position: absolute;
   top: 1rem;
+  right: 1rem;
 }
 
 .card:hover {
   /* box-shadow: rgba(255, 172, 28, 0.199) 10px 10px,
     rgba(255, 172, 28, 0.19) 20px 20px; */
-  box-shadow: rgba(88, 162, 205, 0.199) 10px 10px,
-    rgba(88, 162, 205, 0.19) 20px 20px;
+  box-shadow: rgba(88, 162, 205, 0.199) 10px 10px, rgba(88, 162, 205, 0.19) 20px 20px;
   transform: translate3d(-10px, -10px, 0);
 }
 
@@ -402,59 +385,32 @@ a {
   text-decoration: none;
 }
 
-.loader {
-  margin-top: 10rem;
-  width: 200px;
-  height: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.animation {
+  display: inline-block;
+}
+
+/* Icona dell'astronave */
+.animation .fa-rocket {
+  font-size: 2rem;
   position: relative;
+  transform: translate(-3px, 3px);
+  animation: rocket-move 1.5s ease-in-out infinite;
 }
 
-.circle {
-  position: absolute;
-  width: 0px;
-  height: 0px;
-  border-radius: 100%;
-  background: rgb(25, 172, 221);
-  animation: radar 3s ease-out infinite;
-  box-shadow: 0px 0px 10px rgb(25, 172, 221);
-}
-
-.circle:nth-of-type(1) {
-  animation-delay: 0.2s;
-}
-
-.circle:nth-of-type(2) {
-  animation-delay: 0.6s;
-}
-
-.circle:nth-of-type(3) {
-  animation-delay: 1s;
-}
-
-.circle:nth-of-type(4) {
-  animation-delay: 1.4s;
-}
-
-.circle:nth-of-type(5) {
-  animation-delay: 1.8s;
-}
-
-@keyframes radar {
+/* Animazione del movimento dell'astronave */
+@keyframes rocket-move {
   0% {
+    transform: translate(-3px, 3px);
   }
-  30% {
-    width: 100px;
-    height: 100px;
+  50% {
+    transform: translate(2px, -2px); /* Muovi l'astronave verso in alto-a destra */
   }
   100% {
-    width: 100px;
-    height: 100px;
-    opacity: 0;
+    transform: translate(-3px, 3px);
   }
 }
+
+/* Animazione della scia */
 
 .loading-screen {
   position: fixed;
@@ -484,7 +440,7 @@ a {
   opacity: 0;
 }
 
-@media screen and (max-width: 995px) {
+@media screen and (max-width: 1400px) {
   .container {
     padding-top: 10rem;
   }
